@@ -18,16 +18,14 @@
 
 import 'dart:io';
 import 'dart:async';
+import 'dart:typed_data';
 
-import 'package:flauncher/flauncher_channel.dart';
 import 'package:flauncher/gradients.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 
 class WallpaperService extends ChangeNotifier {
-  final FLauncherChannel _fLauncherChannel;
   final SettingsService _settingsService;
 
   late File _wallpaperFile;
@@ -53,7 +51,7 @@ class WallpaperService extends ChangeNotifier {
         orElse: () => FLauncherGradients.saintPetersburg,
       );
 
-  WallpaperService(this._fLauncherChannel, this._settingsService) :
+  WallpaperService(this._settingsService) :
     _wallpaper = null
   {
     _settingsService.addListener(_onSettingsChanged);
@@ -141,14 +139,14 @@ class WallpaperService extends ChangeNotifier {
       newWallpaper = null;
     } else if (enabled) {
       if (isDay && _wallpaperDayFile.existsSync()) {
-        newWallpaper = FileImage(_wallpaperDayFile);
+        newWallpaper = _fileToMemoryImage(_wallpaperDayFile);
       } else if (!isDay && _wallpaperNightFile.existsSync()) {
-        newWallpaper = FileImage(_wallpaperNightFile);
+        newWallpaper = _fileToMemoryImage(_wallpaperNightFile);
       } else if (_wallpaperFile.existsSync()) {
-        newWallpaper = FileImage(_wallpaperFile); // Fallback
+        newWallpaper = _fileToMemoryImage(_wallpaperFile);
       }
     } else if (_wallpaperFile.existsSync()) {
-      newWallpaper = FileImage(_wallpaperFile);
+      newWallpaper = _fileToMemoryImage(_wallpaperFile);
     }
 
     if (_wallpaper != newWallpaper || videoFile != null || force) {
@@ -157,75 +155,51 @@ class WallpaperService extends ChangeNotifier {
     }
   }
 
-  Future<void> pickWallpaper() async {
-    await _pickAndSave(_wallpaperFile);
-  }
-
-  Future<void> pickWallpaperDay() async {
-    await _pickAndSave(_wallpaperDayFile);
-  }
-
-  Future<void> pickWallpaperNight() async {
-    await _pickAndSave(_wallpaperNightFile);
-  }
-
-  Future<void> pickVideoWallpaper() async {
-    await _pickAndSaveVideo(_wallpaperVideoFile);
-  }
-
-  Future<void> pickVideoWallpaperDay() async {
-    await _pickAndSaveVideo(_wallpaperDayVideoFile);
-  }
-
-  Future<void> pickVideoWallpaperNight() async {
-    await _pickAndSaveVideo(_wallpaperNightVideoFile);
-  }
-
-  Future<void> _pickAndSave(File targetFile) async {
-    if (!await _fLauncherChannel.checkForGetContentAvailability()) {
-      throw NoFileExplorerException();
-    }
-
-    final imagePicker = ImagePicker();
-    final pickedFile = await imagePicker.pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      final pairedVideo = _pairedVideoForImage(targetFile);
-      if (pairedVideo != null && await pairedVideo.exists()) {
-        await pairedVideo.delete();
-        await cleanVideoWallpaperFiles();
-      }
-
-      // Use stream for memory efficiency
-      final readStream = pickedFile.openRead();
-      final writeStream = targetFile.openWrite();
-      await readStream.cast<List<int>>().pipe(writeStream);
-
-      // Evict from cache to ensure UI updates
-      await FileImage(targetFile).evict();
-
-      _updateWallpaper(force: true);
+  ImageProvider? _fileToMemoryImage(File file) {
+    try {
+      final bytes = file.readAsBytesSync();
+      return MemoryImage(Uint8List.fromList(bytes));
+    } catch (_) {
+      return null;
     }
   }
 
-  Future<void> _pickAndSaveVideo(File targetVideoFile) async {
-    if (!await _fLauncherChannel.checkForGetContentAvailability()) {
-      throw NoFileExplorerException();
+  Future<void> setWallpaper(File sourceFile) async {
+    await _saveToFile(sourceFile, _wallpaperFile);
+  }
+
+  Future<void> setWallpaperDay(File sourceFile) async {
+    await _saveToFile(sourceFile, _wallpaperDayFile);
+  }
+
+  Future<void> setWallpaperNight(File sourceFile) async {
+    await _saveToFile(sourceFile, _wallpaperNightFile);
+  }
+
+  Future<void> setVideoWallpaper(File sourceFile) async {
+    await _saveToFile(sourceFile, _wallpaperVideoFile);
+  }
+
+  Future<void> setVideoWallpaperDay(File sourceFile) async {
+    await _saveToFile(sourceFile, _wallpaperDayVideoFile);
+  }
+
+  Future<void> setVideoWallpaperNight(File sourceFile) async {
+    await _saveToFile(sourceFile, _wallpaperNightVideoFile);
+  }
+
+  Future<void> _saveToFile(File sourceFile, File targetFile) async {
+    final pairedVideo = _pairedVideoForImage(targetFile);
+    if (pairedVideo != null && await pairedVideo.exists()) {
+      await pairedVideo.delete();
+      await cleanVideoWallpaperFiles();
     }
 
-    final imagePicker = ImagePicker();
-    final pickedFile = await imagePicker.pickVideo(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      final pairedImage = _pairedImageForVideo(targetVideoFile);
-      if (pairedImage != null && await pairedImage.exists()) {
-        await pairedImage.delete();
-      }
+    final bytes = await sourceFile.readAsBytes();
+    await targetFile.writeAsBytes(bytes, flush: true);
 
-      final readStream = pickedFile.openRead();
-      final writeStream = targetVideoFile.openWrite();
-      await readStream.cast<List<int>>().pipe(writeStream);
-
-      _updateWallpaper(force: true);
-    }
+    _wallpaper = MemoryImage(Uint8List.fromList(bytes));
+    notifyListeners();
   }
 
   File? _pairedVideoForImage(File imageFile) {
@@ -235,19 +209,16 @@ class WallpaperService extends ChangeNotifier {
     return null;
   }
 
-  File? _pairedImageForVideo(File videoFile) {
-    if (videoFile.path == _wallpaperVideoFile.path) return _wallpaperFile;
-    if (videoFile.path == _wallpaperDayVideoFile.path) return _wallpaperDayFile;
-    if (videoFile.path == _wallpaperNightVideoFile.path) return _wallpaperNightFile;
-    return null;
-  }
-
   Future<void> setGradient(FLauncherGradient fLauncherGradient) async {
     await cleanImageWallpaperFiles();
     await cleanVideoWallpaperFiles();
 
+    _wallpaper = null;
+    _timer?.cancel();
+    _timer = null;
+
     await _settingsService.setGradientUuid(fLauncherGradient.uuid);
-    notifyListeners();
+    _updateWallpaper(force: true);
   }
 
   // Cleaning methods

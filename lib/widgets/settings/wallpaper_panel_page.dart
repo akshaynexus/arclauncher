@@ -16,10 +16,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import 'dart:io';
+
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/wallpaper_service.dart';
 import 'package:flauncher/widgets/settings/focusable_settings_tile.dart';
 import 'package:flauncher/widgets/settings/gradient_panel_page.dart';
+import 'package:flauncher/widgets/tv_media_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flauncher/l10n/app_localizations.dart';
@@ -47,6 +50,7 @@ class WallpaperPanelPage extends StatelessWidget {
           );
         }),
         Consumer<SettingsService>(builder: (_, settings, __) {
+          final wallpaperService = context.read<WallpaperService>();
           if (settings.timeBasedWallpaperEnabled) {
             return Column(
               children: [
@@ -54,25 +58,25 @@ class WallpaperPanelPage extends StatelessWidget {
                   leading: Icon(Icons.wb_sunny),
                   title: Text(localizations.pickDayWallpaper),
                   onPressed: () => _pickWallpaper(
-                      context, (s) => s.pickWallpaperDay(), localizations),
+                      context, wallpaperService.setWallpaperDay, false, localizations),
                 ),
                 FocusableSettingsTile(
                   leading: Icon(Icons.videocam_outlined),
                   title: Text(localizations.pickDayVideoWallpaper),
                   onPressed: () => _pickWallpaper(
-                      context, (s) => s.pickVideoWallpaperDay(), localizations),
+                      context, wallpaperService.setVideoWallpaperDay, true, localizations),
                 ),
                 FocusableSettingsTile(
                   leading: Icon(Icons.nights_stay),
                   title: Text(localizations.pickNightWallpaper),
                   onPressed: () => _pickWallpaper(
-                      context, (s) => s.pickWallpaperNight(), localizations),
+                      context, wallpaperService.setWallpaperNight, false, localizations),
                 ),
                 FocusableSettingsTile(
                   leading: Icon(Icons.videocam_outlined),
                   title: Text(localizations.pickNightVideoWallpaper),
-                  onPressed: () => _pickWallpaper(context,
-                      (s) => s.pickVideoWallpaperNight(), localizations),
+                  onPressed: () => _pickWallpaper(
+                      context, wallpaperService.setVideoWallpaperNight, true, localizations),
                 ),
               ],
             );
@@ -92,14 +96,14 @@ class WallpaperPanelPage extends StatelessWidget {
                   title: Text(localizations.picture,
                       style: Theme.of(context).textTheme.bodyMedium),
                   onPressed: () => _pickWallpaper(
-                      context, (s) => s.pickWallpaper(), localizations),
+                      context, wallpaperService.setWallpaper, false, localizations),
                 ),
                 FocusableSettingsTile(
                   leading: Icon(Icons.videocam_outlined),
                   title: Text(localizations.video,
                       style: Theme.of(context).textTheme.bodyMedium),
                   onPressed: () => _pickWallpaper(
-                      context, (s) => s.pickVideoWallpaper(), localizations),
+                      context, wallpaperService.setVideoWallpaper, true, localizations),
                 ),
               ],
             );
@@ -111,23 +115,33 @@ class WallpaperPanelPage extends StatelessWidget {
 
   Future<void> _pickWallpaper(
       BuildContext context,
-      Future<void> Function(WallpaperService) action,
-      AppLocalizations localizations) async {
+      Future<void> Function(File) action,
+      bool isVideo,
+      AppLocalizations? localizations) async {
     try {
-      await action(context.read<WallpaperService>());
-    } on NoFileExplorerException {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          duration: Duration(seconds: 8),
-          content: Row(
-            children: [
-              Icon(Icons.error_outline, color: Colors.red),
-              SizedBox(width: 8),
-              Text(localizations.dialogTextNoFileExplorer)
-            ],
-          ),
-        ),
+      final path = await TvMediaPicker.show(
+        context,
+        mode: isVideo ? TvMediaPickerMode.video : TvMediaPickerMode.image,
       );
+
+      if (path != null) {
+        await action(File(path));
+      }
+    } on NoFileExplorerException {
+      if (localizations != null && context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            duration: Duration(seconds: 8),
+            content: Row(
+              children: [
+                Icon(Icons.error_outline, color: Colors.red),
+                SizedBox(width: 8),
+                Text(localizations.dialogTextNoFileExplorer)
+              ],
+            ),
+          ),
+        );
+      }
     }
   }
 }

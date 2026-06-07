@@ -24,7 +24,6 @@ import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/wallpaper_service.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:mockito/annotations.dart';
 import 'package:flauncher/models/app.dart';
 import 'package:flauncher/models/category.dart';
@@ -35,7 +34,6 @@ import 'package:flauncher/models/category.dart';
   WallpaperService,
   AppsService,
   SettingsService,
-  ImagePicker,
 ], customMocks: [
   MockSpec<FLauncherDatabase>(unsupportedMembers: {#alias}),
   MockSpec<ImageProvider>(unsupportedMembers: {#alias}),

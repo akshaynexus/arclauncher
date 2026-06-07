@@ -20,7 +20,6 @@ import 'package:flauncher/actions.dart';
 import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/launcher_state.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -29,30 +28,45 @@ import 'package:provider/provider.dart';
 
 import 'flauncher.dart';
 
-class FLauncherApp extends StatelessWidget {
-  static const PrioritizedIntents _backIntents =
-      PrioritizedIntents(orderedIntents: [DismissIntent(), BackIntent()]);
-
-  static const MaterialColor _swatch = MaterialColor(0xFF011526, <int, Color>{
-    50: Color(0xFF36A0FA),
-    100: Color(0xFF067BDE),
-    200: Color(0xFF045CA7),
-    300: Color(0xFF033662),
-    400: Color(0xFF022544),
-    500: Color(0xFF011526),
-    600: Color(0xFF000508),
-    700: Color(0xFF000000),
-    800: Color(0xFF000000),
-    900: Color(0xFF000000),
-  });
-
+class FLauncherApp extends StatefulWidget {
   const FLauncherApp();
 
   @override
+  State<FLauncherApp> createState() => _FLauncherAppState();
+}
+
+const _backIntents =
+    PrioritizedIntents(orderedIntents: [DismissIntent(), BackIntent()]);
+
+class _FLauncherAppState extends State<FLauncherApp> with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final appsService = context.read<AppsService>();
+      final launcherState = context.read<LauncherState>();
+      launcherState.refresh(appsService);
+    });
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      final appsService = context.read<AppsService>();
+      final launcherState = context.read<LauncherState>();
+      launcherState.refresh(appsService);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    AppsService appsService = context.read<AppsService>();
-    LauncherState launcherState = context.read<LauncherState>();
-    launcherState.refresh(appsService);
 
     return Selector<SettingsService, Color>(
         selector: (_, settings) => settings.accentColor,

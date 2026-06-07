@@ -17,12 +17,12 @@
  */
 
 import 'dart:io';
-import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/widgets/add_to_category_dialog.dart';
 import 'package:flauncher/widgets/side_panel_dialog.dart';
+import 'package:flauncher/widgets/tv_media_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:flauncher/l10n/app_localizations.dart';
 
@@ -237,27 +237,24 @@ class _ApplicationInfoPanelState extends State<ApplicationInfoPanel> {
                         ),
                         onPressed: () async {
                           try {
-                            final picker = ImagePicker();
-                            final pickedFile = await picker.pickImage(
-                                source: ImageSource.gallery);
-                            if (pickedFile != null) {
+                            final pickedPath = await TvMediaPicker.show(
+                              context,
+                              mode: TvMediaPickerMode.image,
+                            );
+                            if (pickedPath != null) {
                               final docDir =
                                   await getApplicationDocumentsDirectory();
-                              // Sanitize package name for filename
                               final safePackageName = widget
                                   .application.packageName
                                   .replaceAll(RegExp(r'[^a-zA-Z0-9._-]'), '_');
                               final savedImage = File(
                                   '${docDir.path}/custom_banner_$safePackageName.png');
-                              await File(pickedFile.path).copy(savedImage.path);
-                              // Clean up temp file from ImagePicker
-                              await File(pickedFile.path).delete();
+                              await File(pickedPath).copy(savedImage.path);
                               await context
                                   .read<AppsService>()
                                   .setCustomAppBanner(
                                       widget.application.packageName,
                                       savedImage.path);
-                              // Refresh the future to reflect the change
                               setState(() {
                                 _hasCustomBannerFuture = context
                                     .read<AppsService>()

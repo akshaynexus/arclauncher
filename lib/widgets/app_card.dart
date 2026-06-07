@@ -93,6 +93,10 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
     _isTraditionalHighlightMode =
         FocusManager.instance.highlightMode == FocusHighlightMode.traditional;
 
+    // Force lazy fields to initialize while widget is still active
+    _animation;
+    _curvedAnimation;
+
     FocusManager.instance.addHighlightModeListener(_focusHighlightModeChanged);
     _loadAppImage(Provider.of<AppsService>(context, listen: false));
 

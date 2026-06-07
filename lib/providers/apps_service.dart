@@ -90,116 +90,225 @@ class AppsService extends ChangeNotifier
   }
 
   Future<void> _init() async {
-    await _refreshState(shouldNotifyListeners: false);
-    if (_database.wasCreated) {
-      await _initDefaultCategories();
-    }
+    try {
+      // Phase 1: Load from DB immediately (fast)
+      await _loadFromDatabase();
 
-    _fLauncherChannel.addAppsChangedListener((event) async {
-      String? changedPackageName;
-      if (event.containsKey('packageName')) {
-        changedPackageName = event['packageName'];
-      } else if (event.containsKey('activityInfo')) {
-         changedPackageName = event['activityInfo']['packageName'];
+      if (_categoriesById.isEmpty) {
+        await _initDefaultCategories();
       }
 
-      if (changedPackageName != null) {
-        _iconCache.remove(changedPackageName);
-        _bannerCache.remove(changedPackageName);
-        _dirtyImagePackages.add(changedPackageName);
-      }
+      _initialized = true;
+      notifyListeners();
+      debugPrint('AppsService initialized: ${_applications.length} apps, ${_categoriesById.length} categories');
 
-      switch (event["action"]) {
-        case "PACKAGE_ADDED":
-        case "PACKAGE_CHANGED":
-          Map<dynamic, dynamic> applicationInfo = event['activityInfo'];
-          await _database.persistApps([_buildAppCompanion(applicationInfo)]);
+      // Phase 2: Sync with system in background (slow, non-blocking)
+      _syncWithSystem();
 
-          App newApp = App.fromSystem(applicationInfo);
-          App? existingApp = _applications[newApp.packageName];
+      _fLauncherChannel.addAppsChangedListener((event) async {
+        try {
+          String? changedPackageName;
+          if (event.containsKey('packageName')) {
+            changedPackageName = event['packageName'];
+          } else if (event.containsKey('activityInfo')) {
+             changedPackageName = event['activityInfo']['packageName'];
+          }
 
-          if (existingApp != null) {
-            newApp.hidden = existingApp.hidden;
-            newApp.categoryOrders = Map.from(existingApp.categoryOrders);
-            for (int categoryId in newApp.categoryOrders.keys) {
-              if (_categoriesById.containsKey(categoryId)) {
-                Category category = _categoriesById[categoryId]!;
-                int index = category.applications.indexOf(existingApp);
-                if (index != -1) {
-                  category.applications[index] = newApp;
-                } else {
-                  category.applications.add(newApp);
+          if (changedPackageName != null) {
+            _iconCache.remove(changedPackageName);
+            _bannerCache.remove(changedPackageName);
+            _dirtyImagePackages.add(changedPackageName);
+          }
+
+          switch (event["action"]) {
+            case "PACKAGE_ADDED":
+            case "PACKAGE_CHANGED":
+              Map<dynamic, dynamic> applicationInfo = event['activityInfo'];
+              await _database.persistApps([_buildAppCompanion(applicationInfo)]);
+
+              App newApp = App.fromSystem(applicationInfo);
+              App? existingApp = _applications[newApp.packageName];
+
+              if (existingApp != null) {
+                newApp.hidden = existingApp.hidden;
+                newApp.categoryOrders = Map.from(existingApp.categoryOrders);
+                for (int categoryId in newApp.categoryOrders.keys) {
+                  if (_categoriesById.containsKey(categoryId)) {
+                    Category category = _categoriesById[categoryId]!;
+                    int index = category.applications.indexOf(existingApp);
+                    if (index != -1) {
+                      category.applications[index] = newApp;
+                    } else {
+                      category.applications.add(newApp);
+                    }
+                  }
+                }
+                _applications[newApp.packageName] = newApp;
+              } else {
+                _applications[newApp.packageName] = newApp;
+                final targetCategory = _findTargetCategoryForNewApp();
+                if (targetCategory != null) {
+                  await addToCategory(newApp, targetCategory, shouldNotifyListeners: false);
                 }
               }
-            }
-            _applications[newApp.packageName] = newApp;
-          } else {
-            _applications[newApp.packageName] = newApp;
-            final targetCategory = _findTargetCategoryForNewApp();
-            if (targetCategory != null) {
-              await addToCategory(newApp, targetCategory, shouldNotifyListeners: false);
-            }
-          }
-          break;
-        case "PACKAGES_AVAILABLE":
-          List<dynamic> applicationsInfo = event["activitiesInfo"];
-          await _database.persistApps((applicationsInfo).map(_buildAppCompanion));
+              break;
+            case "PACKAGES_AVAILABLE":
+              List<dynamic> applicationsInfo = event["activitiesInfo"];
+              await _database.persistApps((applicationsInfo).map(_buildAppCompanion));
 
-          for (Map<dynamic, dynamic> applicationInfo in applicationsInfo) {
-            App newApp = App.fromSystem(applicationInfo);
-            App? existingApp = _applications[newApp.packageName];
+              for (Map<dynamic, dynamic> applicationInfo in applicationsInfo) {
+                App newApp = App.fromSystem(applicationInfo);
+                App? existingApp = _applications[newApp.packageName];
 
-            if (existingApp != null) {
-              newApp.hidden = existingApp.hidden;
-              newApp.categoryOrders = Map.from(existingApp.categoryOrders);
-              for (int categoryId in newApp.categoryOrders.keys) {
-                if (_categoriesById.containsKey(categoryId)) {
-                  Category category = _categoriesById[categoryId]!;
-                  int index = category.applications.indexOf(existingApp);
-                  if (index != -1) {
-                    category.applications[index] = newApp;
-                  } else {
-                    category.applications.add(newApp);
+                if (existingApp != null) {
+                  newApp.hidden = existingApp.hidden;
+                  newApp.categoryOrders = Map.from(existingApp.categoryOrders);
+                  for (int categoryId in newApp.categoryOrders.keys) {
+                    if (_categoriesById.containsKey(categoryId)) {
+                      Category category = _categoriesById[categoryId]!;
+                      int index = category.applications.indexOf(existingApp);
+                      if (index != -1) {
+                        category.applications[index] = newApp;
+                      } else {
+                        category.applications.add(newApp);
+                      }
+                    }
+                  }
+                  _applications[newApp.packageName] = newApp;
+                } else {
+                  _applications[newApp.packageName] = newApp;
+                }
+                _iconCache.remove(newApp.packageName);
+                _bannerCache.remove(newApp.packageName);
+              }
+              break;
+            case "PACKAGE_REMOVED":
+              String packageName = event['packageName'];
+              await _database.deleteApps([packageName]);
+
+              // Clear icon cache for removed app
+              _iconCache.remove(packageName);
+              _bannerCache.remove(packageName);
+
+              App? application = _applications.remove(packageName);
+
+              if (application != null) {
+                for (int categoryId in application.categoryOrders.keys) {
+                  if (_categoriesById.containsKey(categoryId)) {
+                    Category category = _categoriesById[categoryId]!;
+                    category.applications.remove(application);
                   }
                 }
               }
-              _applications[newApp.packageName] = newApp;
-            } else {
-              _applications[newApp.packageName] = newApp;
-            }
-            _iconCache.remove(newApp.packageName);
-            _bannerCache.remove(newApp.packageName);
+              break;
           }
-          break;
-        case "PACKAGE_REMOVED":
-          String packageName = event['packageName'];
-          await _database.deleteApps([packageName]);
 
-          // Clear icon cache for removed app
-          _iconCache.remove(packageName);
-          _bannerCache.remove(packageName);
+          notifyListeners();
+        } catch (e) {
+          debugPrint('Error handling app change event: $e');
+        }
+      });
 
-          App? application = _applications.remove(packageName);
+      _initialized = true;
+      notifyListeners();
+      debugPrint('AppsService initialized: ${_applications.length} apps, ${_categoriesById.length} categories');
+      
+      // Pre-cache icons for visible apps
+      _preCacheIcons();
+    } catch (e) {
+      debugPrint('Error initializing AppsService: $e');
+    }
+  }
 
-          if (application != null) {
-            for (int categoryId in application.categoryOrders.keys) {
-              if (_categoriesById.containsKey(categoryId)) {
-                Category category = _categoriesById[categoryId]!;
-                category.applications.remove(application);
-              }
-            }
+  Future<void> _loadFromDatabase() async {
+    List<App> appsFromDatabase = await _database.getApplications();
+    List<AppCategory> appsCategories = await _database.getAppsCategories();
+    List<Category> categories = await _database.getCategories();
+    List<LauncherSpacer> spacers = await _database.getLauncherSpacers();
+
+    _categoriesById = Map.fromEntries(categories.map((category) => MapEntry(category.id, category)));
+    _applications = Map.fromEntries(appsFromDatabase.map((application) => MapEntry(application.packageName, application)));
+
+    _launcherSections.clear();
+    _launcherSections.addAll(categories);
+    _launcherSections.addAll(spacers);
+    _launcherSections.sort((ls0, ls1) => ls0.order.compareTo(ls1.order));
+
+    if (appsCategories.isNotEmpty) {
+      for (App application in _applications.values) {
+        if (application.hidden) continue;
+        Iterable<AppCategory> currentApplicationCategories = appsCategories
+            .where((appCategory) => appCategory.appPackageName == application.packageName);
+
+        for (AppCategory appCategory in currentApplicationCategories) {
+          if (_categoriesById.containsKey(appCategory.categoryId)) {
+            Category category = _categoriesById[appCategory.categoryId]!;
+            application.categoryOrders[category.id] = appCategory.order;
+            category.applications.add(application);
           }
-          break;
+        }
+      }
+    }
+
+    for (Category category in _categoriesById.values) {
+      sortCategory(category);
+    }
+  }
+
+  Future<void> _syncWithSystem() async {
+    try {
+      List<Map<dynamic, dynamic>> appsFromSystem = await _fLauncherChannel.getApplications();
+      Iterable<MapEntry<String, (Map, AppsCompanion)>> appEntries = appsFromSystem.map(
+              (appFromSystem) => MapEntry(appFromSystem['packageName'], (appFromSystem, _buildAppCompanion(appFromSystem))));
+      Map<String, (Map, AppsCompanion)> appsFromSystemByPackageName = Map.fromEntries(appEntries);
+
+      final Iterable<App> appsRemovedFromSystem = _applications.values
+          .where((app) => !appsFromSystemByPackageName.containsKey(app.packageName));
+
+      final List<String> uninstalledApplications = [];
+      if (appsRemovedFromSystem.isNotEmpty) {
+        final existenceChecks = await Future.wait(
+          appsRemovedFromSystem.map((app) async {
+            final exists = await _fLauncherChannel.applicationExists(app.packageName);
+            return (app.packageName, exists);
+          }),
+        );
+        for (final (packageName, exists) in existenceChecks) {
+          if (!exists) {
+            uninstalledApplications.add(packageName);
+          }
+        }
+      }
+
+      await _database.transaction(() async {
+        await _database.persistApps(appsFromSystemByPackageName.values.map((record) => record.$2));
+        await _database.deleteApps(uninstalledApplications);
+      });
+
+      // Reload from DB after persist
+      await _loadFromDatabase();
+
+      // Merge system info (action, sideloaded) into loaded apps
+      for (App application in _applications.values) {
+        Map? applicationFromSystem = appsFromSystemByPackageName[application.packageName]?.$1;
+        if (applicationFromSystem != null) {
+          if (applicationFromSystem.containsKey('action')) {
+            application.action = applicationFromSystem['action'];
+          }
+          if (applicationFromSystem.containsKey('sideloaded')) {
+            application.sideloaded = applicationFromSystem['sideloaded'];
+          }
+        }
+      }
+
+      for (Category category in _categoriesById.values) {
+        sortCategory(category);
       }
 
       notifyListeners();
-    });
-
-    _initialized = true;
-    notifyListeners();
-    
-    // Pre-cache icons for visible apps
-    _preCacheIcons();
+    } catch (e) {
+      debugPrint('Error syncing with system: $e');
+    }
   }
 
   Future<void> _preCacheIcons() async {
@@ -235,112 +344,70 @@ class AppsService extends ChangeNotifier
     ];
 
     return _database.transaction(() async {
+      int allAppsCategoryId = -1;
       if (allApps.isNotEmpty) {
-        int categoryId = await addCategory("All Apps",
+        allAppsCategoryId = await addCategory("All Apps",
             type: CategoryType.grid, shouldNotifyListeners: false
         );
 
-        Category allAppsCategory = _categoriesById[categoryId]!;
+        Category allAppsCategory = _categoriesById[allAppsCategoryId]!;
+        // Batch insert all apps into "All Apps" category
+        List<AppsCategoriesCompanion> allAppsEntries = [];
+        int order = 0;
         for (final app in allApps) {
-          await addToCategory(app, allAppsCategory, shouldNotifyListeners: false);
+          allAppsCategory.applications.add(app);
+          app.categoryOrders[allAppsCategoryId] = order;
+          allAppsEntries.add(AppsCategoriesCompanion.insert(
+            categoryId: allAppsCategoryId,
+            appPackageName: app.packageName,
+            order: order,
+          ));
+          order++;
         }
+        await _database.insertAppsCategories(allAppsEntries);
       }
 
       final int favoritesId = await addCategory("Favorites", shouldNotifyListeners: false);
       final Category favoritesCategory = _categoriesById[favoritesId]!;
       final Category? allAppsCategory = _getAppsCategory();
+
+      // Batch insert favorites
+      List<AppsCategoriesCompanion> favoriteEntries = [];
+      List<String> favPackageNames = [];
+      int favOrder = 0;
       for (final packageName in defaultFavoriteLauncherPackageNames) {
         final app = _applications[packageName];
         if (app != null && !app.hidden) {
-          await addToCategory(app, favoritesCategory, shouldNotifyListeners: false);
-          if (allAppsCategory != null) {
-            await removeFromCategory(app, allAppsCategory);
+          favoritesCategory.applications.add(app);
+          app.categoryOrders[favoritesId] = favOrder;
+          favoriteEntries.add(AppsCategoriesCompanion.insert(
+            categoryId: favoritesId,
+            appPackageName: app.packageName,
+            order: favOrder,
+          ));
+          favPackageNames.add(packageName);
+          favOrder++;
+        }
+      }
+      if (favoriteEntries.isNotEmpty) {
+        await _database.insertAppsCategories(favoriteEntries);
+      }
+
+      // Remove favorites from "All Apps" if category exists
+      if (allAppsCategory != null && favPackageNames.isNotEmpty) {
+        for (final packageName in favPackageNames) {
+          final app = _applications[packageName];
+          if (app != null) {
+            app.categoryOrders.remove(allAppsCategoryId);
+            allAppsCategory.applications.remove(app);
           }
         }
+        await _database.customStatement(
+          "DELETE FROM apps_categories WHERE category_id = ? AND app_package_name IN (${favPackageNames.map((_) => '?').join(',')})",
+          [allAppsCategoryId, ...favPackageNames],
+        );
       }
     });
-  }
-
-  Future<void> _refreshState({bool shouldNotifyListeners = true}) async {
-    Future<List<App>> appsFromDatabaseFuture = _database.getApplications();
-    Future<List<AppCategory>> appsCategoriesFuture = _database.getAppsCategories();
-    Future<List<Category>> categoriesFuture = _database.getCategories();
-    Future<List<LauncherSpacer>> spacersFuture = _database.getLauncherSpacers();
-    List<Map<dynamic, dynamic>> appsFromSystem = await _fLauncherChannel.getApplications();
-    Iterable<MapEntry<String, (Map, AppsCompanion)>> appEntries = appsFromSystem.map(
-            (appFromSystem) => new MapEntry(appFromSystem['packageName'], (appFromSystem, _buildAppCompanion(appFromSystem))));
-    Map<String, (Map, AppsCompanion)> appsFromSystemByPackageName = Map.fromEntries(appEntries);
-
-    List<App> appsFromDatabase = await appsFromDatabaseFuture;
-    final Iterable<App> appsRemovedFromSystem = appsFromDatabase
-        .where((app) => !appsFromSystemByPackageName.containsKey(app.packageName));
-
-    final List<String> uninstalledApplications = [];
-    for (App app in appsRemovedFromSystem) {
-      String packageName = app.packageName;
-
-      // TODO: Is this really necessary? Can't we get this information from the getApplications method?
-      bool appExists = await _fLauncherChannel.applicationExists(packageName);
-      if (!appExists) {
-        uninstalledApplications.add(packageName);
-      }
-    }
-
-    await _database.transaction(() async {
-      await _database.persistApps(appsFromSystemByPackageName.values.map((record) => record.$2));
-      await _database.deleteApps(uninstalledApplications);
-    });
-
-    appsFromDatabaseFuture = _database.getApplications();
-
-    await Future.wait([appsFromDatabaseFuture, appsCategoriesFuture, categoriesFuture, spacersFuture]);
-
-    appsFromDatabase = await appsFromDatabaseFuture;
-    List<AppCategory> appsCategories = await appsCategoriesFuture;
-    List<Category> categories = await categoriesFuture;
-    List<LauncherSpacer> spacers = await spacersFuture;
-
-    _categoriesById = Map.fromEntries(categories.map((category) => MapEntry(category.id, category)));
-    _applications = Map.fromEntries(appsFromDatabase.map((application) => MapEntry(application.packageName, application)));
-
-    _launcherSections.clear();
-    _launcherSections.addAll(categories);
-    _launcherSections.addAll(spacers);
-    _launcherSections.sort((ls0, ls1) => ls0.order.compareTo(ls1.order));
-
-    for (App application in _applications.values) {
-      Map? applicationFromSystem = appsFromSystemByPackageName[application.packageName]?.$1;
-
-      if (applicationFromSystem != null) {
-        if (applicationFromSystem.containsKey('action')) {
-          application.action = applicationFromSystem['action'];
-        }
-        if (applicationFromSystem.containsKey('sideloaded')) {
-          application.sideloaded = applicationFromSystem['sideloaded'];
-        }
-      }
-
-      if (appsCategories.isNotEmpty && !application.hidden) {
-        Iterable<AppCategory> currentApplicationCategories = appsCategories
-            .where((appCategory) => appCategory.appPackageName == application.packageName);
-
-        for (AppCategory appCategory in currentApplicationCategories) {
-          if (_categoriesById.containsKey(appCategory.categoryId)) {
-            Category category = _categoriesById[appCategory.categoryId]!;
-            application.categoryOrders[category.id] = appCategory.order;
-            category.applications.add(application);
-          }
-        }
-      }
-    }
-
-    for (Category category in _categoriesById.values) {
-      sortCategory(category);
-    }
-
-    if (shouldNotifyListeners) {
-      notifyListeners();
-    }
   }
 
   void sortCategory(Category category) {
@@ -728,41 +795,37 @@ class AppsService extends ChangeNotifier
       orderedCategories.add(CategoriesCompanion(id: Value(category.id), order: Value(categoryOrder++)));
     }
 
-    try {
-      newCategoryId = await _database.transaction(() async {
-        int newCategoryId = await _database.insertCategory(CategoriesCompanion.insert(name: categoryName, order: 0));
-        await _database.updateCategories(orderedCategories);
+    newCategoryId = await _database.transaction(() async {
+      int newCategoryId = await _database.insertCategory(CategoriesCompanion.insert(name: categoryName, order: 0));
+      await _database.updateCategories(orderedCategories);
 
-        return newCategoryId;
-      });
+      return newCategoryId;
+    });
 
-      Map<int, Category> newCategories = Map();
-      Category newCategory = Category(
-          id: newCategoryId,
-          name: categoryName,
-          sort: sort,
-          type: type,
-          columnsCount: columnsCount,
-          rowHeight: rowHeight,
-          order: 0
-      );
-      newCategories[newCategoryId] = newCategory;
+    Map<int, Category> newCategories = Map();
+    Category newCategory = Category(
+        id: newCategoryId,
+        name: categoryName,
+        sort: sort,
+        type: type,
+        columnsCount: columnsCount,
+        rowHeight: rowHeight,
+        order: 0
+    );
+    newCategories[newCategoryId] = newCategory;
 
-      categoryOrder = 1;
-      for (Category category in _categoriesById.values) {
-        newCategories[category.id] = category;
-        category.order = categoryOrder++;
-      }
-
-      _categoriesById = newCategories;
-      _launcherSections.add(newCategory);
-
-      if (shouldNotifyListeners) {
-        notifyListeners();
-      }
-
+    categoryOrder = 1;
+    for (Category category in _categoriesById.values) {
+      newCategories[category.id] = category;
+      category.order = categoryOrder++;
     }
-    catch (ex) { }
+
+    _categoriesById = newCategories;
+    _launcherSections.add(newCategory);
+
+    if (shouldNotifyListeners) {
+      notifyListeners();
+    }
 
     return newCategoryId;
   }
