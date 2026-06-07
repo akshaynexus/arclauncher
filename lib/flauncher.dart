@@ -34,7 +34,7 @@ import 'package:flauncher/widgets/focus_aware_app_bar.dart';
 import 'package:flauncher/widgets/wallpaper_video_background.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flauncher/l10n/app_localizations.dart';
 
 import 'models/app.dart';
 import 'models/category.dart';
@@ -350,9 +350,10 @@ class _FLauncherState extends State<FLauncher> {
         image: ResizeImage(
           wallpaperService.wallpaper!,
           height: physicalSize.height.toInt(),
+          width: physicalSize.width.toInt(),
         ),
         key: const Key("background"),
-        fit: BoxFit.cover,
+        fit: BoxFit.contain,
         height: physicalSize.height,
         width: physicalSize.width,
       );

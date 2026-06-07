@@ -18,7 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flauncher/l10n/app_localizations.dart';
 
 class LTvLauncherAboutDialog extends StatelessWidget {
   final PackageInfo packageInfo;
@@ -34,15 +34,18 @@ class LTvLauncherAboutDialog extends StatelessWidget {
 
     return AboutDialog(
       applicationName: "Arc Launcher",
-      applicationVersion: "v${packageInfo.version} (${packageInfo.buildNumber})",
+      applicationVersion:
+          "v${packageInfo.version} (${packageInfo.buildNumber})",
       applicationIcon: ClipRRect(
         borderRadius: BorderRadius.circular(12),
         child: Image.asset("assets/icon.png", height: 72),
       ),
-      applicationLegalese: "Developed by Badis Meddouri\nBased on LTvLauncher © 2026 LeanBitLab",
+      applicationLegalese:
+          "Developed by Badis Meddouri\nBased on LTvLauncher © 2026 LeanBitLab",
       children: [
         SizedBox(height: 24),
-        Text(localizations.textAboutDialog("https://github.com/meddouribadis/arclauncher"))
+        Text(localizations
+            .textAboutDialog("https://github.com/meddouribadis/arclauncher"))
       ],
     );
   }

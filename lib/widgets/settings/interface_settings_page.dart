@@ -17,7 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flauncher/l10n/app_localizations.dart';
 import 'focusable_settings_tile.dart';
 import 'launcher_sections_panel_page.dart';
 import 'wallpaper_panel_page.dart';
@@ -45,28 +45,38 @@ class InterfaceSettingsPage extends StatelessWidget {
                 FocusableSettingsTile(
                   autofocus: true,
                   leading: const Icon(Icons.category),
-                  title: Text(localizations.launcherSections, style: Theme.of(context).textTheme.bodyMedium),
-                  onPressed: () => Navigator.of(context).pushNamed(LauncherSectionsPanelPage.routeName),
+                  title: Text(localizations.launcherSections,
+                      style: Theme.of(context).textTheme.bodyMedium),
+                  onPressed: () => Navigator.of(context)
+                      .pushNamed(LauncherSectionsPanelPage.routeName),
                 ),
                 FocusableSettingsTile(
                   leading: const Icon(Icons.wallpaper_outlined),
-                  title: Text(localizations.wallpaper, style: Theme.of(context).textTheme.bodyMedium),
-                  onPressed: () => Navigator.of(context).pushNamed(WallpaperPanelPage.routeName),
+                  title: Text(localizations.wallpaper,
+                      style: Theme.of(context).textTheme.bodyMedium),
+                  onPressed: () => Navigator.of(context)
+                      .pushNamed(WallpaperPanelPage.routeName),
                 ),
                 FocusableSettingsTile(
                   leading: const Icon(Icons.tips_and_updates),
-                  title: Text(localizations.statusBar, style: Theme.of(context).textTheme.bodyMedium),
-                  onPressed: () => Navigator.of(context).pushNamed(StatusBarPanelPage.routeName),
+                  title: Text(localizations.statusBar,
+                      style: Theme.of(context).textTheme.bodyMedium),
+                  onPressed: () => Navigator.of(context)
+                      .pushNamed(StatusBarPanelPage.routeName),
                 ),
                 FocusableSettingsTile(
                   leading: const Icon(Icons.palette_outlined),
-                  title: Text('Accent Color', style: Theme.of(context).textTheme.bodyMedium),
-                  onPressed: () => Navigator.of(context).pushNamed(AccentColorPage.routeName),
+                  title: Text('Accent Color',
+                      style: Theme.of(context).textTheme.bodyMedium),
+                  onPressed: () => Navigator.of(context)
+                      .pushNamed(AccentColorPage.routeName),
                 ),
                 FocusableSettingsTile(
                   leading: const Icon(Icons.miscellaneous_services),
-                  title: Text("Miscellaneous", style: Theme.of(context).textTheme.bodyMedium),
-                  onPressed: () => Navigator.of(context).pushNamed(MiscPanelPage.routeName),
+                  title: Text("Miscellaneous",
+                      style: Theme.of(context).textTheme.bodyMedium),
+                  onPressed: () =>
+                      Navigator.of(context).pushNamed(MiscPanelPage.routeName),
                 ),
               ],
             ),

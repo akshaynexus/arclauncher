@@ -23,7 +23,7 @@ import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/widgets/ensure_visible.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flauncher/widgets/settings/app_details_page.dart';
 import 'package:flutter/services.dart';
 
@@ -49,7 +49,7 @@ class _ApplicationsPanelPageState extends State<ApplicationsPanelPage> {
     _TabData(1, Icons.star, (l) => l.favoriteApps),
     _TabData(2, Icons.visibility_off_outlined, (l) => l.hiddenApplications),
   ];
-  
+
   late List<FocusNode> _tabFocusNodes;
 
   @override
@@ -81,15 +81,20 @@ class _ApplicationsPanelPageState extends State<ApplicationsPanelPage> {
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: _tabs.map((tab) => _buildTabButton(tab.index, tab.icon, tab.getTitle(localizations))).toList(),
+            children: _tabs
+                .map((tab) => _buildTabButton(
+                    tab.index, tab.icon, tab.getTitle(localizations)))
+                .toList(),
           ),
         ),
         const SizedBox(height: 8),
         Expanded(
           child: Shortcuts(
             shortcuts: <LogicalKeySet, Intent>{
-              LogicalKeySet(LogicalKeyboardKey.arrowLeft): const ChangeTabIntent(-1),
-              LogicalKeySet(LogicalKeyboardKey.arrowRight): const ChangeTabIntent(1),
+              LogicalKeySet(LogicalKeyboardKey.arrowLeft):
+                  const ChangeTabIntent(-1),
+              LogicalKeySet(LogicalKeyboardKey.arrowRight):
+                  const ChangeTabIntent(1),
             },
             child: Actions(
               actions: <Type, Action<Intent>>{
@@ -105,7 +110,6 @@ class _ApplicationsPanelPageState extends State<ApplicationsPanelPage> {
   }
 
   void _selectTab(int index, String title) {
-
     if (_selectedIndex != index) {
       if (mounted) {
         setState(() {
@@ -116,7 +120,6 @@ class _ApplicationsPanelPageState extends State<ApplicationsPanelPage> {
     }
   }
 
-
   void changeTab(int direction) {
     // ... (existing code, ensure it matches previous edits)
 
@@ -124,23 +127,20 @@ class _ApplicationsPanelPageState extends State<ApplicationsPanelPage> {
     if (newIndex != _selectedIndex) {
       final localizations = AppLocalizations.of(context)!;
 
-      
       _isSwitchingViaKeyboard = true;
       _selectTab(newIndex, _tabs[newIndex].getTitle(localizations));
-      
 
       _tabFocusNodes[newIndex].requestFocus();
-      
+
       Future.delayed(const Duration(milliseconds: 150), () {
         if (mounted) {
-           _isSwitchingViaKeyboard = false;
+          _isSwitchingViaKeyboard = false;
         }
       });
     }
   }
 
   void focusCurrentTab() {
-
     _tabFocusNodes[_selectedIndex].requestFocus();
   }
 
@@ -153,7 +153,6 @@ class _ApplicationsPanelPageState extends State<ApplicationsPanelPage> {
           onFocusChange: (focused) {
             if (focused) {
               if (_isSwitchingViaKeyboard) {
-
                 return;
               }
 
@@ -170,7 +169,8 @@ class _ApplicationsPanelPageState extends State<ApplicationsPanelPage> {
     );
   }
 
-  Widget navButton(bool selected, bool focused, int index, String title, IconData icon) {
+  Widget navButton(
+      bool selected, bool focused, int index, String title, IconData icon) {
     // ... (same)
     return InkWell(
       onTap: () {
@@ -184,7 +184,10 @@ class _ApplicationsPanelPageState extends State<ApplicationsPanelPage> {
               ? Colors.white.withOpacity(0.15)
               : (focused ? Colors.white.withOpacity(0.1) : Colors.transparent),
           borderRadius: BorderRadius.circular(12),
-          border: focused ? Border.all(color: Theme.of(context).colorScheme.primary, width: 2) : null,
+          border: focused
+              ? Border.all(
+                  color: Theme.of(context).colorScheme.primary, width: 2)
+              : null,
         ),
         child: Icon(
           icon,
@@ -195,12 +198,16 @@ class _ApplicationsPanelPageState extends State<ApplicationsPanelPage> {
   }
 
   Widget _buildCurrentTab() {
-     // ... (same)
+    // ... (same)
     switch (_selectedIndex) {
-      case 0: return _AllAppsTab();
-      case 1: return _FavoritesTab();
-      case 2: return _HiddenTab();
-      default: return Container();
+      case 0:
+        return _AllAppsTab();
+      case 1:
+        return _FavoritesTab();
+      case 2:
+        return _HiddenTab();
+      default:
+        return Container();
     }
   }
 }
@@ -212,7 +219,6 @@ class _TabData {
 
   _TabData(this.index, this.icon, this.getTitle);
 }
-
 
 class MoveFocusToTabIntent extends Intent {
   const MoveFocusToTabIntent();
@@ -245,14 +251,15 @@ class ChangeTabAction extends Action<ChangeTabIntent> {
   }
 }
 
-
 class _AllAppsTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Selector<AppsService, List<App>>(
-        selector: (_, appsService) => appsService.applications.where((app) => !app.hidden).toList(),
+        selector: (_, appsService) =>
+            appsService.applications.where((app) => !app.hidden).toList(),
         builder: (context, applications, _) {
           if (applications.isEmpty) {
-            return const _EmptyListPlaceholder("No applications found", autofocus: true);
+            return const _EmptyListPlaceholder("No applications found",
+                autofocus: true);
           }
           return ListView(
             children: applications
@@ -260,7 +267,8 @@ class _AllAppsTab extends StatelessWidget {
                 .entries
                 .map((entry) => EnsureVisible(
                       alignment: 0.5,
-                      child: _AppListItem(entry.value, autofocus: entry.key == 0, isFirst: entry.key == 0),
+                      child: _AppListItem(entry.value,
+                          autofocus: entry.key == 0, isFirst: entry.key == 0),
                     ))
                 .toList(),
           );
@@ -272,7 +280,7 @@ class _FavoritesTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Selector<AppsService, List<App>>(
         selector: (_, appsService) {
-           final favorites = appsService.categories.firstWhere(
+          final favorites = appsService.categories.firstWhere(
             (category) => category.name == 'Favorites',
             orElse: () => Category(name: 'Favorites'),
           );
@@ -280,7 +288,8 @@ class _FavoritesTab extends StatelessWidget {
         },
         builder: (context, applications, _) {
           if (applications.isEmpty) {
-            return const _EmptyListPlaceholder("No applications found", autofocus: true);
+            return const _EmptyListPlaceholder("No applications found",
+                autofocus: true);
           }
           return ListView(
             children: applications
@@ -288,7 +297,8 @@ class _FavoritesTab extends StatelessWidget {
                 .entries
                 .map((entry) => EnsureVisible(
                       alignment: 0.5,
-                      child: _AppListItem(entry.value, autofocus: entry.key == 0, isFirst: entry.key == 0),
+                      child: _AppListItem(entry.value,
+                          autofocus: entry.key == 0, isFirst: entry.key == 0),
                     ))
                 .toList(),
           );
@@ -299,10 +309,12 @@ class _FavoritesTab extends StatelessWidget {
 class _HiddenTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Selector<AppsService, List<App>>(
-        selector: (_, appsService) => appsService.applications.where((app) => app.hidden).toList(),
+        selector: (_, appsService) =>
+            appsService.applications.where((app) => app.hidden).toList(),
         builder: (context, applications, _) {
           if (applications.isEmpty) {
-            return const _EmptyListPlaceholder("No applications found", autofocus: true);
+            return const _EmptyListPlaceholder("No applications found",
+                autofocus: true);
           }
           return ListView(
             children: applications
@@ -310,7 +322,8 @@ class _HiddenTab extends StatelessWidget {
                 .entries
                 .map((entry) => EnsureVisible(
                       alignment: 0.5,
-                      child: _AppListItem(entry.value, autofocus: entry.key == 0, isFirst: entry.key == 0),
+                      child: _AppListItem(entry.value,
+                          autofocus: entry.key == 0, isFirst: entry.key == 0),
                     ))
                 .toList(),
           );
@@ -337,7 +350,6 @@ class _EmptyListPlaceholderState extends State<_EmptyListPlaceholder> {
     _focusNode = FocusNode();
     if (widget.autofocus) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-
         _focusNode.requestFocus();
       });
     }
@@ -368,20 +380,19 @@ class _EmptyListPlaceholderState extends State<_EmptyListPlaceholder> {
   }
 }
 
-class _AppListItem extends StatefulWidget
-{
+class _AppListItem extends StatefulWidget {
   final App application;
   final bool autofocus;
   final bool isFirst;
 
-  const _AppListItem(this.application, {this.autofocus = false, this.isFirst = false});
+  const _AppListItem(this.application,
+      {this.autofocus = false, this.isFirst = false});
 
   @override
   State<StatefulWidget> createState() => _AppListItemState();
 }
 
-class _AppListItemState extends State<_AppListItem>
-{
+class _AppListItemState extends State<_AppListItem> {
   late Future<ImageProvider> _iconLoadFuture;
   late FocusNode _focusNode;
 
@@ -389,11 +400,11 @@ class _AppListItemState extends State<_AppListItem>
   void initState() {
     super.initState();
     _focusNode = FocusNode();
-    _iconLoadFuture = _loadAppIcon(Provider.of<AppsService>(context, listen: false));
+    _iconLoadFuture =
+        _loadAppIcon(Provider.of<AppsService>(context, listen: false));
 
     if (widget.autofocus) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-
         _focusNode.requestFocus();
       });
     }
@@ -406,7 +417,8 @@ class _AppListItemState extends State<_AppListItem>
   }
 
   void _openAppDetails() {
-    Navigator.of(context).pushNamed(AppDetailsPage.routeName, arguments: widget.application);
+    Navigator.of(context)
+        .pushNamed(AppDetailsPage.routeName, arguments: widget.application);
   }
 
   @override
@@ -415,90 +427,99 @@ class _AppListItemState extends State<_AppListItem>
       padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
       child: Actions(
         actions: <Type, Action<Intent>>{
-          ActivateIntent: CallbackAction<ActivateIntent>(onInvoke: (_) => _openAppDetails()),
-          ButtonActivateIntent: CallbackAction<ButtonActivateIntent>(onInvoke: (_) => _openAppDetails()),
+          ActivateIntent: CallbackAction<ActivateIntent>(
+              onInvoke: (_) => _openAppDetails()),
+          ButtonActivateIntent: CallbackAction<ButtonActivateIntent>(
+              onInvoke: (_) => _openAppDetails()),
         },
         child: Focus(
           focusNode: _focusNode,
           onKeyEvent: (node, event) {
-            if (widget.isFirst && event is KeyDownEvent && event.logicalKey == LogicalKeyboardKey.arrowUp) {
-
+            if (widget.isFirst &&
+                event is KeyDownEvent &&
+                event.logicalKey == LogicalKeyboardKey.arrowUp) {
               Actions.invoke(context, const MoveFocusToTabIntent());
               return KeyEventResult.handled;
             }
             return KeyEventResult.ignored;
           },
           onFocusChange: (hasFocus) {
-
-             setState(() {});
+            setState(() {});
           },
-          child: Builder(
-            builder: (context) {
-              final focused = Focus.of(context).hasFocus;
-              final primaryColor = Theme.of(context).colorScheme.primary;
-              return AnimatedContainer(
+          child: Builder(builder: (context) {
+            final focused = Focus.of(context).hasFocus;
+            final primaryColor = Theme.of(context).colorScheme.primary;
+            return AnimatedContainer(
                 duration: const Duration(milliseconds: 50),
                 decoration: BoxDecoration(
-                  color: focused ? Colors.white.withOpacity(0.05) : Colors.white.withOpacity(0.05), // Keep background consistent or same logic
+                  color: focused
+                      ? Colors.white.withOpacity(0.05)
+                      : Colors.white.withOpacity(
+                          0.05), // Keep background consistent or same logic
                   borderRadius: BorderRadius.circular(12),
                   border: focused
                       ? Border.all(color: primaryColor, width: 2)
                       : Border.all(color: Colors.transparent, width: 2),
                   boxShadow: focused
-                      ? const [BoxShadow(color: Colors.black54, blurRadius: 8, spreadRadius: 1)]
+                      ? const [
+                          BoxShadow(
+                              color: Colors.black54,
+                              blurRadius: 8,
+                              spreadRadius: 1)
+                        ]
                       : null,
                 ),
-                child: Material( // Needed for InkWell to show ripple on top of container color if needed, or inside.
-                  color: Colors.transparent,
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(12),
-                  onTap: _openAppDetails,
-                  child: FutureBuilder(
-                    future: _iconLoadFuture,
-                    builder: (context, snapshot) {
-                      Widget appIcon;
-                      
-                      if (snapshot.hasData) {
-                        appIcon = Image(image: snapshot.data!, height: 40);
-                      }
-                      else if (snapshot.hasError) {
-                        appIcon = const Icon(Icons.warning);
-                      }
-                      else {
-                        appIcon = const SizedBox(
-                          height: 40,
-                          width: 40,
-                          child: Padding(
-                            padding: EdgeInsets.all(8),
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          )
-                        );
-                      }
+                child: Material(
+                    // Needed for InkWell to show ripple on top of container color if needed, or inside.
+                    color: Colors.transparent,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(12),
+                      onTap: _openAppDetails,
+                      child: FutureBuilder(
+                        future: _iconLoadFuture,
+                        builder: (context, snapshot) {
+                          Widget appIcon;
 
-                      return ListTile(
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                        title: Text(
-                          widget.application.name,
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: Colors.white,
-                              fontWeight: focused ? FontWeight.bold : FontWeight.normal
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        leading: appIcon,
-                        trailing: Icon(
-                          Icons.chevron_right, 
-                          size: 20, 
-                          color: focused ? primaryColor : Colors.white30
-                        ),
-                      );
-                    },
-                  ),
-                )
-              ));
-            }
-          ),
+                          if (snapshot.hasData) {
+                            appIcon = Image(image: snapshot.data!, height: 40);
+                          } else if (snapshot.hasError) {
+                            appIcon = const Icon(Icons.warning);
+                          } else {
+                            appIcon = const SizedBox(
+                                height: 40,
+                                width: 40,
+                                child: Padding(
+                                  padding: EdgeInsets.all(8),
+                                  child:
+                                      CircularProgressIndicator(strokeWidth: 2),
+                                ));
+                          }
+
+                          return ListTile(
+                            contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 4),
+                            title: Text(
+                              widget.application.name,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium
+                                  ?.copyWith(
+                                      color: Colors.white,
+                                      fontWeight: focused
+                                          ? FontWeight.bold
+                                          : FontWeight.normal),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            leading: appIcon,
+                            trailing: Icon(Icons.chevron_right,
+                                size: 20,
+                                color: focused ? primaryColor : Colors.white30),
+                          );
+                        },
+                      ),
+                    )));
+          }),
         ),
       ),
     );

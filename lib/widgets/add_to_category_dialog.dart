@@ -1,7 +1,7 @@
 import 'package:flauncher/providers/apps_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flauncher/l10n/app_localizations.dart';
 
 import '../models/app.dart';
 import '../models/category.dart';
@@ -15,7 +15,8 @@ class AddToCategoryDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Selector<AppsService, List<Category>>(
         selector: (_, appsService) => appsService.categories
-            .where((category) => !category.applications.any((application) => application.packageName == selectedApplication.packageName))
+            .where((category) => !category.applications.any((application) =>
+                application.packageName == selectedApplication.packageName))
             .toList(),
         builder: (context, categories, _) {
           AppLocalizations localizations = AppLocalizations.of(context)!;
@@ -42,7 +43,9 @@ class AddToCategoryDialog extends StatelessWidget {
                         margin: EdgeInsets.only(bottom: 8),
                         child: ListTile(
                           onTap: () async {
-                            await context.read<AppsService>().addToCategory(selectedApplication, category);
+                            await context
+                                .read<AppsService>()
+                                .addToCategory(selectedApplication, category);
                             Navigator.of(context).pop();
                           },
                           title: Text(category.name),

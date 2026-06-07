@@ -26,7 +26,7 @@ import 'package:flauncher/widgets/settings/general_settings_page.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flauncher/l10n/app_localizations.dart';
 
 import 'focusable_settings_tile.dart';
 
@@ -37,49 +37,59 @@ class SettingsPanelPage extends StatelessWidget {
   Widget build(BuildContext context) {
     AppLocalizations localizations = AppLocalizations.of(context)!;
 
-    return Column(
-      children: [
-        Text(localizations.settings, style: Theme.of(context).textTheme.titleLarge),
-        const Divider(),
-        Expanded(
+    return Column(children: [
+      Text(localizations.settings,
+          style: Theme.of(context).textTheme.titleLarge),
+      const Divider(),
+      Expanded(
           child: SingleChildScrollView(
-            child: Column(
-              children: [
-                FocusableSettingsTile(
-                  autofocus: true,
-                  leading: const Icon(Icons.apps),
-                  title: Text(localizations.applications, style: Theme.of(context).textTheme.bodyMedium),
-                  onPressed: () => Navigator.of(context).pushNamed(ApplicationsPanelPage.routeName),
-                ),
-                FocusableSettingsTile(
-                  leading: const Icon(Icons.auto_awesome_mosaic_outlined),
-                  title: Text('Interface', style: Theme.of(context).textTheme.bodyMedium),
-                  onPressed: () => Navigator.of(context).pushNamed(InterfaceSettingsPage.routeName),
-                ),
-                FocusableSettingsTile(
-                  leading: const Icon(Icons.settings_suggest_outlined),
-                  title: Text('System', style: Theme.of(context).textTheme.bodyMedium),
-                  onPressed: () => Navigator.of(context).pushNamed(GeneralSettingsPage.routeName),
-                ),
-                const Divider(),
-                FocusableSettingsTile(
-                  leading: const Icon(Icons.settings_outlined),
-                  title: Text(localizations.systemSettings, style: Theme.of(context).textTheme.bodyMedium),
-                  onPressed: () => context.read<AppsService>().openSettings(),
-                ),
-                FocusableSettingsTile(
-                  leading: const Icon(Icons.system_update_alt),
-                  title: Text(localizations.updateCheck, style: Theme.of(context).textTheme.bodyMedium),
-                  onPressed: () => _checkForUpdates(context),
-                ),
-                FocusableSettingsTile(
-                  leading: const Icon(Icons.info_outline),
-                  title: Text(localizations.aboutFlauncher, style: Theme.of(context).textTheme.bodyMedium),
-                  onPressed: () => showDialog(
-                    context: context,
-                    builder: (_) => FutureBuilder<PackageInfo>(
+              child: Column(children: [
+        FocusableSettingsTile(
+          autofocus: true,
+          leading: const Icon(Icons.apps),
+          title: Text(localizations.applications,
+              style: Theme.of(context).textTheme.bodyMedium),
+          onPressed: () =>
+              Navigator.of(context).pushNamed(ApplicationsPanelPage.routeName),
+        ),
+        FocusableSettingsTile(
+          leading: const Icon(Icons.auto_awesome_mosaic_outlined),
+          title:
+              Text('Interface', style: Theme.of(context).textTheme.bodyMedium),
+          onPressed: () =>
+              Navigator.of(context).pushNamed(InterfaceSettingsPage.routeName),
+        ),
+        FocusableSettingsTile(
+          leading: const Icon(Icons.settings_suggest_outlined),
+          title: Text('System', style: Theme.of(context).textTheme.bodyMedium),
+          onPressed: () =>
+              Navigator.of(context).pushNamed(GeneralSettingsPage.routeName),
+        ),
+        const Divider(),
+        FocusableSettingsTile(
+          leading: const Icon(Icons.settings_outlined),
+          title: Text(localizations.systemSettings,
+              style: Theme.of(context).textTheme.bodyMedium),
+          onPressed: () => context.read<AppsService>().openSettings(),
+        ),
+        FocusableSettingsTile(
+          leading: const Icon(Icons.system_update_alt),
+          title: Text(localizations.updateCheck,
+              style: Theme.of(context).textTheme.bodyMedium),
+          onPressed: () => _checkForUpdates(context),
+        ),
+        FocusableSettingsTile(
+            leading: const Icon(Icons.info_outline),
+            title: Text(localizations.aboutFlauncher,
+                style: Theme.of(context).textTheme.bodyMedium),
+            onPressed: () => showDialog(
+                context: context,
+                builder: (_) => FutureBuilder<PackageInfo>(
                       future: PackageInfo.fromPlatform(),
-                      builder: (context, snapshot) => snapshot.connectionState == ConnectionState.done && snapshot.hasData
+                      builder: (context, snapshot) => snapshot
+                                      .connectionState ==
+                                  ConnectionState.done &&
+                              snapshot.hasData
                           ? LTvLauncherAboutDialog(packageInfo: snapshot.data!)
                           : Container(),
                     )))
