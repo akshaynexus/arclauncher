@@ -24,10 +24,12 @@ import 'package:video_player/video_player.dart';
 class WallpaperVideoBackground extends StatefulWidget {
   const WallpaperVideoBackground({
     super.key,
-    required this.file,
-  });
+    this.file,
+    this.url,
+  }) : assert(file != null || url != null, 'Either file or url must be provided');
 
-  final File file;
+  final File? file;
+  final String? url;
 
   @override
   State<WallpaperVideoBackground> createState() =>
@@ -48,14 +50,21 @@ class _WallpaperVideoBackgroundState extends State<WallpaperVideoBackground>
   @override
   void didUpdateWidget(WallpaperVideoBackground oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.file.path != widget.file.path) {
+    final oldPath = oldWidget.file?.path;
+    final newPath = widget.file?.path;
+    final oldUrl = oldWidget.url;
+    final newUrl = widget.url;
+
+    if (oldPath != newPath || oldUrl != newUrl) {
       _disposeController();
       _initController();
     }
   }
 
   void _initController() {
-    final controller = VideoPlayerController.file(widget.file);
+    final controller = widget.url != null
+        ? VideoPlayerController.networkUrl(Uri.parse(widget.url!))
+        : VideoPlayerController.file(widget.file!);
     _controller = controller;
     controller.initialize().then((_) {
       if (!mounted || _controller != controller) {

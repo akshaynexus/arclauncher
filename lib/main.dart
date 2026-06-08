@@ -20,6 +20,7 @@ import 'dart:async';
 
 import 'package:flauncher/database.dart';
 import 'package:flauncher/flauncher_channel.dart';
+import 'package:flauncher/providers/aerial_wallpaper_service.dart';
 import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/providers/launcher_state.dart';
 import 'package:flauncher/providers/network_service.dart';
@@ -55,6 +56,12 @@ Future<void> main() async {
               return WallpaperService(settingsService);
             }
         ),
+        ChangeNotifierProvider(
+            create: (context) {
+              SettingsService settingsService = Provider.of(context, listen: false);
+              return AerialWallpaperService(settingsService);
+            },
+            lazy: false),
         ChangeNotifierProvider(
             create: (_) => BrightnessService(sharedPreferences),
             lazy: false),

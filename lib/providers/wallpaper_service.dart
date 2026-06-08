@@ -42,8 +42,16 @@ class WallpaperService extends ChangeNotifier {
   ImageProvider? get wallpaper => _wallpaper;
 
   File? get wallpaperVideoFile {
+    final aerialUrl = _settingsService.aerialVideoUrl;
+    if (aerialUrl != null && aerialUrl.isNotEmpty) return null;
     final f = _resolveActiveVideoFile();
     return f != null && f.existsSync() ? f : null;
+  }
+
+  String? get aerialVideoUrl {
+    final url = _settingsService.aerialVideoUrl;
+    if (url != null && url.isNotEmpty) return url;
+    return null;
   }
 
   FLauncherGradient get gradient => FLauncherGradients.all.firstWhere(

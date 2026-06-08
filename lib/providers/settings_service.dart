@@ -40,6 +40,12 @@ const String _showNetworkIndicatorInStatusBar = "show_network_indicator_in_statu
 const String _accentColor = "accent_color";
 const String _screensaverClockStyle = "screensaver_clock_style";
 const String _dockBackdropFilterDisabled = "dock_backdrop_filter_disabled";
+const String _aerialVideoUrl = "aerial_video_url";
+const String _aerialVideoSource = "aerial_video_source";
+const String _aerialVideoQuality = "aerial_video_quality";
+const String _aerialVideoSourceIndex = "aerial_video_source_index";
+const String _aerialVideoQualityIndex = "aerial_video_quality_index";
+const String _aerialVideoShuffle = "aerial_video_shuffle";
 
 // WiFi usage period options
 const String WIFI_USAGE_DAILY = "daily";
@@ -102,6 +108,18 @@ class SettingsService extends ChangeNotifier {
   String get screensaverClockStyle => _sharedPreferences.getString(_screensaverClockStyle) ?? "minimal";
 
   bool get dockBackdropFilterDisabled => _sharedPreferences.getBool(_dockBackdropFilterDisabled) ?? false;
+
+  String? get aerialVideoUrl => _sharedPreferences.getString(_aerialVideoUrl);
+
+  String get aerialVideoSource => _sharedPreferences.getString(_aerialVideoSource) ?? 'apple';
+
+  int get aerialVideoQuality => _sharedPreferences.getInt(_aerialVideoQuality) ?? 1;
+
+  int get aerialVideoSourceIndex => _sharedPreferences.getInt(_aerialVideoSourceIndex) ?? 0;
+
+  int get aerialVideoQualityIndex => _sharedPreferences.getInt(_aerialVideoQualityIndex) ?? 1;
+
+  bool get aerialVideoShuffle => _sharedPreferences.getBool(_aerialVideoShuffle) ?? true;
 
   Color get accentColor {
     final hex = accentColorHex;
@@ -188,6 +206,40 @@ class SettingsService extends ChangeNotifier {
 
   Future<void> setDockBackdropFilterDisabled(bool value) async {
     return set(_dockBackdropFilterDisabled, value);
+  }
+
+  Future<void> setAerialVideoUrl(String? url) async {
+    if (url == null) {
+      await _sharedPreferences.remove(_aerialVideoUrl);
+    } else {
+      await _sharedPreferences.setString(_aerialVideoUrl, url);
+    }
+    notifyListeners();
+  }
+
+  Future<void> setAerialVideoSource(String source) async {
+    await _sharedPreferences.setString(_aerialVideoSource, source);
+    notifyListeners();
+  }
+
+  Future<void> setAerialVideoQuality(int quality) async {
+    await _sharedPreferences.setInt(_aerialVideoQuality, quality);
+    notifyListeners();
+  }
+
+  Future<void> setAerialVideoSourceIndex(int index) async {
+    await _sharedPreferences.setInt(_aerialVideoSourceIndex, index);
+    notifyListeners();
+  }
+
+  Future<void> setAerialVideoQualityIndex(int index) async {
+    await _sharedPreferences.setInt(_aerialVideoQualityIndex, index);
+    notifyListeners();
+  }
+
+  Future<void> setAerialVideoShuffle(bool shuffle) async {
+    await _sharedPreferences.setBool(_aerialVideoShuffle, shuffle);
+    notifyListeners();
   }
 
   bool get timeBasedWallpaperEnabled => _sharedPreferences.getBool("time_based_wallpaper_enabled") ?? false;

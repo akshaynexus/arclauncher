@@ -22,10 +22,12 @@ import 'dart:ui';
 import 'package:collection/collection.dart';
 import 'package:flauncher/actions.dart';
 import 'package:flauncher/custom_traversal_policy.dart';
+import 'package:flauncher/providers/aerial_wallpaper_service.dart';
 import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/providers/launcher_state.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/wallpaper_service.dart';
+import 'package:flauncher/widgets/aerial_video_background.dart';
 import 'package:flauncher/widgets/app_card.dart';
 import 'package:flauncher/widgets/category_clean_row.dart';
 import 'package:flauncher/widgets/category_row.dart';
@@ -336,6 +338,26 @@ class _FLauncherState extends State<FLauncher> {
 
   Widget _wallpaper(BuildContext context, WallpaperService wallpaperService) {
     final physicalSize = MediaQuery.sizeOf(context);
+
+    // Check if aerial mode is enabled
+    final aerialService = context.watch<AerialWallpaperService>();
+    if (aerialService.currentVideo != null) {
+      return SizedBox(
+        width: physicalSize.width,
+        height: physicalSize.height,
+        child: AerialVideoBackground(key: Key("background_aerial")),
+      );
+    }
+
+    final aerialUrl = wallpaperService.aerialVideoUrl;
+    if (aerialUrl != null) {
+      return SizedBox(
+        width: physicalSize.width,
+        height: physicalSize.height,
+        child: WallpaperVideoBackground(
+            key: Key("background_aerial_url"), url: aerialUrl),
+      );
+    }
     final videoFile = wallpaperService.wallpaperVideoFile;
     if (videoFile != null) {
       return SizedBox(
