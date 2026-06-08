@@ -19,6 +19,7 @@
 import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/widgets/rename_category_dialog.dart';
 import 'package:flauncher/widgets/settings/launcher_sections_panel_page.dart';
+import 'package:flauncher/widgets/settings/launcher_section_panel_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';

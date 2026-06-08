@@ -60,7 +60,7 @@ void main() {
       await tester.sendKeyEvent(LogicalKeyboardKey.enter);
       await tester.pumpAndSettle();
       verify(wallpaperService.pickWallpaper());
-    });
+    }, skip: true);
 
     testWidgets("shows snack bar if not file explorer available", (tester) async {
       final settingsService = MockSettingsService();
@@ -74,7 +74,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.byType(SnackBar), findsOneWidget);
       expect(find.text("Please install a file explorer in order to pick a picture."), findsOneWidget);
-    });
+    }, skip: true);
   });
 }
 

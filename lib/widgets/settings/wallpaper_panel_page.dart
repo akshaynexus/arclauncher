@@ -81,6 +81,8 @@ class WallpaperPanelPage extends StatelessWidget {
               const SizedBox(height: 8),
               _buildShuffleToggle(context, aerialService),
               const SizedBox(height: 8),
+              _buildShowFpsToggle(context, aerialService),
+              const SizedBox(height: 8),
               _buildFilterSection(context, aerialService),
             ],
           );
@@ -227,6 +229,21 @@ class WallpaperPanelPage extends StatelessWidget {
     );
   }
 
+  Widget _buildShowFpsToggle(BuildContext context, AerialWallpaperService service) {
+    return FocusableSettingsTile(
+      leading: Icon(Icons.speed),
+      title: Text(
+        'Show player FPS',
+        style: Theme.of(context).textTheme.bodyMedium,
+      ),
+      trailing: Switch(
+        value: service.showFps,
+        onChanged: (_) => service.toggleShowFps(),
+      ),
+      onPressed: () => service.toggleShowFps(),
+    );
+  }
+
   Widget _buildFilterSection(BuildContext context, AerialWallpaperService service) {
     final accentColor = Theme.of(context).colorScheme.primary;
     return Padding(
@@ -285,7 +302,31 @@ class WallpaperPanelPage extends StatelessWidget {
               );
             }).toList(),
           ),
-          if (service.timeOfDayFilter.isNotEmpty || service.sceneFilter.isNotEmpty)
+          if (service.selectedSources.contains(0)) ...[
+            const SizedBox(height: 12),
+            Text('Cities', style: Theme.of(context).textTheme.bodySmall),
+            const SizedBox(height: 4),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: AerialWallpaperService.cities.map((city) {
+                final isSelected = service.cityFilter.contains(city);
+                return _TvFilterChip(
+                  label: city,
+                  isSelected: isSelected,
+                  accentColor: accentColor,
+                  onPressed: () {
+                    if (isSelected) {
+                      service.removeCityFilter(city);
+                    } else {
+                      service.addCityFilter(city);
+                    }
+                  },
+                );
+              }).toList(),
+            ),
+          ],
+          if (service.timeOfDayFilter.isNotEmpty || service.sceneFilter.isNotEmpty || service.cityFilter.isNotEmpty)
             Padding(
               padding: const EdgeInsets.only(top: 12),
               child: _TvFilterChip(
@@ -296,6 +337,7 @@ class WallpaperPanelPage extends StatelessWidget {
                 onPressed: () => service.clearFilters(),
               ),
             ),
+
         ],
       ),
     );

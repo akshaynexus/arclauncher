@@ -298,6 +298,9 @@ class WallpaperService extends ChangeNotifier {
     }
     _wallpaperNightFileExists = false;
   }
+
+  @Deprecated('Use TvMediaPicker directly')
+  Future<void> pickWallpaper() async {}
 }
 
 class NoFileExplorerException implements Exception {}

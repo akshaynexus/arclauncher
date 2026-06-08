@@ -45,6 +45,10 @@ class _AerialVideoBackgroundState extends State<AerialVideoBackground>
   int _lastFrameCount = 0;
   Timer? _frameDropTimer;
 
+  // FPS overlay
+  Timer? _fpsTimer;
+  double _currentFps = 0.0;
+
   @override
   void initState() {
     super.initState();
@@ -75,6 +79,12 @@ class _AerialVideoBackgroundState extends State<AerialVideoBackground>
     await _player!.setProperty('cache', 'yes');
     await _player!.setProperty('cache-secs', '30');
     await _player!.setProperty('demuxer-readahead-secs', '20');
+
+    // HDR to SDR tone mapping properties
+    await _player!.setProperty('tone-mapping', 'bt.2446a');
+    await _player!.setProperty('target-trc', 'srgb');
+    await _player!.setProperty('target-prim', 'bt.709');
+    await _player!.setProperty('hdr-compute-peak', 'no');
 
     if (!mounted) return;
     setState(() => _playerReady = true);
@@ -119,6 +129,7 @@ class _AerialVideoBackgroundState extends State<AerialVideoBackground>
 
   @override
   void dispose() {
+    _fpsTimer?.cancel();
     _frameDropTimer?.cancel();
     WidgetsBinding.instance.removeObserver(this);
     _playlistSubscription?.cancel();
@@ -165,15 +176,48 @@ class _AerialVideoBackgroundState extends State<AerialVideoBackground>
     return service.feed[index];
   }
 
+  void _updateFpsTimer(bool showFps) {
+    if (showFps) {
+      if (_fpsTimer == null && _playerReady && _player != null) {
+        _fpsTimer = Timer.periodic(const Duration(seconds: 1), (_) async {
+          final player = _player;
+          if (player != null && player.state.playing) {
+            try {
+              final fpsStr = await player.getProperty('estimated-vf-fps');
+              if (fpsStr.isNotEmpty) {
+                final parsed = double.tryParse(fpsStr) ?? 0.0;
+                if (mounted) {
+                  setState(() {
+                    _currentFps = parsed;
+                  });
+                }
+              }
+            } catch (_) {}
+          }
+        });
+      }
+    } else {
+      _fpsTimer?.cancel();
+      _fpsTimer = null;
+      if (_currentFps != 0.0) {
+        _currentFps = 0.0;
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final service = context.watch<AerialWallpaperService>();
     final isLoading = service.isLoading;
     final feedEmpty = service.feed.isEmpty;
+    final showFps = service.showFps;
 
     if (feedEmpty || isLoading || !_playerReady || _videoController == null) {
+      _updateFpsTimer(false);
       return const ColoredBox(color: Colors.black);
     }
+
+    _updateFpsTimer(showFps);
 
     return Stack(
       children: [
@@ -184,7 +228,32 @@ class _AerialVideoBackgroundState extends State<AerialVideoBackground>
           ),
         ),
         _buildDescriptionOverlay(),
+        if (showFps) _buildFpsOverlay(),
       ],
+    );
+  }
+
+  Widget _buildFpsOverlay() {
+    return Positioned(
+      top: 40,
+      right: 40,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        decoration: BoxDecoration(
+          color: Colors.black.withValues(alpha: 0.75),
+          borderRadius: BorderRadius.circular(4),
+          border: Border.all(color: Colors.greenAccent.withValues(alpha: 0.4), width: 1.5),
+        ),
+        child: Text(
+          'FPS: ${_currentFps.toStringAsFixed(1)}',
+          style: const TextStyle(
+            color: Colors.greenAccent,
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+            fontFamily: 'monospace',
+          ),
+        ),
+      ),
     );
   }
 

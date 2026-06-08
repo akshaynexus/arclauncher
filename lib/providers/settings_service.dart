@@ -48,6 +48,11 @@ const String _aerialVideoQualityIndex = "aerial_video_quality_index";
 const String _aerialVideoShuffle = "aerial_video_shuffle";
 const String _aerialEnabled = "aerial_enabled";
 const String _aerialSelectedSources = "aerial_selected_sources";
+const String _aerialTimeOfDayFilters = "aerial_time_of_day_filters";
+const String _aerialSceneFilters = "aerial_scene_filters";
+const String _aerialShowFps = "aerial_show_fps";
+const String _aerialCityFilters = "aerial_city_filters";
+
 
 // WiFi usage period options
 const String WIFI_USAGE_DAILY = "daily";
@@ -130,6 +135,15 @@ class SettingsService extends ChangeNotifier {
     if (list == null || list.isEmpty) return [];
     return list.map(int.parse).toList();
   }
+
+  List<String> get aerialTimeOfDayFilters => _sharedPreferences.getStringList(_aerialTimeOfDayFilters) ?? [];
+
+  List<String> get aerialSceneFilters => _sharedPreferences.getStringList(_aerialSceneFilters) ?? [];
+
+  bool get aerialShowFps => _sharedPreferences.getBool(_aerialShowFps) ?? false;
+
+  List<String> get aerialCityFilters => _sharedPreferences.getStringList(_aerialCityFilters) ?? [];
+
 
   Color get accentColor {
     final hex = accentColorHex;
@@ -262,6 +276,27 @@ class SettingsService extends ChangeNotifier {
     await _sharedPreferences.setStringList(_aerialSelectedSources, stringList);
     notifyListeners();
   }
+
+  Future<void> setAerialTimeOfDayFilters(List<String> filters) async {
+    await _sharedPreferences.setStringList(_aerialTimeOfDayFilters, filters);
+    notifyListeners();
+  }
+
+  Future<void> setAerialSceneFilters(List<String> filters) async {
+    await _sharedPreferences.setStringList(_aerialSceneFilters, filters);
+    notifyListeners();
+  }
+
+  Future<void> setAerialShowFps(bool show) async {
+    await _sharedPreferences.setBool(_aerialShowFps, show);
+    notifyListeners();
+  }
+
+  Future<void> setAerialCityFilters(List<String> filters) async {
+    await _sharedPreferences.setStringList(_aerialCityFilters, filters);
+    notifyListeners();
+  }
+
 
   bool get timeBasedWallpaperEnabled => _sharedPreferences.getBool("time_based_wallpaper_enabled") ?? false;
 
