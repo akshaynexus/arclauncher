@@ -227,7 +227,7 @@ class _AerialVideoBackgroundState extends State<AerialVideoBackground>
             controls: NoVideoControls,
           ),
         ),
-        _buildDescriptionOverlay(),
+        // _buildDescriptionOverlay(),
         if (showFps) _buildFpsOverlay(),
       ],
     );
@@ -242,7 +242,8 @@ class _AerialVideoBackgroundState extends State<AerialVideoBackground>
         decoration: BoxDecoration(
           color: Colors.black.withValues(alpha: 0.75),
           borderRadius: BorderRadius.circular(4),
-          border: Border.all(color: Colors.greenAccent.withValues(alpha: 0.4), width: 1.5),
+          border: Border.all(
+              color: Colors.greenAccent.withValues(alpha: 0.4), width: 1.5),
         ),
         child: Text(
           'FPS: ${_currentFps.toStringAsFixed(1)}',
