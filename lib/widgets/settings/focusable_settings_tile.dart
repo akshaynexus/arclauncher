@@ -25,6 +25,7 @@ class _FocusableSettingsTileState extends State<FocusableSettingsTile> {
 
   @override
   Widget build(BuildContext context) {
+    final accentColor = Theme.of(context).colorScheme.primary;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
       child: RepaintBoundary(
@@ -40,22 +41,52 @@ class _FocusableSettingsTileState extends State<FocusableSettingsTile> {
               onTap: widget.onPressed,
               borderRadius: BorderRadius.circular(12),
               focusColor: Colors.transparent,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 150),
+                curve: Curves.easeOut,
+                padding: EdgeInsets.symmetric(
+                  horizontal: _focused ? 18 : 16,
+                  vertical: _focused ? 14 : 12,
+                ),
                 decoration: BoxDecoration(
-                  color: _focused ? Colors.white.withOpacity(0.05) : Colors.transparent,
+                  color: _focused
+                      ? accentColor.withValues(alpha: 0.15)
+                      : Colors.transparent,
                   borderRadius: BorderRadius.circular(12),
-                  border: _focused
-                      ? Border.all(color: Theme.of(context).colorScheme.primary, width: 2)
-                      : Border.all(color: Colors.transparent, width: 2),
+                  border: Border.all(
+                    color: _focused ? accentColor : Colors.transparent,
+                    width: _focused ? 2.5 : 2,
+                  ),
+                  boxShadow: _focused
+                      ? [
+                          BoxShadow(
+                            color: accentColor.withValues(alpha: 0.3),
+                            blurRadius: 12,
+                            spreadRadius: 0,
+                          ),
+                        ]
+                      : null,
                 ),
                 child: Row(
                   children: [
                     if (widget.leading != null) ...[
-                      widget.leading!,
+                      IconTheme(
+                        data: IconThemeData(
+                          color: _focused ? accentColor : Colors.white70,
+                        ),
+                        child: widget.leading!,
+                      ),
                       const SizedBox(width: 16),
                     ],
-                    Expanded(child: widget.title),
+                    Expanded(
+                      child: DefaultTextStyle.merge(
+                        style: TextStyle(
+                          color: _focused ? Colors.white : Colors.white70,
+                          fontWeight: _focused ? FontWeight.w600 : FontWeight.normal,
+                        ),
+                        child: widget.title,
+                      ),
+                    ),
                     if (widget.trailing != null) ...[
                       const SizedBox(width: 16),
                       widget.trailing!,

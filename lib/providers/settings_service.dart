@@ -46,6 +46,8 @@ const String _aerialVideoQuality = "aerial_video_quality";
 const String _aerialVideoSourceIndex = "aerial_video_source_index";
 const String _aerialVideoQualityIndex = "aerial_video_quality_index";
 const String _aerialVideoShuffle = "aerial_video_shuffle";
+const String _aerialEnabled = "aerial_enabled";
+const String _aerialSelectedSources = "aerial_selected_sources";
 
 // WiFi usage period options
 const String WIFI_USAGE_DAILY = "daily";
@@ -120,6 +122,14 @@ class SettingsService extends ChangeNotifier {
   int get aerialVideoQualityIndex => _sharedPreferences.getInt(_aerialVideoQualityIndex) ?? 1;
 
   bool get aerialVideoShuffle => _sharedPreferences.getBool(_aerialVideoShuffle) ?? true;
+
+  bool get aerialEnabled => _sharedPreferences.getBool(_aerialEnabled) ?? false;
+
+  List<int> get aerialSelectedSources {
+    final list = _sharedPreferences.getStringList(_aerialSelectedSources);
+    if (list == null || list.isEmpty) return [];
+    return list.map(int.parse).toList();
+  }
 
   Color get accentColor {
     final hex = accentColorHex;
@@ -239,6 +249,17 @@ class SettingsService extends ChangeNotifier {
 
   Future<void> setAerialVideoShuffle(bool shuffle) async {
     await _sharedPreferences.setBool(_aerialVideoShuffle, shuffle);
+    notifyListeners();
+  }
+
+  Future<void> setAerialEnabled(bool enabled) async {
+    await _sharedPreferences.setBool(_aerialEnabled, enabled);
+    notifyListeners();
+  }
+
+  Future<void> setAerialSelectedSources(List<int> sources) async {
+    final stringList = sources.map((i) => i.toString()).toList();
+    await _sharedPreferences.setStringList(_aerialSelectedSources, stringList);
     notifyListeners();
   }
 

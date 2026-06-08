@@ -29,51 +29,70 @@ class StatusBarPanelPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    SettingsService settingsService = Provider.of(context);
+    final settingsService = Provider.of<SettingsService>(context, listen: false);
 
     return Column(
       children: [
         Text(LocaleKeys.statusBar.tr(),
             style: Theme.of(context).textTheme.titleLarge),
-        Divider(),
+        const Divider(),
         Expanded(
           child: ListView(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             children: [
-              RoundedSwitchListTile(
-                autofocus: true,
-                value: settingsService.autoHideAppBarEnabled,
-                onChanged: (value) =>
-                    settingsService.setAutoHideAppBarEnabled(value),
-                title: Text(LocaleKeys.autoHideAppBar.tr(),
-                    style: Theme.of(context).textTheme.bodyMedium),
-                secondary: Icon(Icons.visibility_off_outlined),
+              Selector<SettingsService, bool>(
+                selector: (_, s) => s.autoHideAppBarEnabled,
+                builder: (context, autoHide, _) => RoundedSwitchListTile(
+                  autofocus: true,
+                  value: autoHide,
+                  onChanged: (value) =>
+                      settingsService.setAutoHideAppBarEnabled(value),
+                  title: Text(LocaleKeys.autoHideAppBar.tr(),
+                      style: Theme.of(context).textTheme.bodyMedium),
+                  secondary: const Icon(Icons.visibility_off_outlined),
+                ),
               ),
-              Divider(),
-              RoundedSwitchListTile(
-                  value: settingsService.showDateInStatusBar,
+              const Divider(),
+              Selector<SettingsService, bool>(
+                selector: (_, s) => s.showDateInStatusBar,
+                builder: (context, showDate, _) => RoundedSwitchListTile(
+                  value: showDate,
                   onChanged: (value) =>
                       settingsService.setShowDateInStatusBar(value),
                   title: Text(LocaleKeys.date.tr()),
-                  secondary: Icon(Icons.calendar_today_outlined)),
-              RoundedSwitchListTile(
-                  value: settingsService.showTimeInStatusBar,
+                  secondary: const Icon(Icons.calendar_today_outlined),
+                ),
+              ),
+              Selector<SettingsService, bool>(
+                selector: (_, s) => s.showTimeInStatusBar,
+                builder: (context, showTime, _) => RoundedSwitchListTile(
+                  value: showTime,
                   onChanged: (value) =>
                       settingsService.setShowTimeInStatusBar(value),
                   title: Text(LocaleKeys.time.tr()),
-                  secondary: Icon(Icons.watch_later_outlined)),
-              RoundedSwitchListTile(
-                  value: settingsService.showWifiWidgetInStatusBar,
+                  secondary: const Icon(Icons.watch_later_outlined),
+                ),
+              ),
+              Selector<SettingsService, bool>(
+                selector: (_, s) => s.showWifiWidgetInStatusBar,
+                builder: (context, showWifi, _) => RoundedSwitchListTile(
+                  value: showWifi,
                   onChanged: (value) =>
                       settingsService.setShowWifiWidgetInStatusBar(value),
-                  title: Text('WiFi Usage'),
-                  secondary: Icon(Icons.wifi)),
-              RoundedSwitchListTile(
-                  value: settingsService.showNetworkIndicatorInStatusBar,
+                  title: const Text('WiFi Usage'),
+                  secondary: const Icon(Icons.wifi),
+                ),
+              ),
+              Selector<SettingsService, bool>(
+                selector: (_, s) => s.showNetworkIndicatorInStatusBar,
+                builder: (context, showNetwork, _) => RoundedSwitchListTile(
+                  value: showNetwork,
                   onChanged: (value) =>
                       settingsService.setShowNetworkIndicatorInStatusBar(value),
-                  title: Text('Network Indicator'),
-                  secondary: Icon(Icons.signal_wifi_4_bar)),
+                  title: const Text('Network Indicator'),
+                  secondary: const Icon(Icons.signal_wifi_4_bar),
+                ),
+              ),
             ],
           ),
         ),

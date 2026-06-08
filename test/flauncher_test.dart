@@ -52,22 +52,24 @@ void main() {
   testWidgets("Home page shows categories with apps", (tester) async {
     final appsService = mkAppService();
     final favoritesCategory = fakeCategory(name: "Favorites", order: 0, type: CategoryType.row);
+    favoritesCategory.applications.addAll([
+      fakeApp(
+        packageName: "me.efesser.flauncher.1",
+        name: "FLauncher 1",
+        version: "1.0.0",
+      ),
+    ]);
     final applicationsCategory = fakeCategory(name: "Applications", order: 1);
-    when(appsService.categoriesWithApps).thenReturn([
-      CategoryWithApps(favoritesCategory, [
-        fakeApp(
-          packageName: "me.efesser.flauncher.1",
-          name: "FLauncher 1",
-          version: "1.0.0",
-        )
-      ]),
-      CategoryWithApps(applicationsCategory, [
-        fakeApp(
-          packageName: "me.efesser.flauncher.2",
-          name: "FLauncher 2",
-          version: "2.0.0",
-        )
-      ]),
+    applicationsCategory.applications.addAll([
+      fakeApp(
+        packageName: "me.efesser.flauncher.2",
+        name: "FLauncher 2",
+        version: "2.0.0",
+      ),
+    ]);
+    when(appsService.categories).thenReturn([
+      favoritesCategory,
+      applicationsCategory,
     ]);
 
     await _pumpWidgetWith(tester, appsService);
@@ -88,9 +90,9 @@ void main() {
     final appsService = mkAppService();
     final applicationsCategory = fakeCategory(name: "Applications", order: 0, type: CategoryType.grid);
     final favoritesCategory = fakeCategory(name: "Favorites", order: 1, type: CategoryType.row);
-    when(appsService.categoriesWithApps).thenReturn([
-      CategoryWithApps(applicationsCategory, []),
-      CategoryWithApps(favoritesCategory, []),
+    when(appsService.categories).thenReturn([
+      applicationsCategory,
+      favoritesCategory,
     ]);
 
     await _pumpWidgetWith(tester, appsService);
@@ -104,7 +106,7 @@ void main() {
 
   testWidgets("Home page displays background image", (tester) async {
     final appsService = mkAppService();
-    when(appsService.categoriesWithApps).thenReturn([]);
+    when(appsService.categories).thenReturn([]);
 
     await _pumpWidgetWith(tester, appsService);
 
@@ -113,7 +115,7 @@ void main() {
 
   testWidgets("Home page displays background gradient", (tester) async {
     final appsService = mkAppService();
-    when(appsService.categoriesWithApps).thenReturn([]);
+    when(appsService.categories).thenReturn([]);
 
     await _pumpWidgetWithProviders(tester, mkWallpaperService(false), appsService, mkSettingsService());
 
@@ -122,9 +124,11 @@ void main() {
 
   testWidgets("Pressing select on settings icon opens SettingsPanel", (tester) async {
     final appsService = mkAppService();
-    when(appsService.categoriesWithApps).thenReturn([
-      CategoryWithApps(fakeCategory(name: "Favorites", order: 0), []),
-      CategoryWithApps(fakeCategory(name: "Applications", order: 1), []),
+    final favoritesCategory = fakeCategory(name: "Favorites", order: 0);
+    final applicationsCategory = fakeCategory(name: "Applications", order: 1);
+    when(appsService.categories).thenReturn([
+      favoritesCategory,
+      applicationsCategory,
     ]);
     await _pumpWidgetWith(tester, appsService);
 
@@ -144,9 +148,12 @@ void main() {
       name: "FLauncher",
       version: "1.0.0",
     );
-    when(appsService.categoriesWithApps).thenReturn([
-      CategoryWithApps(fakeCategory(name: "Favorites", order: 0), []),
-      CategoryWithApps(fakeCategory(name: "Applications", order: 1), [app]),
+    final favoritesCategory = fakeCategory(name: "Favorites", order: 0);
+    final applicationsCategory = fakeCategory(name: "Applications", order: 1);
+    applicationsCategory.applications.addAll([app]);
+    when(appsService.categories).thenReturn([
+      favoritesCategory,
+      applicationsCategory,
     ]);
     await _pumpWidgetWith(tester, appsService);
 
@@ -159,15 +166,17 @@ void main() {
   testWidgets("Long pressing on app opens ApplicationInfoPanel", (tester) async {
     final appsService = mkAppService();
     final applicationsCategory = fakeCategory(name: "Applications", order: 1);
-    when(appsService.categoriesWithApps).thenReturn([
-      CategoryWithApps(fakeCategory(name: "Favorites", order: 0), []),
-      CategoryWithApps(applicationsCategory, [
-        fakeApp(
-          packageName: "me.efesser.flauncher",
-          name: "FLauncher",
-          version: "1.0.0",
-        )
-      ]),
+    applicationsCategory.applications.addAll([
+      fakeApp(
+        packageName: "me.efesser.flauncher",
+        name: "FLauncher",
+        version: "1.0.0",
+      ),
+    ]);
+    final favoritesCategory = fakeCategory(name: "Favorites", order: 0);
+    when(appsService.categories).thenReturn([
+      favoritesCategory,
+      applicationsCategory,
     ]);
     await _pumpWidgetWith(tester, appsService);
 
@@ -180,20 +189,22 @@ void main() {
   testWidgets("AppCard moves in grid", (tester) async {
     final appsService = mkAppService();
     final applicationsCategory = fakeCategory(name: "Applications", order: 1, type: CategoryType.grid);
-    when(appsService.categoriesWithApps).thenReturn([
-      CategoryWithApps(fakeCategory(name: "Favorites", order: 0), []),
-      CategoryWithApps(applicationsCategory, [
-        fakeApp(
-          packageName: "me.efesser.flauncher",
-          name: "FLauncher",
-          version: "1.0.0",
-        ),
-        fakeApp(
-          packageName: "me.efesser.flauncher.2",
-          name: "FLauncher 2",
-          version: "1.0.0",
-        )
-      ]),
+    applicationsCategory.applications.addAll([
+      fakeApp(
+        packageName: "me.efesser.flauncher",
+        name: "FLauncher",
+        version: "1.0.0",
+      ),
+      fakeApp(
+        packageName: "me.efesser.flauncher.2",
+        name: "FLauncher 2",
+        version: "1.0.0",
+      ),
+    ]);
+    final favoritesCategory = fakeCategory(name: "Favorites", order: 0);
+    when(appsService.categories).thenReturn([
+      favoritesCategory,
+      applicationsCategory,
     ]);
     await _pumpWidgetWith(tester, appsService);
 
@@ -214,20 +225,22 @@ void main() {
   testWidgets("AppCard moves in row", (tester) async {
     final appsService = mkAppService();
     final applicationsCategory = fakeCategory(name: "Applications", order: 1, type: CategoryType.row);
-    when(appsService.categoriesWithApps).thenReturn([
-      CategoryWithApps(fakeCategory(name: "Favorites", order: 0), []),
-      CategoryWithApps(applicationsCategory, [
-        fakeApp(
-          packageName: "me.efesser.flauncher",
-          name: "FLauncher",
-          version: "1.0.0",
-        ),
-        fakeApp(
-          packageName: "me.efesser.flauncher.2",
-          name: "FLauncher 2",
-          version: "1.0.0",
-        )
-      ]),
+    applicationsCategory.applications.addAll([
+      fakeApp(
+        packageName: "me.efesser.flauncher",
+        name: "FLauncher",
+        version: "1.0.0",
+      ),
+      fakeApp(
+        packageName: "me.efesser.flauncher.2",
+        name: "FLauncher 2",
+        version: "1.0.0",
+      ),
+    ]);
+    final favoritesCategory = fakeCategory(name: "Favorites", order: 0);
+    when(appsService.categories).thenReturn([
+      favoritesCategory,
+      applicationsCategory,
     ]);
     await _pumpWidgetWith(tester, appsService);
 
@@ -255,53 +268,59 @@ void main() {
      * ▭ ▭
      * ▭ ▭ ▭
      */
-    when(appsService.categoriesWithApps).thenReturn([
-      CategoryWithApps(fakeCategory(name: "tv", order: 0), [
-        fakeApp(
-          packageName: "me.efesser.tv1",
-          name: "tv 1",
-          version: "1.0.0",
-        ),
-        fakeApp(
-          packageName: "me.efesser.tv2",
-          name: "tv 2",
-          version: "1.0.0",
-        ),
-        fakeApp(
-          packageName: "me.efesser.tv3",
-          name: "tv 3",
-          version: "1.0.0",
-        )
-      ]),
-      CategoryWithApps(fakeCategory(name: "music", order: 1), [
-        fakeApp(
-          packageName: "me.efesser.music1",
-          name: "music 1",
-          version: "1.0.0",
-        ),
-        fakeApp(
-          packageName: "me.efesser.music2",
-          name: "music 2",
-          version: "1.0.0",
-        )
-      ]),
-      CategoryWithApps(fakeCategory(name: "games", order: 2), [
-        fakeApp(
-          packageName: "me.efesser.game1",
-          name: "game 1",
-          version: "1.0.0",
-        ),
-        fakeApp(
-          packageName: "me.efesser.game2",
-          name: "game 2",
-          version: "1.0.0",
-        ),
-        fakeApp(
-          packageName: "me.efesser.game3",
-          name: "game 3",
-          version: "1.0.0",
-        )
-      ]),
+    final tvCategory = fakeCategory(name: "tv", order: 0);
+    tvCategory.applications.addAll([
+      fakeApp(
+        packageName: "me.efesser.tv1",
+        name: "tv 1",
+        version: "1.0.0",
+      ),
+      fakeApp(
+        packageName: "me.efesser.tv2",
+        name: "tv 2",
+        version: "1.0.0",
+      ),
+      fakeApp(
+        packageName: "me.efesser.tv3",
+        name: "tv 3",
+        version: "1.0.0",
+      ),
+    ]);
+    final musicCategory = fakeCategory(name: "music", order: 1);
+    musicCategory.applications.addAll([
+      fakeApp(
+        packageName: "me.efesser.music1",
+        name: "music 1",
+        version: "1.0.0",
+      ),
+      fakeApp(
+        packageName: "me.efesser.music2",
+        name: "music 2",
+        version: "1.0.0",
+      ),
+    ]);
+    final gamesCategory = fakeCategory(name: "games", order: 2);
+    gamesCategory.applications.addAll([
+      fakeApp(
+        packageName: "me.efesser.game1",
+        name: "game 1",
+        version: "1.0.0",
+      ),
+      fakeApp(
+        packageName: "me.efesser.game2",
+        name: "game 2",
+        version: "1.0.0",
+      ),
+      fakeApp(
+        packageName: "me.efesser.game3",
+        name: "game 3",
+        version: "1.0.0",
+      ),
+    ]);
+    when(appsService.categories).thenReturn([
+      tvCategory,
+      musicCategory,
+      gamesCategory,
     ]);
 
     await _pumpWidgetWith(tester, appsService);
@@ -341,46 +360,50 @@ void main() {
      * ▭ ▭
      * ▭ ▭ ▭ ▭ ▭
      */
-    when(appsService.categoriesWithApps).thenReturn([
-      CategoryWithApps(fakeCategory(name: "tv", order: 0), [
-        fakeApp(
-          packageName: "me.efesser.tv1",
-          name: "tv 1",
-          version: "1.0.0",
-        ),
-        fakeApp(
-          packageName: "me.efesser.tv2",
-          name: "tv 2",
-          version: "1.0.0",
-        ),
-      ]),
-      CategoryWithApps(fakeCategory(name: "music", order: 1, columnsCount: 5), [
-        fakeApp(
-          packageName: "me.efesser.music1",
-          name: "music 1",
-          version: "1.0.0",
-        ),
-        fakeApp(
-          packageName: "me.efesser.music2",
-          name: "music 2",
-          version: "1.0.0",
-        ),
-        fakeApp(
-          packageName: "me.efesser.music3",
-          name: "music 3",
-          version: "1.0.0",
-        ),
-        fakeApp(
-          packageName: "me.efesser.music4",
-          name: "music 4",
-          version: "1.0.0",
-        ),
-        fakeApp(
-          packageName: "me.efesser.music5",
-          name: "music 5",
-          version: "1.0.0",
-        ),
-      ]),
+    final tvCategory = fakeCategory(name: "tv", order: 0);
+    tvCategory.applications.addAll([
+      fakeApp(
+        packageName: "me.efesser.tv1",
+        name: "tv 1",
+        version: "1.0.0",
+      ),
+      fakeApp(
+        packageName: "me.efesser.tv2",
+        name: "tv 2",
+        version: "1.0.0",
+      ),
+    ]);
+    final musicCategory = fakeCategory(name: "music", order: 1, columnsCount: 5);
+    musicCategory.applications.addAll([
+      fakeApp(
+        packageName: "me.efesser.music1",
+        name: "music 1",
+        version: "1.0.0",
+      ),
+      fakeApp(
+        packageName: "me.efesser.music2",
+        name: "music 2",
+        version: "1.0.0",
+      ),
+      fakeApp(
+        packageName: "me.efesser.music3",
+        name: "music 3",
+        version: "1.0.0",
+      ),
+      fakeApp(
+        packageName: "me.efesser.music4",
+        name: "music 4",
+        version: "1.0.0",
+      ),
+      fakeApp(
+        packageName: "me.efesser.music5",
+        name: "music 5",
+        version: "1.0.0",
+      ),
+    ]);
+    when(appsService.categories).thenReturn([
+      tvCategory,
+      musicCategory,
     ]);
 
     await _pumpWidgetWith(tester, appsService);
@@ -443,36 +466,40 @@ void main() {
      * ▭ ▭
      * ▭ ▭ ▭
      */
-    when(appsService.categoriesWithApps).thenReturn([
-      CategoryWithApps(fakeCategory(name: "tv", order: 0), [
-        fakeApp(
-          packageName: "me.efesser.tv1",
-          name: "tv 1",
-          version: "1.0.0",
-        ),
-        fakeApp(
-          packageName: "me.efesser.tv2",
-          name: "tv 2",
-          version: "1.0.0",
-        ),
-      ]),
-      CategoryWithApps(fakeCategory(name: "music", order: 1), [
-        fakeApp(
-          packageName: "me.efesser.music1",
-          name: "music 1",
-          version: "1.0.0",
-        ),
-        fakeApp(
-          packageName: "me.efesser.music2",
-          name: "music 2",
-          version: "1.0.0",
-        ),
-        fakeApp(
-          packageName: "me.efesser.music3",
-          name: "music 3",
-          version: "1.0.0",
-        ),
-      ]),
+    final tvCategory = fakeCategory(name: "tv", order: 0);
+    tvCategory.applications.addAll([
+      fakeApp(
+        packageName: "me.efesser.tv1",
+        name: "tv 1",
+        version: "1.0.0",
+      ),
+      fakeApp(
+        packageName: "me.efesser.tv2",
+        name: "tv 2",
+        version: "1.0.0",
+      ),
+    ]);
+    final musicCategory = fakeCategory(name: "music", order: 1);
+    musicCategory.applications.addAll([
+      fakeApp(
+        packageName: "me.efesser.music1",
+        name: "music 1",
+        version: "1.0.0",
+      ),
+      fakeApp(
+        packageName: "me.efesser.music2",
+        name: "music 2",
+        version: "1.0.0",
+      ),
+      fakeApp(
+        packageName: "me.efesser.music3",
+        name: "music 3",
+        version: "1.0.0",
+      ),
+    ]);
+    when(appsService.categories).thenReturn([
+      tvCategory,
+      musicCategory,
     ]);
 
     await _pumpWidgetWith(tester, appsService);

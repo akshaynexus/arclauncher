@@ -31,14 +31,23 @@ class GradientPanelPage extends StatelessWidget {
           Text("Gradient", style: Theme.of(context).textTheme.titleLarge),
           const Divider(),
           Expanded(
-            child: GridView.count(
-              crossAxisCount: 2,
-              childAspectRatio: 4 / 3,
-              mainAxisSpacing: 8,
-              crossAxisSpacing: 8,
-              children: FLauncherGradients.all
-                  .map((gradient) => EnsureVisible(alignment: 0.5, child: _gradientCard(context, gradient)))
-                  .toList(),
+            child: GridView.builder(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: 4 / 3,
+                mainAxisSpacing: 8,
+                crossAxisSpacing: 8,
+              ),
+              itemCount: FLauncherGradients.all.length,
+              itemBuilder: (context, index) {
+                final gradient = FLauncherGradients.all[index];
+                return RepaintBoundary(
+                  child: EnsureVisible(
+                    alignment: 0.5,
+                    child: _gradientCard(context, gradient),
+                  ),
+                );
+              },
             ),
           ),
         ],

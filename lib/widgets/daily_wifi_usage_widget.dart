@@ -1,17 +1,29 @@
 import 'package:flauncher/providers/network_service.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
-class DailyWifiUsageWidget extends StatelessWidget {
+class DailyWifiUsageWidget extends StatefulWidget {
   const DailyWifiUsageWidget({super.key});
+
+  @override
+  State<DailyWifiUsageWidget> createState() => _DailyWifiUsageWidgetState();
+}
+
+class _DailyWifiUsageWidgetState extends State<DailyWifiUsageWidget> {
+  Future<int>? _usageFuture;
+  String? _lastPeriod;
+  bool? _lastPermission;
 
   @override
   Widget build(BuildContext context) {
     return Consumer2<NetworkService, SettingsService>(
       builder: (context, networkService, settingsService, _) {
-        if (!networkService.hasUsageStatsPermission) {
+        final hasPermission = networkService.hasUsageStatsPermission;
+        if (!hasPermission) {
+          _usageFuture = null;
+          _lastPeriod = null;
+          _lastPermission = false;
           return TextButton.icon(
              icon: const Icon(Icons.data_usage, size: 20),
              label: const Text("Grant Usage Permission"),
@@ -20,6 +32,14 @@ class DailyWifiUsageWidget extends StatelessWidget {
         }
 
         final period = settingsService.wifiUsagePeriod;
+
+        // Recreate Future only if period changed, permission state changed, or future is null
+        if (_usageFuture == null || _lastPeriod != period || _lastPermission != hasPermission) {
+          _lastPeriod = period;
+          _lastPermission = hasPermission;
+          _usageFuture = networkService.getWifiUsageForPeriod(period);
+        }
+
         String label;
         switch (period) {
           case 'weekly':
@@ -35,7 +55,7 @@ class DailyWifiUsageWidget extends StatelessWidget {
         }
 
         return FutureBuilder<int>(
-          future: networkService.getWifiUsageForPeriod(period),
+          future: _usageFuture,
           builder: (context, snapshot) {
             final usage = snapshot.data ?? networkService.dailyWifiUsage;
             final usageString = _formatBytes(usage);

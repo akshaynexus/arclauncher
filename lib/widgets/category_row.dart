@@ -20,6 +20,7 @@ import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/widgets/app_card.dart';
 import 'package:flauncher/widgets/category_container_common.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 
 import '../models/app.dart';
@@ -54,6 +55,7 @@ class CategoryRow extends StatelessWidget
         child: ListView.custom(
           padding: const EdgeInsets.all(8),
           scrollDirection: Axis.horizontal,
+          scrollCacheExtent: const ScrollCacheExtent.pixels(400.0),
           childrenDelegate: SliverChildBuilderDelegate(
             childCount: applications.length,
             findChildIndexCallback: _findChildIndex,
@@ -102,8 +104,11 @@ class CategoryRow extends StatelessWidget
     );
   }
 
-  int _findChildIndex(Key key) =>
-      applications.indexWhere((app) => app.packageName == (key as ValueKey<String>).value);
+  int? _findChildIndex(Key key) {
+    final valueKey = key as ValueKey<String>;
+    final index = applications.indexWhere((app) => app.packageName == valueKey.value);
+    return index >= 0 ? index : null;
+  }
 
   void _onMove(BuildContext context, AxisDirection direction, int index) {
     int newIndex = 0;

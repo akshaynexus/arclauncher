@@ -143,9 +143,9 @@ class _ApplicationInfoPanelState extends State<ApplicationInfoPanel> {
             // Favorites toggle button
             Builder(
               builder: (context) {
-                final appsService = context.watch<AppsService>();
-                final isInFavorites =
-                    appsService.isAppInFavorites(widget.application);
+                final isInFavorites = context.select<AppsService, bool>(
+                  (service) => service.isAppInFavorites(widget.application),
+                );
                 return TextButton(
                   child: Row(
                     children: [
@@ -161,7 +161,7 @@ class _ApplicationInfoPanelState extends State<ApplicationInfoPanel> {
                     ],
                   ),
                   onPressed: () async {
-                    await appsService.toggleFavorite(widget.application);
+                    await context.read<AppsService>().toggleFavorite(widget.application);
                     Navigator.of(context).pop(ApplicationInfoPanelResult.none);
                   },
                 );

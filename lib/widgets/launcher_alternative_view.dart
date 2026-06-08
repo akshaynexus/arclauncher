@@ -29,20 +29,22 @@ class AlternativeLauncherView extends StatelessWidget {
     selector: (_, service) => (service.timeFormat, service.dateFormat, service.screensaverClockStyle),
     builder: (context, formats, _) {
       final (timeFormat, dateFormat, clockStyle) = formats;
-      return Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          _buildClock(context, timeFormat, clockStyle),
-          const SizedBox(height: 16),
-          DateTimeWidget(dateFormat,
-            updateInterval: const Duration(minutes: 1),
-            textStyle: Theme.of(context).textTheme.headlineLarge!.copyWith(
-              fontSize: 56,
-              fontWeight: FontWeight.w300,
-              shadows: const [Shadow(color: Colors.black54, offset: Offset(1, 1), blurRadius: 12)],
+      return RepaintBoundary(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            _buildClock(context, timeFormat, clockStyle),
+            const SizedBox(height: 16),
+            DateTimeWidget(dateFormat,
+              updateInterval: const Duration(minutes: 1),
+              textStyle: Theme.of(context).textTheme.headlineLarge!.copyWith(
+                fontSize: 56,
+                fontWeight: FontWeight.w300,
+                shadows: const [Shadow(color: Colors.black54, offset: Offset(1, 1), blurRadius: 12)],
+              )
             )
-          )
-        ],
+          ],
+        ),
       );
     },
   );
@@ -113,20 +115,17 @@ class AlternativeLauncherView extends StatelessWidget {
       letterSpacing: 1.0,
     );
 
-    return IntrinsicHeight(
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          DateTimeWidget(timeOnly, textStyle: mainStyle),
-          const SizedBox(width: 8),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              DateTimeWidget('a', animate: false, textStyle: amPmStyle),
-            ],
-          ),
-        ],
-      ),
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        DateTimeWidget(timeOnly, textStyle: mainStyle),
+        const SizedBox(width: 8),
+        Padding(
+          padding: const EdgeInsets.only(bottom: 12),
+          child: DateTimeWidget('a', animate: false, textStyle: amPmStyle),
+        ),
+      ],
     );
   }
 }

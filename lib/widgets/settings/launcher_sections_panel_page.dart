@@ -63,7 +63,9 @@ class _LauncherSectionsPanelPageState extends State<LauncherSectionsPanelPage> {
                 },
                 itemBuilder: (context, index) {
                   final section = sections[index];
-                  return _section(context, section, index, sections.length);
+                  return RepaintBoundary(
+                    child: _section(context, section, index, sections.length),
+                  );
                 },
               ),
             );

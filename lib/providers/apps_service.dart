@@ -46,6 +46,10 @@ class AppsService extends ChangeNotifier
 
   Map<int, Category> _categoriesById = Map();
 
+  final Map<String, Future<Uint8List>> _pendingBanners = {};
+  final Map<String, Future<Uint8List>> _pendingIcons = {};
+  StreamSubscription? _appsSubscription;
+
   // Cached SharedPreferences instance to avoid repeated disk I/O
   SharedPreferences? _prefs;
   Future<SharedPreferences> get _prefsAsync async {
@@ -98,14 +102,30 @@ class AppsService extends ChangeNotifier
         await _initDefaultCategories();
       }
 
-      _initialized = true;
-      notifyListeners();
-      debugPrint('AppsService initialized: ${_applications.length} apps, ${_categoriesById.length} categories');
+      debugPrint('AppsService loaded from DB: ${_applications.length} apps, ${_categoriesById.length} categories');
 
-      // Phase 2: Sync with system in background (slow, non-blocking)
-      _syncWithSystem();
+      // Phase 2: Sync with system before marking initialized so UI
+      // never sees an empty app list on fresh install.
+      // Timeout prevents hanging if platform channel is unresponsive.
+      try {
+        await _syncWithSystem().timeout(const Duration(seconds: 10));
+      } catch (e) {
+        debugPrint('AppsService sync timed out or failed: $e');
+      }
 
-      _fLauncherChannel.addAppsChangedListener((event) async {
+      // After sync, check if apps exist but aren't placed into any
+      // category.  This happens on fresh install: _initDefaultCategories()
+      // ran before sync when there were 0 apps, so only Favorites was
+      // created.  After sync populates apps, they have no category.
+      final bool hasUncategorizedApps = _applications.values.any(
+        (app) => !app.hidden && app.categoryOrders.isEmpty,
+      );
+      if (hasUncategorizedApps && _applications.isNotEmpty) {
+        // Wipe the skeleton categories and rebuild with actual apps
+        await _initDefaultCategories();
+      }
+
+      _appsSubscription = _fLauncherChannel.addAppsChangedListener((event) async {
         try {
           String? changedPackageName;
           if (event.containsKey('packageName')) {
@@ -209,22 +229,73 @@ class AppsService extends ChangeNotifier
         }
       });
 
-      _initialized = true;
-      notifyListeners();
       debugPrint('AppsService initialized: ${_applications.length} apps, ${_categoriesById.length} categories');
-      
-      // Pre-cache icons for visible apps
-      _preCacheIcons();
     } catch (e) {
       debugPrint('Error initializing AppsService: $e');
+    } finally {
+      // Always mark initialized so the UI never gets permanently stuck
+      // on the loading spinner, even if sync failed.
+      _initialized = true;
+      notifyListeners();
+
+      // If apps are still empty after init (e.g. sync timed out on fresh
+      // install), schedule a retry so we don't leave the user stranded.
+      if (_applications.isEmpty) {
+        _scheduleRetrySync();
+      } else {
+        // Pre-cache icons for visible apps (throttled)
+        _preCacheIcons();
+      }
+    }
+  }
+
+  /// Retries sync with the system after a delay. Used when initial sync
+  /// fails or times out on a fresh install, leaving 0 apps.
+  bool _retryInProgress = false;
+
+  void _scheduleRetrySync() {
+    Future.delayed(const Duration(seconds: 3), () async {
+      if (_applications.isNotEmpty) return; // Already populated
+      await retrySync();
+    });
+  }
+
+  /// Public method for the UI to manually trigger a re-sync (e.g. retry button).
+  Future<void> retrySync() async {
+    if (_retryInProgress) return; // Guard against concurrent retries
+    _retryInProgress = true;
+    debugPrint('AppsService: manual retry sync triggered');
+    try {
+      await _syncWithSystem().timeout(const Duration(seconds: 15));
+      // Check if apps still lack category assignments
+      final bool hasUncategorizedApps = _applications.values.any(
+        (app) => !app.hidden && app.categoryOrders.isEmpty,
+      );
+      if (hasUncategorizedApps && _applications.isNotEmpty) {
+        await _initDefaultCategories();
+      }
+      notifyListeners();
+      if (_applications.isNotEmpty) {
+        _preCacheIcons();
+      }
+    } catch (e) {
+      debugPrint('AppsService retry sync failed: $e');
+    } finally {
+      _retryInProgress = false;
     }
   }
 
   Future<void> _loadFromDatabase() async {
-    List<App> appsFromDatabase = await _database.getApplications();
-    List<AppCategory> appsCategories = await _database.getAppsCategories();
-    List<Category> categories = await _database.getCategories();
-    List<LauncherSpacer> spacers = await _database.getLauncherSpacers();
+    final results = await Future.wait([
+      _database.getApplications(),
+      _database.getAppsCategories(),
+      _database.getCategories(),
+      _database.getLauncherSpacers(),
+    ]);
+    List<App> appsFromDatabase = results[0] as List<App>;
+    List<AppCategory> appsCategories = results[1] as List<AppCategory>;
+    List<Category> categories = results[2] as List<Category>;
+    List<LauncherSpacer> spacers = results[3] as List<LauncherSpacer>;
 
     _categoriesById = Map.fromEntries(categories.map((category) => MapEntry(category.id, category)));
     _applications = Map.fromEntries(appsFromDatabase.map((application) => MapEntry(application.packageName, application)));
@@ -235,12 +306,15 @@ class AppsService extends ChangeNotifier
     _launcherSections.sort((ls0, ls1) => ls0.order.compareTo(ls1.order));
 
     if (appsCategories.isNotEmpty) {
+      final appsCategoriesByPackage = collection.groupBy<AppCategory, String>(
+        appsCategories,
+        (ac) => ac.appPackageName,
+      );
       for (App application in _applications.values) {
         if (application.hidden) continue;
-        Iterable<AppCategory> currentApplicationCategories = appsCategories
-            .where((appCategory) => appCategory.appPackageName == application.packageName);
+        final currentCategories = appsCategoriesByPackage[application.packageName] ?? [];
 
-        for (AppCategory appCategory in currentApplicationCategories) {
+        for (AppCategory appCategory in currentCategories) {
           if (_categoriesById.containsKey(appCategory.categoryId)) {
             Category category = _categoriesById[appCategory.categoryId]!;
             application.categoryOrders[category.id] = appCategory.order;
@@ -312,13 +386,24 @@ class AppsService extends ChangeNotifier
   }
 
   Future<void> _preCacheIcons() async {
-    // Only cache apps that are not hidden
+    // Only cache apps that are not hidden, in throttled batches
+    // to avoid flooding the platform channel at startup.
     final visibleApps = _applications.values.where((app) => !app.hidden).toList();
-    for (var app in visibleApps) {
-      // Don't await, let it run in background
-      getAppIcon(app.packageName);
-      // Also cache banner if it's likely to be needed soon
-      getAppBanner(app.packageName);
+    const batchSize = 5;
+    for (int i = 0; i < visibleApps.length; i += batchSize) {
+      final end = (i + batchSize < visibleApps.length) ? i + batchSize : visibleApps.length;
+      final batch = visibleApps.sublist(i, end);
+      // Fire off a batch concurrently
+      await Future.wait(
+        batch.map((app) async {
+          await getAppIcon(app.packageName);
+          await getAppBanner(app.packageName);
+        }),
+      );
+      // Small gap between batches to let the main thread breathe
+      if (end < visibleApps.length) {
+        await Future.delayed(const Duration(milliseconds: 50));
+      }
     }
   }
 
@@ -446,7 +531,20 @@ class AppsService extends ChangeNotifier
     if (_bannerCache.containsKey(packageName)) {
       return _bannerCache[packageName]!;
     }
+    if (_pendingBanners.containsKey(packageName)) {
+      return _pendingBanners[packageName]!;
+    }
 
+    final Future<Uint8List> future = _loadAppBannerInternal(packageName);
+    _pendingBanners[packageName] = future;
+    try {
+      return await future;
+    } finally {
+      _pendingBanners.remove(packageName);
+    }
+  }
+
+  Future<Uint8List> _loadAppBannerInternal(String packageName) async {
     try {
       final prefs = await _prefsAsync;
       final customBannerPath = prefs.getString('custom_banner_$packageName');
@@ -506,6 +604,20 @@ class AppsService extends ChangeNotifier
     if (_iconCache.containsKey(packageName)) {
       return _iconCache[packageName]!;
     }
+    if (_pendingIcons.containsKey(packageName)) {
+      return _pendingIcons[packageName]!;
+    }
+
+    final Future<Uint8List> future = _loadAppIconInternal(packageName);
+    _pendingIcons[packageName] = future;
+    try {
+      return await future;
+    } finally {
+      _pendingIcons.remove(packageName);
+    }
+  }
+
+  Future<Uint8List> _loadAppIconInternal(String packageName) async {
     final bytes = await _fLauncherChannel.getApplicationIcon(packageName);
     if (bytes.isNotEmpty) {
       _iconCache[packageName] = bytes;
@@ -590,8 +702,20 @@ class AppsService extends ChangeNotifier
         return;
     }
     
+    final List<AppsCategoriesCompanion> entries = [];
+    int order = await _database.nextAppCategoryOrder(actualCategory.id) ?? 0;
     for (final app in appsToAdd) {
-      await addToCategory(app, actualCategory, shouldNotifyListeners: false);
+      actualCategory.applications.add(app);
+      app.categoryOrders[actualCategory.id] = order;
+      entries.add(AppsCategoriesCompanion.insert(
+        categoryId: actualCategory.id,
+        appPackageName: app.packageName,
+        order: order,
+      ));
+      order++;
+    }
+    if (entries.isNotEmpty) {
+      await _database.insertAppsCategories(entries);
     }
     
     notifyListeners();
@@ -1041,5 +1165,11 @@ class AppsService extends ChangeNotifier
       categoryFound.rowHeight = rowHeight;
       notifyListeners();
     }
+  }
+
+  @override
+  void dispose() {
+    _appsSubscription?.cancel();
+    super.dispose();
   }
 }

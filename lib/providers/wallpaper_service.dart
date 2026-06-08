@@ -34,6 +34,14 @@ class WallpaperService extends ChangeNotifier {
   late File _wallpaperVideoFile;
   late File _wallpaperDayVideoFile;
   late File _wallpaperNightVideoFile;
+
+  bool _wallpaperFileExists = false;
+  bool _wallpaperDayFileExists = false;
+  bool _wallpaperNightFileExists = false;
+  bool _wallpaperVideoFileExists = false;
+  bool _wallpaperDayVideoFileExists = false;
+  bool _wallpaperNightVideoFileExists = false;
+
   bool _initialized = false;
   Timer? _timer;
 
@@ -44,8 +52,7 @@ class WallpaperService extends ChangeNotifier {
   File? get wallpaperVideoFile {
     final aerialUrl = _settingsService.aerialVideoUrl;
     if (aerialUrl != null && aerialUrl.isNotEmpty) return null;
-    final f = _resolveActiveVideoFile();
-    return f != null && f.existsSync() ? f : null;
+    return _resolveActiveVideoFile();
   }
 
   String? get aerialVideoUrl {
@@ -92,10 +99,27 @@ class WallpaperService extends ChangeNotifier {
     _wallpaperVideoFile = File("${directory.path}/wallpaper_video");
     _wallpaperDayVideoFile = File("${directory.path}/wallpaper_day_video");
     _wallpaperNightVideoFile = File("${directory.path}/wallpaper_night_video");
+
+    final results = await Future.wait([
+      _wallpaperFile.exists(),
+      _wallpaperDayFile.exists(),
+      _wallpaperNightFile.exists(),
+      _wallpaperVideoFile.exists(),
+      _wallpaperDayVideoFile.exists(),
+      _wallpaperNightVideoFile.exists(),
+    ]);
+
+    _wallpaperFileExists = results[0];
+    _wallpaperDayFileExists = results[1];
+    _wallpaperNightFileExists = results[2];
+    _wallpaperVideoFileExists = results[3];
+    _wallpaperDayVideoFileExists = results[4];
+    _wallpaperNightVideoFileExists = results[5];
+
     _initialized = true;
 
     _lastTimeBasedEnabled = _settingsService.timeBasedWallpaperEnabled;
-    _updateWallpaper();
+    await _updateWallpaper();
     _updateTimerState();
   }
 
@@ -117,16 +141,16 @@ class WallpaperService extends ChangeNotifier {
     final enabled = _settingsService.timeBasedWallpaperEnabled;
 
     if (enabled) {
-      if (isDay && _wallpaperDayVideoFile.existsSync()) {
+      if (isDay && _wallpaperDayVideoFileExists) {
         return _wallpaperDayVideoFile;
       }
-      if (!isDay && _wallpaperNightVideoFile.existsSync()) {
+      if (!isDay && _wallpaperNightVideoFileExists) {
         return _wallpaperNightVideoFile;
       }
-      if (_wallpaperVideoFile.existsSync()) {
+      if (_wallpaperVideoFileExists) {
         return _wallpaperVideoFile;
       }
-    } else if (_wallpaperVideoFile.existsSync()) {
+    } else if (_wallpaperVideoFileExists) {
       return _wallpaperVideoFile;
     }
     return null;
@@ -134,7 +158,7 @@ class WallpaperService extends ChangeNotifier {
 
   bool get isInitialized => _initialized;
 
-  void _updateWallpaper({bool force = false}) {
+  Future<void> _updateWallpaper({bool force = false}) async {
     final now = DateTime.now();
     final isDay = now.hour >= 6 && now.hour < 18;
     final enabled = _settingsService.timeBasedWallpaperEnabled;
@@ -146,15 +170,15 @@ class WallpaperService extends ChangeNotifier {
     if (videoFile != null) {
       newWallpaper = null;
     } else if (enabled) {
-      if (isDay && _wallpaperDayFile.existsSync()) {
-        newWallpaper = _fileToMemoryImage(_wallpaperDayFile);
-      } else if (!isDay && _wallpaperNightFile.existsSync()) {
-        newWallpaper = _fileToMemoryImage(_wallpaperNightFile);
-      } else if (_wallpaperFile.existsSync()) {
-        newWallpaper = _fileToMemoryImage(_wallpaperFile);
+      if (isDay && _wallpaperDayFileExists) {
+        newWallpaper = await _fileToMemoryImage(_wallpaperDayFile);
+      } else if (!isDay && _wallpaperNightFileExists) {
+        newWallpaper = await _fileToMemoryImage(_wallpaperNightFile);
+      } else if (_wallpaperFileExists) {
+        newWallpaper = await _fileToMemoryImage(_wallpaperFile);
       }
-    } else if (_wallpaperFile.existsSync()) {
-      newWallpaper = _fileToMemoryImage(_wallpaperFile);
+    } else if (_wallpaperFileExists) {
+      newWallpaper = await _fileToMemoryImage(_wallpaperFile);
     }
 
     if (_wallpaper != newWallpaper || videoFile != null || force) {
@@ -163,9 +187,9 @@ class WallpaperService extends ChangeNotifier {
     }
   }
 
-  ImageProvider? _fileToMemoryImage(File file) {
+  Future<ImageProvider?> _fileToMemoryImage(File file) async {
     try {
-      final bytes = file.readAsBytesSync();
+      final bytes = await file.readAsBytes();
       return MemoryImage(Uint8List.fromList(bytes));
     } catch (_) {
       return null;
@@ -174,26 +198,38 @@ class WallpaperService extends ChangeNotifier {
 
   Future<void> setWallpaper(File sourceFile) async {
     await _saveToFile(sourceFile, _wallpaperFile);
+    _wallpaperFileExists = true;
+    await _updateWallpaper();
   }
 
   Future<void> setWallpaperDay(File sourceFile) async {
     await _saveToFile(sourceFile, _wallpaperDayFile);
+    _wallpaperDayFileExists = true;
+    await _updateWallpaper();
   }
 
   Future<void> setWallpaperNight(File sourceFile) async {
     await _saveToFile(sourceFile, _wallpaperNightFile);
+    _wallpaperNightFileExists = true;
+    await _updateWallpaper();
   }
 
   Future<void> setVideoWallpaper(File sourceFile) async {
     await _saveToFile(sourceFile, _wallpaperVideoFile);
+    _wallpaperVideoFileExists = true;
+    await _updateWallpaper();
   }
 
   Future<void> setVideoWallpaperDay(File sourceFile) async {
     await _saveToFile(sourceFile, _wallpaperDayVideoFile);
+    _wallpaperDayVideoFileExists = true;
+    await _updateWallpaper();
   }
 
   Future<void> setVideoWallpaperNight(File sourceFile) async {
     await _saveToFile(sourceFile, _wallpaperNightVideoFile);
+    _wallpaperNightVideoFileExists = true;
+    await _updateWallpaper();
   }
 
   Future<void> _saveToFile(File sourceFile, File targetFile) async {
@@ -226,37 +262,41 @@ class WallpaperService extends ChangeNotifier {
     _timer = null;
 
     await _settingsService.setGradientUuid(fLauncherGradient.uuid);
-    _updateWallpaper(force: true);
+    await _updateWallpaper(force: true);
   }
-
-  // Cleaning methods
 
   Future<void> cleanVideoWallpaperFiles() async {
     if (await _wallpaperVideoFile.exists()) {
       await _wallpaperVideoFile.delete();
     }
+    _wallpaperVideoFileExists = false;
 
     if (await _wallpaperDayVideoFile.exists()) {
       await _wallpaperDayVideoFile.delete();
     }
+    _wallpaperDayVideoFileExists = false;
 
     if (await _wallpaperNightVideoFile.exists()) {
       await _wallpaperNightVideoFile.delete();
     }
+    _wallpaperNightVideoFileExists = false;
   }
 
   Future<void> cleanImageWallpaperFiles() async {
     if (await _wallpaperFile.exists()) {
       await _wallpaperFile.delete();
     }
+    _wallpaperFileExists = false;
 
     if (await _wallpaperDayFile.exists()) {
       await _wallpaperDayFile.delete();
     }
+    _wallpaperDayFileExists = false;
 
     if (await _wallpaperNightFile.exists()) {
       await _wallpaperNightFile.delete();
     }
+    _wallpaperNightFileExists = false;
   }
 }
 

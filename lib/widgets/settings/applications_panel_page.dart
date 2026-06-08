@@ -259,16 +259,19 @@ class _AllAppsTab extends StatelessWidget {
             return const _EmptyListPlaceholder("No applications found",
                 autofocus: true);
           }
-          return ListView(
-            children: applications
-                .asMap()
-                .entries
-                .map((entry) => EnsureVisible(
-                      alignment: 0.5,
-                      child: _AppListItem(entry.value,
-                          autofocus: entry.key == 0, isFirst: entry.key == 0),
-                    ))
-                .toList(),
+          return ListView.builder(
+            itemCount: applications.length,
+            itemBuilder: (context, index) {
+              final app = applications[index];
+              return EnsureVisible(
+                alignment: 0.5,
+                child: _AppListItem(
+                  app,
+                  autofocus: index == 0,
+                  isFirst: index == 0,
+                ),
+              );
+            },
           );
         },
       );
@@ -289,16 +292,19 @@ class _FavoritesTab extends StatelessWidget {
             return const _EmptyListPlaceholder("No applications found",
                 autofocus: true);
           }
-          return ListView(
-            children: applications
-                .asMap()
-                .entries
-                .map((entry) => EnsureVisible(
-                      alignment: 0.5,
-                      child: _AppListItem(entry.value,
-                          autofocus: entry.key == 0, isFirst: entry.key == 0),
-                    ))
-                .toList(),
+          return ListView.builder(
+            itemCount: applications.length,
+            itemBuilder: (context, index) {
+              final app = applications[index];
+              return EnsureVisible(
+                alignment: 0.5,
+                child: _AppListItem(
+                  app,
+                  autofocus: index == 0,
+                  isFirst: index == 0,
+                ),
+              );
+            },
           );
         },
       );
@@ -314,16 +320,19 @@ class _HiddenTab extends StatelessWidget {
             return const _EmptyListPlaceholder("No applications found",
                 autofocus: true);
           }
-          return ListView(
-            children: applications
-                .asMap()
-                .entries
-                .map((entry) => EnsureVisible(
-                      alignment: 0.5,
-                      child: _AppListItem(entry.value,
-                          autofocus: entry.key == 0, isFirst: entry.key == 0),
-                    ))
-                .toList(),
+          return ListView.builder(
+            itemCount: applications.length,
+            itemBuilder: (context, index) {
+              final app = applications[index];
+              return EnsureVisible(
+                alignment: 0.5,
+                child: _AppListItem(
+                  app,
+                  autofocus: index == 0,
+                  isFirst: index == 0,
+                ),
+              );
+            },
           );
         },
       );
@@ -421,103 +430,105 @@ class _AppListItemState extends State<_AppListItem> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-      child: Actions(
-        actions: <Type, Action<Intent>>{
-          ActivateIntent: CallbackAction<ActivateIntent>(
-              onInvoke: (_) => _openAppDetails()),
-          ButtonActivateIntent: CallbackAction<ButtonActivateIntent>(
-              onInvoke: (_) => _openAppDetails()),
-        },
-        child: Focus(
-          focusNode: _focusNode,
-          onKeyEvent: (node, event) {
-            if (widget.isFirst &&
-                event is KeyDownEvent &&
-                event.logicalKey == LogicalKeyboardKey.arrowUp) {
-              Actions.invoke(context, const MoveFocusToTabIntent());
-              return KeyEventResult.handled;
-            }
-            return KeyEventResult.ignored;
+    return RepaintBoundary(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+        child: Actions(
+          actions: <Type, Action<Intent>>{
+            ActivateIntent: CallbackAction<ActivateIntent>(
+                onInvoke: (_) => _openAppDetails()),
+            ButtonActivateIntent: CallbackAction<ButtonActivateIntent>(
+                onInvoke: (_) => _openAppDetails()),
           },
-          onFocusChange: (hasFocus) {
-            setState(() {});
-          },
-          child: Builder(builder: (context) {
-            final focused = Focus.of(context).hasFocus;
-            final primaryColor = Theme.of(context).colorScheme.primary;
-            return AnimatedContainer(
-                duration: const Duration(milliseconds: 50),
-                decoration: BoxDecoration(
-                  color: focused
-                      ? Colors.white.withOpacity(0.05)
-                      : Colors.white.withOpacity(
-                          0.05), // Keep background consistent or same logic
-                  borderRadius: BorderRadius.circular(12),
-                  border: focused
-                      ? Border.all(color: primaryColor, width: 2)
-                      : Border.all(color: Colors.transparent, width: 2),
-                  boxShadow: focused
-                      ? const [
-                          BoxShadow(
-                              color: Colors.black54,
-                              blurRadius: 8,
-                              spreadRadius: 1)
-                        ]
-                      : null,
-                ),
-                child: Material(
-                    // Needed for InkWell to show ripple on top of container color if needed, or inside.
-                    color: Colors.transparent,
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(12),
-                      onTap: _openAppDetails,
-                      child: FutureBuilder(
-                        future: _iconLoadFuture,
-                        builder: (context, snapshot) {
-                          Widget appIcon;
+          child: Focus(
+            focusNode: _focusNode,
+            onKeyEvent: (node, event) {
+              if (widget.isFirst &&
+                  event is KeyDownEvent &&
+                  event.logicalKey == LogicalKeyboardKey.arrowUp) {
+                Actions.invoke(context, const MoveFocusToTabIntent());
+                return KeyEventResult.handled;
+              }
+              return KeyEventResult.ignored;
+            },
+            onFocusChange: (hasFocus) {
+              setState(() {});
+            },
+            child: Builder(builder: (context) {
+              final focused = Focus.of(context).hasFocus;
+              final primaryColor = Theme.of(context).colorScheme.primary;
+              return AnimatedContainer(
+                  duration: const Duration(milliseconds: 50),
+                  decoration: BoxDecoration(
+                    color: focused
+                        ? Colors.white.withOpacity(0.05)
+                        : Colors.white.withOpacity(
+                            0.05), // Keep background consistent or same logic
+                    borderRadius: BorderRadius.circular(12),
+                    border: focused
+                        ? Border.all(color: primaryColor, width: 2)
+                        : Border.all(color: Colors.transparent, width: 2),
+                    boxShadow: focused
+                        ? const [
+                            BoxShadow(
+                                color: Colors.black54,
+                                blurRadius: 8,
+                                spreadRadius: 1)
+                          ]
+                        : null,
+                  ),
+                  child: Material(
+                      // Needed for InkWell to show ripple on top of container color if needed, or inside.
+                      color: Colors.transparent,
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(12),
+                        onTap: _openAppDetails,
+                        child: FutureBuilder(
+                          future: _iconLoadFuture,
+                          builder: (context, snapshot) {
+                            Widget appIcon;
 
-                          if (snapshot.hasData) {
-                            appIcon = Image(image: snapshot.data!, height: 40);
-                          } else if (snapshot.hasError) {
-                            appIcon = const Icon(Icons.warning);
-                          } else {
-                            appIcon = const SizedBox(
-                                height: 40,
-                                width: 40,
-                                child: Padding(
-                                  padding: EdgeInsets.all(8),
-                                  child:
-                                      CircularProgressIndicator(strokeWidth: 2),
-                                ));
-                          }
+                            if (snapshot.hasData) {
+                              appIcon = Image(image: snapshot.data!, height: 40);
+                            } else if (snapshot.hasError) {
+                              appIcon = const Icon(Icons.warning);
+                            } else {
+                              appIcon = const SizedBox(
+                                  height: 40,
+                                  width: 40,
+                                  child: Padding(
+                                    padding: EdgeInsets.all(8),
+                                    child:
+                                        CircularProgressIndicator(strokeWidth: 2),
+                                  ));
+                            }
 
-                          return ListTile(
-                            contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 4),
-                            title: Text(
-                              widget.application.name,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyMedium
-                                  ?.copyWith(
-                                      color: Colors.white,
-                                      fontWeight: focused
-                                          ? FontWeight.bold
-                                          : FontWeight.normal),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            leading: appIcon,
-                            trailing: Icon(Icons.chevron_right,
-                                size: 20,
-                                color: focused ? primaryColor : Colors.white30),
-                          );
-                        },
-                      ),
-                    )));
-          }),
+                            return ListTile(
+                              contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 4),
+                              title: Text(
+                                widget.application.name,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium
+                                    ?.copyWith(
+                                        color: Colors.white,
+                                        fontWeight: focused
+                                            ? FontWeight.bold
+                                            : FontWeight.normal),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              leading: appIcon,
+                              trailing: Icon(Icons.chevron_right,
+                                  size: 20,
+                                  color: focused ? primaryColor : Colors.white30),
+                            );
+                          },
+                        ),
+                      )));
+            }),
+          ),
         ),
       ),
     );

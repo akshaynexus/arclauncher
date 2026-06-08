@@ -46,6 +46,7 @@ class _DateTimeWidgetState extends State<DateTimeWidget> {
   late DateFormat _dateFormat;
   late DateTime   _now;
   late Timer      _timer;
+  late String     _formattedText;
 
   @override
   void initState() {
@@ -53,6 +54,7 @@ class _DateTimeWidgetState extends State<DateTimeWidget> {
 
     _dateFormat = DateFormat(widget._dateTimeFormatString, Platform.localeName);
     _now = DateTime.now();
+    _formattedText = _dateFormat.format(_now);
     _timer = Timer.periodic(widget.updateInterval ?? _defaultInterval(), (_) => _refreshTime());
   }
 
@@ -68,12 +70,25 @@ class _DateTimeWidgetState extends State<DateTimeWidget> {
   void didUpdateWidget(DateTimeWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
     
-    // Update format if it changed
-    if (oldWidget._dateTimeFormatString != widget._dateTimeFormatString) {
+    final formatChanged = oldWidget._dateTimeFormatString != widget._dateTimeFormatString;
+    final intervalChanged = oldWidget.updateInterval != widget.updateInterval;
+
+    if (formatChanged) {
       _dateFormat = DateFormat(widget._dateTimeFormatString, Platform.localeName);
-      setState(() {
-        _now = DateTime.now();
-      });
+    }
+
+    if (formatChanged || intervalChanged) {
+      _timer.cancel();
+      _timer = Timer.periodic(widget.updateInterval ?? _defaultInterval(), (_) => _refreshTime());
+      
+      final now = DateTime.now();
+      final newFormattedText = _dateFormat.format(now);
+      if (newFormattedText != _formattedText) {
+        setState(() {
+          _now = now;
+          _formattedText = newFormattedText;
+        });
+      }
     }
   }
 
@@ -85,21 +100,24 @@ class _DateTimeWidgetState extends State<DateTimeWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final formattedText = _dateFormat.format(_now);
-    
     if (widget.animate) {
       return AnimatedTimeDisplay(
-        displayText: formattedText,
+        displayText: _formattedText,
         textStyle: widget.textStyle,
       );
     }
     
-    return Text(formattedText, style: widget.textStyle);
+    return Text(_formattedText, style: widget.textStyle);
   }
 
   void _refreshTime() {
-    setState(() {
-      _now = DateTime.now();
-    });
+    final now = DateTime.now();
+    final newFormattedText = _dateFormat.format(now);
+    if (newFormattedText != _formattedText) {
+      setState(() {
+        _now = now;
+        _formattedText = newFormattedText;
+      });
+    }
   }
 }

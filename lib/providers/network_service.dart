@@ -66,6 +66,7 @@ class NetworkService extends ChangeNotifier
   int                 _dailyWifiUsage; // In bytes
   bool                _hasUsageStatsPermission;
   Timer?              _usageTimer;
+  StreamSubscription? _networkSubscription;
 
 
   NetworkService(this._channel) :
@@ -76,7 +77,7 @@ class NetworkService extends ChangeNotifier
         _dailyWifiUsage = 0,
         _hasUsageStatsPermission = false
   {
-    _channel.addNetworkChangedListener(_onNetworkChanged);
+    _networkSubscription = _channel.addNetworkChangedListener(_onNetworkChanged);
 
     _channel
         .getActiveNetworkInformation()
@@ -148,6 +149,7 @@ class NetworkService extends ChangeNotifier
 
   @override
   void dispose() {
+    _networkSubscription?.cancel();
     _usageTimer?.cancel();
     super.dispose();
   }

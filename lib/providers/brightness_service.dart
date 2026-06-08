@@ -80,6 +80,8 @@ class BrightnessService extends ChangeNotifier {
   bool _hasPermission = true;
   bool get hasPermission => _hasPermission;
 
+  int? _lastAppliedBrightnessPct;
+
   BrightnessService(this._sharedPreferences) {
     checkPermission();
     // Start the scheduler if enabled
@@ -154,6 +156,7 @@ class BrightnessService extends ChangeNotifier {
 
   Future<void> setEnabled(bool enabled) async {
     await _sharedPreferences.setBool(_brightnessEnabled, enabled);
+    _lastAppliedBrightnessPct = null;
     
     if (enabled) {
       _startScheduler();
@@ -198,6 +201,9 @@ class BrightnessService extends ChangeNotifier {
   }
 
   Future<void> _applyBrightness(int brightnessPct) async {
+    if (_lastAppliedBrightnessPct == brightnessPct) {
+      return;
+    }
     try {
       // 1. Try system-wide brightness first (needs WRITE_SETTINGS)
       final int brightnessValue255 = ((brightnessPct / 100.0) * 255).round();
@@ -208,6 +214,7 @@ class BrightnessService extends ChangeNotifier {
         final brightnessValue = brightnessPct / 100.0;
         await ScreenBrightness().setScreenBrightness(brightnessValue);
       }
+      _lastAppliedBrightnessPct = brightnessPct;
     } catch (e) {
       debugPrint('Error setting brightness ($brightnessPct%): $e');
     }

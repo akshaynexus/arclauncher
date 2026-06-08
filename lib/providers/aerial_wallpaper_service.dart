@@ -19,49 +19,43 @@
 import 'dart:math';
 
 import 'package:aerial_views/aerial_views.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' hide TimeOfDay;
 import 'package:flauncher/providers/settings_service.dart';
+import 'package:media_kit/media_kit.dart';
 
 class AerialWallpaperService extends ChangeNotifier {
   final SettingsService _settingsService;
 
   List<AerialMedia> _feed = [];
-  int _currentIndex = 0;
   bool _isLoading = false;
   String? _error;
   bool _shuffle = true;
 
   // User preferences
   int _selectedSourceIndex = 0;
+  final Set<int> _selectedSources = {0};
   VideoQuality _selectedQuality = VideoQuality.video1080Sdr;
   final Set<TimeOfDay> _timeOfDayFilter = {};
   final Set<SceneType> _sceneFilter = {};
 
   List<AerialMedia> get feed => _feed;
-  int get currentIndex => _currentIndex;
   bool get isLoading => _isLoading;
   String? get error => _error;
   bool get shuffle => _shuffle;
+  bool get enabled => _settingsService.aerialEnabled;
   int get selectedSourceIndex => _selectedSourceIndex;
+  Set<int> get selectedSources => Set.unmodifiable(_selectedSources);
   VideoQuality get selectedQuality => _selectedQuality;
   Set<TimeOfDay> get timeOfDayFilter => Set.unmodifiable(_timeOfDayFilter);
   Set<SceneType> get sceneFilter => Set.unmodifiable(_sceneFilter);
-
-  AerialMedia? get currentVideo {
-    if (_feed.isEmpty || _currentIndex >= _feed.length) return null;
-    return _feed[_currentIndex];
-  }
-
-  String? get currentVideoUrl {
-    final video = currentVideo;
-    if (video == null) return null;
-    return video.url;
-  }
-
-  bool get hasNext => _currentIndex < _feed.length - 1;
-  bool get hasPrevious => _currentIndex > 0;
   int get totalCount => _feed.length;
+
+  /// Convert feed to a media_kit Playlist
+  Playlist toPlaylist() {
+    return Playlist(
+      _feed.map((v) => Media(v.url)).toList(),
+    );
+  }
 
   static const List<AerialSource> sources = [
     AerialSource(
@@ -100,10 +94,19 @@ class AerialWallpaperService extends ChangeNotifier {
 
   AerialWallpaperService(this._settingsService) {
     _loadPreferences();
+    if (enabled) {
+      initialize();
+    }
   }
 
   void _loadPreferences() {
     _selectedSourceIndex = _settingsService.aerialVideoSourceIndex;
+    final savedSources = _settingsService.aerialSelectedSources;
+    if (savedSources.isNotEmpty) {
+      _selectedSources.addAll(savedSources);
+    } else {
+      _selectedSources.add(_selectedSourceIndex);
+    }
     _selectedQuality = VideoQuality.values[_settingsService.aerialVideoQualityIndex];
     _shuffle = _settingsService.aerialVideoShuffle;
   }
@@ -118,15 +121,16 @@ class AerialWallpaperService extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final source = sources[_selectedSourceIndex];
       final List<AerialMedia> allVideos = [];
 
-      // Get providers for this source
-      final providers = _getProvidersForSource(source.id);
-
-      for (final provider in providers) {
-        final videos = await provider.fetch();
-        allVideos.addAll(videos);
+      for (final sourceIndex in _selectedSources) {
+        if (sourceIndex < 0 || sourceIndex >= sources.length) continue;
+        final source = sources[sourceIndex];
+        final providers = _getProvidersForSource(source.id);
+        for (final provider in providers) {
+          final videos = await provider.fetch();
+          allVideos.addAll(videos);
+        }
       }
 
       if (_shuffle) {
@@ -134,7 +138,6 @@ class AerialWallpaperService extends ChangeNotifier {
       }
 
       _feed = allVideos;
-      _currentIndex = 0;
     } catch (e) {
       _error = e.toString();
     } finally {
@@ -182,44 +185,28 @@ class AerialWallpaperService extends ChangeNotifier {
     }
   }
 
-  /// Advance to the next video in the feed
-  AerialMedia? next() {
-    if (!hasNext) {
-      // Loop back to start
-      _currentIndex = 0;
-      if (_shuffle) _feed.shuffle(Random());
-    } else {
-      _currentIndex++;
-    }
-    notifyListeners();
-    return currentVideo;
-  }
-
-  /// Go to the previous video in the feed
-  AerialMedia? previous() {
-    if (hasPrevious) {
-      _currentIndex--;
-    }
-    notifyListeners();
-    return currentVideo;
-  }
-
-  /// Jump to a specific index in the feed
-  AerialMedia? jumpTo(int index) {
-    if (index >= 0 && index < _feed.length) {
-      _currentIndex = index;
-      notifyListeners();
-    }
-    return currentVideo;
-  }
-
-  /// Set source and refresh feed
+  /// Set the primary source (also ensures it's in selected sources)
   void setSource(int index) {
-    if (index >= 0 && index < sources.length && index != _selectedSourceIndex) {
+    if (index >= 0 && index < sources.length) {
       _selectedSourceIndex = index;
+      _selectedSources.add(index);
       _settingsService.setAerialVideoSourceIndex(index);
+      _settingsService.setAerialSelectedSources(_selectedSources.toList());
       refreshFeed();
     }
+  }
+
+  /// Toggle a source in the multi-source selection
+  void toggleSource(int index) {
+    if (index < 0 || index >= sources.length) return;
+    if (_selectedSources.contains(index)) {
+      if (_selectedSources.length <= 1) return;
+      _selectedSources.remove(index);
+    } else {
+      _selectedSources.add(index);
+    }
+    _settingsService.setAerialSelectedSources(_selectedSources.toList());
+    refreshFeed();
   }
 
   /// Set quality and refresh feed
@@ -237,7 +224,6 @@ class AerialWallpaperService extends ChangeNotifier {
     _settingsService.setAerialVideoShuffle(_shuffle);
     if (_shuffle) {
       _feed.shuffle(Random());
-      _currentIndex = 0;
     }
     notifyListeners();
   }
@@ -275,6 +261,11 @@ class AerialWallpaperService extends ChangeNotifier {
 
   void clearError() {
     _error = null;
+    notifyListeners();
+  }
+
+  void clearFeed() {
+    _feed = [];
     notifyListeners();
   }
 }

@@ -109,7 +109,7 @@ void main() {
       version: "1.0.0",
     );
     when(appsService.applications).thenReturn([application]);
-    when(appsService.categoriesWithApps).thenReturn([CategoryWithApps(fakeCategory(), [])]);
+    when(appsService.categories).thenReturn([fakeCategory()]);
 
     await _pumpWidgetWithProviders(tester, appsService);
 
@@ -128,7 +128,7 @@ void main() {
       version: "1.0.0",
     );
     when(appsService.applications).thenReturn([application]);
-    when(appsService.categoriesWithApps).thenReturn([CategoryWithApps(fakeCategory(), [])]);
+    when(appsService.categories).thenReturn([fakeCategory()]);
 
     await _pumpWidgetWithProviders(tester, appsService);
 

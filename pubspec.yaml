@@ -23,9 +23,21 @@ dependencies:
   sqlite3_flutter_libs: ^0.6.0+eol
   flutter_localizations:
     sdk: flutter
-  video_player: ^2.9.5
-  aerial_views: ^0.1.0
+  media_kit:
+    git:
+      url: https://github.com/akshaynexus/media-kit.git
+      ref: expose-set-property
+      path: media_kit
+  media_kit_video:
+    git:
+      url: https://github.com/akshaynexus/media-kit.git
+      ref: expose-set-property
+      path: media_kit_video
+  media_kit_libs_video: ^1.0.5
+  aerial_views:
+    path: ../AerialViewsFlutter
   easy_localization: ^3.0.8
+  flutter_displaymode: any
 
 dev_dependencies:
   flutter_test:

@@ -16,10 +16,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import 'package:flauncher/database.dart';
+import 'package:flauncher/models/category.dart';
 import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/widgets/rename_category_dialog.dart';
-import 'package:flauncher/widgets/settings/category_panel_page.dart';
+import 'package:flauncher/widgets/settings/launcher_section_panel_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -42,9 +42,9 @@ void main() {
     final appsService = MockAppsService();
     final favoritesCategory =
         fakeCategory(name: "Favorites", sort: CategorySort.alphabetical, type: CategoryType.grid, columnsCount: 6);
-    when(appsService.categoriesWithApps).thenReturn([
-      CategoryWithApps(favoritesCategory, []),
-      CategoryWithApps(fakeCategory(name: "Applications"), []),
+    when(appsService.categories).thenReturn([
+      favoritesCategory,
+      fakeCategory(name: "Applications"),
     ]);
 
     await _pumpWidgetWithProviders(tester, appsService, favoritesCategory.id);
@@ -59,9 +59,9 @@ void main() {
     final appsService = MockAppsService();
     final favoritesCategory =
         fakeCategory(name: "Favorites", sort: CategorySort.alphabetical, type: CategoryType.grid, columnsCount: 6);
-    when(appsService.categoriesWithApps).thenReturn([
-      CategoryWithApps(favoritesCategory, []),
-      CategoryWithApps(fakeCategory(name: "Applications"), []),
+    when(appsService.categories).thenReturn([
+      favoritesCategory,
+      fakeCategory(name: "Applications"),
     ]);
 
     await _pumpWidgetWithProviders(tester, appsService, favoritesCategory.id);
@@ -77,9 +77,9 @@ void main() {
     final appsService = MockAppsService();
     final favoritesCategory =
         fakeCategory(name: "Favorites", sort: CategorySort.alphabetical, type: CategoryType.grid, columnsCount: 6);
-    when(appsService.categoriesWithApps).thenReturn([
-      CategoryWithApps(favoritesCategory, []),
-      CategoryWithApps(fakeCategory(name: "Applications"), []),
+    when(appsService.categories).thenReturn([
+      favoritesCategory,
+      fakeCategory(name: "Applications"),
     ]);
 
     await _pumpWidgetWithProviders(tester, appsService, favoritesCategory.id);
@@ -99,9 +99,9 @@ void main() {
     final appsService = MockAppsService();
     final favoritesCategory =
         fakeCategory(name: "Favorites", sort: CategorySort.alphabetical, type: CategoryType.row, rowHeight: 110);
-    when(appsService.categoriesWithApps).thenReturn([
-      CategoryWithApps(favoritesCategory, []),
-      CategoryWithApps(fakeCategory(name: "Applications"), []),
+    when(appsService.categories).thenReturn([
+      favoritesCategory,
+      fakeCategory(name: "Applications"),
     ]);
 
     await _pumpWidgetWithProviders(tester, appsService, favoritesCategory.id);
@@ -122,9 +122,9 @@ void main() {
     final appsService = MockAppsService();
     final favoritesCategory =
         fakeCategory(name: "Favorites", sort: CategorySort.alphabetical, type: CategoryType.grid, columnsCount: 6);
-    when(appsService.categoriesWithApps).thenReturn([
-      CategoryWithApps(favoritesCategory, []),
-      CategoryWithApps(fakeCategory(name: "Applications"), []),
+    when(appsService.categories).thenReturn([
+      favoritesCategory,
+      fakeCategory(name: "Applications"),
     ]);
 
     await _pumpWidgetWithProviders(tester, appsService, favoritesCategory.id);
@@ -146,9 +146,9 @@ void main() {
     final appsService = MockAppsService();
     final favoritesCategory =
         fakeCategory(name: "Favorites", sort: CategorySort.alphabetical, type: CategoryType.row, rowHeight: 110);
-    when(appsService.categoriesWithApps).thenReturn([
-      CategoryWithApps(favoritesCategory, []),
-      CategoryWithApps(fakeCategory(name: "Applications"), []),
+    when(appsService.categories).thenReturn([
+      favoritesCategory,
+      fakeCategory(name: "Applications"),
     ]);
 
     await _pumpWidgetWithProviders(tester, appsService, favoritesCategory.id);
@@ -170,9 +170,9 @@ void main() {
     final appsService = MockAppsService();
     final favoritesCategory =
         fakeCategory(name: "Favorites", sort: CategorySort.alphabetical, type: CategoryType.row, rowHeight: 110);
-    when(appsService.categoriesWithApps).thenReturn([
-      CategoryWithApps(favoritesCategory, []),
-      CategoryWithApps(fakeCategory(name: "Applications"), []),
+    when(appsService.categories).thenReturn([
+      favoritesCategory,
+      fakeCategory(name: "Applications"),
     ]);
 
     await _pumpWidgetWithProviders(tester, appsService, favoritesCategory.id);
@@ -185,7 +185,7 @@ void main() {
     await tester.sendKeyEvent(LogicalKeyboardKey.enter);
     await tester.pumpAndSettle();
 
-    verify(appsService.deleteSection(favoritesCategory));
+    verify(appsService.deleteSection(0));
   });
 }
 
@@ -196,7 +196,7 @@ Future<void> _pumpWidgetWithProviders(WidgetTester tester, AppsService appsServi
         ChangeNotifierProvider<AppsService>.value(value: appsService),
       ],
       builder: (_, __) => MaterialApp(
-        home: Scaffold(body: CategoryPanelPage(categoryId: categoryId)),
+        home: Scaffold(body: LauncherSectionPanelPage(sectionIndex: categoryId)),
       ),
     ),
   );

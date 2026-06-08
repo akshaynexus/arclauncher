@@ -17,6 +17,7 @@
  */
 
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flauncher/database.dart';
 import 'package:flauncher/flauncher_channel.dart';
@@ -28,10 +29,12 @@ import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/brightness_service.dart';
 import 'package:flauncher/providers/wallpaper_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_displaymode/flutter_displaymode.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:media_kit/media_kit.dart';
 
 import 'flauncher_app.dart';
 
@@ -40,9 +43,24 @@ Future<void> main() async {
   await EasyLocalization.ensureInitialized();
   initializeDateFormatting();
 
-  final sharedPreferences = await SharedPreferences.getInstance();
+  if (Platform.isAndroid) {
+    try {
+      await FlutterDisplayMode.setHighRefreshRate();
+    } catch (e) {
+      debugPrint('Error setting high refresh rate display mode: $e');
+    }
+  }
+
+  // Defer heavy MediaKit native init to after first frame
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    MediaKit.ensureInitialized();
+  });
+
   final fLauncherChannel = FLauncherChannel();
   final fLauncherDatabase = FLauncherDatabase(connect());
+
+  // Run SharedPreferences disk I/O concurrently with DB open
+  final sharedPreferences = await SharedPreferences.getInstance();
 
   runApp(EasyLocalization(
     supportedLocales: const [Locale('en'), Locale('es')],
@@ -66,8 +84,7 @@ Future<void> main() async {
               create: (context) {
                 SettingsService settingsService = Provider.of(context, listen: false);
                 return AerialWallpaperService(settingsService);
-              },
-              lazy: false),
+              }),
           ChangeNotifierProvider(
               create: (_) => BrightnessService(sharedPreferences),
               lazy: false),

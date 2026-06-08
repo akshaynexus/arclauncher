@@ -35,6 +35,7 @@ import 'package:flauncher/widgets/launcher_alternative_view.dart';
 import 'package:flauncher/widgets/focus_aware_app_bar.dart';
 import 'package:flauncher/widgets/wallpaper_video_background.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flauncher/generated/locale_keys.g.dart';
@@ -66,9 +67,9 @@ class _FLauncherState extends State<FLauncher> {
           child: Stack(
             children: [
               RepaintBoundary(
-                child: Consumer<WallpaperService>(
-                  builder: (_, wallpaperService, __) =>
-                      _wallpaper(context, wallpaperService),
+                child: Consumer2<WallpaperService, AerialWallpaperService>(
+                  builder: (context, wallpaperService, aerialService, _) =>
+                      _wallpaper(context, wallpaperService, aerialService),
                 ),
               ),
               Consumer<LauncherState>(
@@ -109,10 +110,36 @@ class _FLauncherState extends State<FLauncher> {
       return true;
     }).toList();
 
-    if (favoriteApps.isEmpty && otherSections.isEmpty)
-      return _emptyState(context);
+    if (favoriteApps.isEmpty && otherSections.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.apps, size: 64, color: Colors.white54),
+            const SizedBox(height: 16),
+            Text(
+              LocaleKeys.loading.tr(),
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            const SizedBox(height: 24),
+            TextButton.icon(
+              onPressed: () {
+                final appsService = context.read<AppsService>();
+                appsService.retrySync();
+              },
+              icon: const Icon(Icons.refresh, color: Colors.white70),
+              label: Text(
+                'Retry',
+                style: TextStyle(color: Colors.white70),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
 
     return CustomScrollView(
+      scrollCacheExtent: const ScrollCacheExtent.pixels(1000.0),
       slivers: [
         if (favoriteApps.isNotEmpty) ...[
           SliverToBoxAdapter(
@@ -337,12 +364,14 @@ class _FLauncherState extends State<FLauncher> {
     );
   }
 
-  Widget _wallpaper(BuildContext context, WallpaperService wallpaperService) {
+  Widget _wallpaper(
+      BuildContext context,
+      WallpaperService wallpaperService,
+      AerialWallpaperService aerialService) {
     final physicalSize = MediaQuery.sizeOf(context);
 
     // Check if aerial mode is enabled
-    final aerialService = context.watch<AerialWallpaperService>();
-    if (aerialService.currentVideo != null) {
+    if (aerialService.enabled) {
       return SizedBox(
         width: physicalSize.width,
         height: physicalSize.height,

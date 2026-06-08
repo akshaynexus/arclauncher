@@ -43,18 +43,26 @@ class AccentColorPage extends StatelessWidget {
     (ACCENT_COLOR_ICE_BLUE, 'Ice Blue'),
   ];
 
+  static final List<(String hex, String name, Color color)> _parsedPresets = colorPresets.map((preset) {
+    final (hex, name) = preset;
+    return (hex, name, Color(int.parse('FF$hex', radix: 16)));
+  }).toList();
+
+  static final Map<String, Color> _colorCache = {
+    for (var preset in _parsedPresets) preset.$1: preset.$3,
+  };
+
   const AccentColorPage({super.key});
 
   Color _hexToColor(String hex) {
-    return Color(int.parse('FF$hex', radix: 16));
+    return _colorCache[hex] ?? Color(int.parse('FF$hex', radix: 16));
   }
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<SettingsService>(
-      builder: (context, settingsService, _) {
-        final currentColor = settingsService.accentColorHex;
-        
+    return Selector<SettingsService, String>(
+      selector: (context, settingsService) => settingsService.accentColorHex,
+      builder: (context, currentColor, _) {
         return Column(
           children: [
             Text('Accent Color', style: Theme.of(context).textTheme.titleLarge),
@@ -68,52 +76,54 @@ class AccentColorPage extends StatelessWidget {
                   mainAxisSpacing: 16,
                   childAspectRatio: 1.3,
                 ),
-                itemCount: colorPresets.length,
+                itemCount: _parsedPresets.length,
                 itemBuilder: (context, index) {
-                  final (hex, name) = colorPresets[index];
+                  final (hex, name, color) = _parsedPresets[index];
                   final isSelected = currentColor == hex;
                   
                   return _ColorTile(
-                    color: _hexToColor(hex),
+                    color: color,
                     name: name,
                     isSelected: isSelected,
                     autofocus: index == 0,
-                    onTap: () => settingsService.setAccentColor(hex),
+                    onTap: () => context.read<SettingsService>().setAccentColor(hex),
                   );
                 },
               ),
             ),
             // Preview section
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Container(
+            RepaintBoundary(
+              child: Padding(
                 padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.black26,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: _hexToColor(currentColor),
-                    width: 3,
-                  ),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.palette,
+                child: Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.black26,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
                       color: _hexToColor(currentColor),
-                      size: 32,
+                      width: 3,
                     ),
-                    const SizedBox(width: 12),
-                    Text(
-                      'Preview',
-                      style: TextStyle(
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.palette,
                         color: _hexToColor(currentColor),
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
+                        size: 32,
                       ),
-                    ),
-                  ],
+                      const SizedBox(width: 12),
+                      Text(
+                        'Preview',
+                        style: TextStyle(
+                          color: _hexToColor(currentColor),
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -148,53 +158,55 @@ class _ColorTileState extends State<_ColorTile> {
 
   @override
   Widget build(BuildContext context) {
-    return Actions(
-      actions: <Type, Action<Intent>>{
-        ActivateIntent: CallbackAction<ActivateIntent>(onInvoke: (_) => widget.onTap()),
-        ButtonActivateIntent: CallbackAction<ButtonActivateIntent>(onInvoke: (_) => widget.onTap()),
-      },
-      child: Focus(
-        autofocus: widget.autofocus,
-        onFocusChange: (hasFocus) => setState(() => _focused = hasFocus),
-        child: GestureDetector(
-          onTap: widget.onTap,
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 50),
-            decoration: BoxDecoration(
-              color: widget.color,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: _focused ? Colors.white : (widget.isSelected ? Colors.white : Colors.transparent),
-                width: _focused ? 3 : (widget.isSelected ? 2 : 0),
+    return RepaintBoundary(
+      child: Actions(
+        actions: <Type, Action<Intent>>{
+          ActivateIntent: CallbackAction<ActivateIntent>(onInvoke: (_) => widget.onTap()),
+          ButtonActivateIntent: CallbackAction<ButtonActivateIntent>(onInvoke: (_) => widget.onTap()),
+        },
+        child: Focus(
+          autofocus: widget.autofocus,
+          onFocusChange: (hasFocus) => setState(() => _focused = hasFocus),
+          child: GestureDetector(
+            onTap: widget.onTap,
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 50),
+              decoration: BoxDecoration(
+                color: widget.color,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: _focused ? Colors.white : (widget.isSelected ? Colors.white : Colors.transparent),
+                  width: _focused ? 3 : (widget.isSelected ? 2 : 0),
+                ),
+                boxShadow: _focused
+                    ? [BoxShadow(color: widget.color.withOpacity(0.6), blurRadius: 12, spreadRadius: 2)]
+                    : widget.isSelected
+                        ? [BoxShadow(color: widget.color.withOpacity(0.4), blurRadius: 8)]
+                        : null,
               ),
-              boxShadow: _focused
-                  ? [BoxShadow(color: widget.color.withOpacity(0.6), blurRadius: 12, spreadRadius: 2)]
-                  : widget.isSelected
-                      ? [BoxShadow(color: widget.color.withOpacity(0.4), blurRadius: 8)]
-                      : null,
-            ),
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (widget.isSelected)
-                    const Icon(Icons.check, color: Colors.white, size: 24),
-                  if (widget.isSelected)
-                    const SizedBox(height: 2),
-                  FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Text(
-                      widget.name,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14,
-                        shadows: [Shadow(color: Colors.black54, blurRadius: 4)],
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (widget.isSelected)
+                      const Icon(Icons.check, color: Colors.white, size: 24),
+                    if (widget.isSelected)
+                      const SizedBox(height: 2),
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        widget.name,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                          shadows: [Shadow(color: Colors.black54, blurRadius: 4)],
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),

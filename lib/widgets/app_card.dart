@@ -210,12 +210,12 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
                             ),
                             if (_moving) ..._arrows(),
                             IgnorePointer(
-                              child: AnimatedOpacity(
+                              child: AnimatedContainer(
                                 duration: const Duration(milliseconds: 200),
                                 curve: Curves.easeInOut,
-                                opacity: shouldHighlight ? 0.0 : 1.0,
-                                child:
-                                    const ColoredBox(color: Color(0x1A000000)),
+                                color: shouldHighlight
+                                    ? const Color(0x00000000)
+                                    : const Color(0x1A000000),
                               ),
                             ),
                             Selector<SettingsService, (bool, String)>(
@@ -235,17 +235,17 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
                                   if (animationEnabled) {
                                     return AnimatedBuilder(
                                       animation: _curvedAnimation,
-                                      child: IgnorePointer(
-                                        child: RepaintBoundary(
-                                          child: _HighlightOutline(
-                                              color: accentColor),
-                                        ),
-                                      ),
-                                      builder: (context, child) {
+                                      builder: (context, _) {
                                         final opacity =
                                             0.4 + (_animation.value * 0.6);
-                                        return Opacity(
-                                            opacity: opacity, child: child);
+                                        return IgnorePointer(
+                                          child: RepaintBoundary(
+                                            child: _HighlightOutline(
+                                              color: accentColor
+                                                  .withOpacity(opacity),
+                                            ),
+                                          ),
+                                        );
                                       },
                                     );
                                   } else {
@@ -292,7 +292,8 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
       }
       if (mounted) {
         setState(() {
-          _loadedImage = (type, ResizeImage(MemoryImage(bytes), width: 480));
+          final targetWidth = type == AppImageType.Banner ? 480 : 120;
+          _loadedImage = (type, ResizeImage(MemoryImage(bytes), width: targetWidth));
         });
       }
     } catch (_) {

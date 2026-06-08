@@ -47,7 +47,7 @@ void main() {
   testWidgets("'Applications' opens ApplicationsPanelPage", (tester) async {
     final settingsService = MockSettingsService();
     final appsService = MockAppsService();
-    when(appsService.categoriesWithApps).thenReturn([]);
+    when(appsService.categories).thenReturn([]);
     when(appsService.applications).thenReturn([]);
     when(settingsService.appHighlightAnimationEnabled).thenReturn(true);
 
@@ -62,7 +62,7 @@ void main() {
   testWidgets("'Categories' opens CategoriesPanelPage", (tester) async {
     final settingsService = MockSettingsService();
     final appsService = MockAppsService();
-    when(appsService.categoriesWithApps).thenReturn([]);
+    when(appsService.categories).thenReturn([]);
     when(appsService.applications).thenReturn([]);
     when(settingsService.appHighlightAnimationEnabled).thenReturn(true);
 
@@ -78,7 +78,7 @@ void main() {
   testWidgets("'Wallpaper' navigates to WallpaperPanelPage", (tester) async {
     final settingsService = MockSettingsService();
     final appsService = MockAppsService();
-    when(appsService.categoriesWithApps).thenReturn([]);
+    when(appsService.categories).thenReturn([]);
     when(appsService.applications).thenReturn([]);
     when(settingsService.appHighlightAnimationEnabled).thenReturn(true);
 
@@ -95,7 +95,7 @@ void main() {
   testWidgets("'Android settings' calls AppsService", (tester) async {
     final settingsService = MockSettingsService();
     final appsService = MockAppsService();
-    when(appsService.categoriesWithApps).thenReturn([]);
+    when(appsService.categories).thenReturn([]);
     when(appsService.applications).thenReturn([]);
     when(settingsService.appHighlightAnimationEnabled).thenReturn(true);
 
@@ -113,7 +113,7 @@ void main() {
 
   testWidgets("'Use 24-hour time format' toggle calls SettingsService", (tester) async {
     final appsService = MockAppsService();
-    when(appsService.categoriesWithApps).thenReturn([]);
+    when(appsService.categories).thenReturn([]);
     when(appsService.applications).thenReturn([]);
 
     await _pumpWidgetWithProviders(tester, mkSettingsService(), appsService);
@@ -131,7 +131,7 @@ void main() {
   testWidgets("'Crash Reporting' toggle calls SettingsService", (tester) async {
     final settingsService = MockSettingsService();
     final appsService = MockAppsService();
-    when(appsService.categoriesWithApps).thenReturn([]);
+    when(appsService.categories).thenReturn([]);
     when(appsService.applications).thenReturn([]);
     when(settingsService.appHighlightAnimationEnabled).thenReturn(true);
 
@@ -151,7 +151,7 @@ void main() {
   testWidgets("'Analytics Reporting' toggle calls SettingsService", (tester) async {
     final settingsService = MockSettingsService();
     final appsService = MockAppsService();
-    when(appsService.categoriesWithApps).thenReturn([]);
+    when(appsService.categories).thenReturn([]);
     when(appsService.applications).thenReturn([]);
     when(settingsService.appHighlightAnimationEnabled).thenReturn(true);
 
@@ -172,7 +172,7 @@ void main() {
   testWidgets("'About FLauncher' opens about dialog", (tester) async {
     final settingsService = MockSettingsService();
     final appsService = MockAppsService();
-    when(appsService.categoriesWithApps).thenReturn([]);
+    when(appsService.categories).thenReturn([]);
     when(appsService.applications).thenReturn([]);
     when(settingsService.appHighlightAnimationEnabled).thenReturn(true);
     PackageInfoPlatform.instance = _MockPackageInfoPlatform();
@@ -190,7 +190,7 @@ void main() {
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.sendKeyEvent(LogicalKeyboardKey.enter);
     await tester.pumpAndSettle();
-    expect(find.byType(FLauncherAboutDialog), findsOneWidget);
+    expect(find.byType(LTvLauncherAboutDialog), findsOneWidget);
   });
 }
 

@@ -35,100 +35,109 @@ class NodeSearcher {
   NodeSearcher(this.directionToSearch);
 
   /// should be called first
-  List<CandidateNode> findCandidates(List<FocusNode> nodes, FocusNode from) {
-    List<FocusNode> copy = List.from(nodes, growable: true);
+  List<CandidateNode> findCandidates(List<FocusNode> nodes, FocusNode fromNode) {
+    final from = CandidateNode(fromNode);
+    final List<CandidateNode> candidates = [];
 
-    switch (directionToSearch) {
-      case TraversalDirection.up:
-        copy.removeWhere((element) => element.isBelowOrEquals(from));
-        break;
-      case TraversalDirection.down:
-        copy.removeWhere((element) => element.isAboveOrEquals(from));
-        break;
-      case TraversalDirection.right:
-        copy.removeWhere((element) => element.isLeftToOrEquals(from) || !element.isOnTheSameRow(from));
-        break;
-      case TraversalDirection.left:
-        copy.removeWhere((element) => element.isRightToOrEquals(from) || !element.isOnTheSameRow(from));
-        break;
+    for (final node in nodes) {
+      if (node == fromNode) continue;
+      
+      final candidate = CandidateNode(node);
+      bool keep = false;
+      switch (directionToSearch) {
+        case TraversalDirection.up:
+          keep = !candidate.isBelowOrEquals(from);
+          break;
+        case TraversalDirection.down:
+          keep = !candidate.isAboveOrEquals(from);
+          break;
+        case TraversalDirection.right:
+          keep = !candidate.isLeftToOrEquals(from) && candidate.isOnTheSameRow(from);
+          break;
+        case TraversalDirection.left:
+          keep = !candidate.isRightToOrEquals(from) && candidate.isOnTheSameRow(from);
+          break;
+      }
+      if (keep) {
+        candidates.add(candidate);
+      }
     }
-    return toCandidateNodes(copy);
+    return candidates;
   }
 
-  FocusNode findBestFocusNode(List<CandidateNode> nodes, FocusNode from) {
-    List<FocusNode> candidates = toFocusNodes(nodes);
+  FocusNode findBestFocusNode(List<CandidateNode> candidates, FocusNode fromNode) {
+    final from = CandidateNode(fromNode);
+    CandidateNode best = candidates.first;
 
-    return candidates.reduce((bestNode, challenger) {
-      if (directionToSearch == TraversalDirection.down && challenger.isAbove(bestNode)) {
-        return challenger;
-      } else if (directionToSearch == TraversalDirection.up && challenger.isBelow(bestNode)) {
-        return challenger;
-      } else if (directionToSearch == TraversalDirection.left && challenger.isRightTo(bestNode)) {
-        return challenger;
-      } else if (directionToSearch == TraversalDirection.right && challenger.isLeftTo(bestNode)) {
-        return challenger;
+    for (int i = 1; i < candidates.length; i++) {
+      final challenger = candidates[i];
+      bool useChallenger = false;
+
+      if (directionToSearch == TraversalDirection.down && challenger.isAbove(best)) {
+        useChallenger = true;
+      } else if (directionToSearch == TraversalDirection.up && challenger.isBelow(best)) {
+        useChallenger = true;
+      } else if (directionToSearch == TraversalDirection.left && challenger.isRightTo(best)) {
+        useChallenger = true;
+      } else if (directionToSearch == TraversalDirection.right && challenger.isLeftTo(best)) {
+        useChallenger = true;
+      } else if (challenger.isOnTheSameRow(best) && challenger.distance(from) < best.distance(from)) {
+        useChallenger = true;
       }
-      // compute the element which is the closest horizontally
-      if (challenger.isOnTheSameRow(bestNode) && challenger.distance(from) < bestNode.distance(from)) {
-        return challenger;
+
+      if (useChallenger) {
+        best = challenger;
       }
-      return bestNode;
-    });
+    }
+
+    return best.node;
   }
 }
 
-/// An internal object to use the [NodeSearcher] class as expected
+/// An internal object that caches focus node geometry to avoid costly repeated layout queries.
 class CandidateNode {
   final FocusNode node;
+  final Rect rect;
 
-  CandidateNode(this.node);
-}
+  CandidateNode(this.node) : rect = node.rect;
 
-/// Some conversion utilities used internally
-List<CandidateNode> toCandidateNodes(List<FocusNode> nodes) => nodes.map((e) => CandidateNode(e)).toList();
-
-List<FocusNode> toFocusNodes(List<CandidateNode> nodes) => nodes.map((e) => e.node).toList();
-
-/// A few extension methods to the [FocusNode] to be able to compare their
-/// respective position easily.
-extension Geometry on FocusNode {
-  bool isBelow(FocusNode other) {
+  bool isBelow(CandidateNode other) {
     return rect.center.dy.round() > other.rect.center.dy.round();
   }
 
-  bool isBelowOrEquals(FocusNode other) {
+  bool isBelowOrEquals(CandidateNode other) {
     return rect.center.dy.round() >= other.rect.center.dy.round();
   }
 
-  bool isRightTo(FocusNode other) {
+  bool isRightTo(CandidateNode other) {
     return rect.center.dx.round() > other.rect.center.dx.round();
   }
 
-  bool isRightToOrEquals(FocusNode other) {
+  bool isRightToOrEquals(CandidateNode other) {
     return rect.center.dx.round() >= other.rect.center.dx.round();
   }
 
-  bool isLeftTo(FocusNode other) {
+  bool isLeftTo(CandidateNode other) {
     return rect.center.dx.round() < other.rect.center.dx.round();
   }
 
-  bool isLeftToOrEquals(FocusNode other) {
+  bool isLeftToOrEquals(CandidateNode other) {
     return rect.center.dx.round() <= other.rect.center.dx.round();
   }
 
-  bool isAbove(FocusNode other) {
+  bool isAbove(CandidateNode other) {
     return rect.center.dy.round() < other.rect.center.dy.round();
   }
 
-  bool isAboveOrEquals(FocusNode other) {
+  bool isAboveOrEquals(CandidateNode other) {
     return rect.center.dy.round() <= other.rect.center.dy.round();
   }
 
-  bool isOnTheSameRow(FocusNode other) {
+  bool isOnTheSameRow(CandidateNode other) {
     return rect.center.dy.round() == other.rect.center.dy.round();
   }
 
-  double distance(FocusNode other) {
+  double distance(CandidateNode other) {
     return sqrt(pow(rect.center.dx.round() - other.rect.center.dx.round(), 2) +
         pow(rect.center.dy.round() - other.rect.center.dy.round(), 2));
   }

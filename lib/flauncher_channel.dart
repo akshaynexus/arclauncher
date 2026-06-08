@@ -124,13 +124,13 @@ class FLauncherChannel {
   Future<void> requestInstallUnknownAppsPermission() async =>
       await _methodChannel.invokeMethod("requestInstallUnknownAppsPermission");
 
-  void addAppsChangedListener(void Function(Map<String, dynamic>) listener) =>
+  StreamSubscription<dynamic> addAppsChangedListener(void Function(Map<String, dynamic>) listener) =>
       _appsEventChannel.receiveBroadcastStream().listen((event) {
         Map<dynamic, dynamic> eventMap = event;
         listener(eventMap.cast<String, dynamic>());
       });
 
-  void addNetworkChangedListener(void Function(Map<String, dynamic>) listener) =>
+  StreamSubscription<dynamic> addNetworkChangedListener(void Function(Map<String, dynamic>) listener) =>
       _networkEventChannel.receiveBroadcastStream().listen((event) {
         Map<dynamic, dynamic> eventMap = event;
         listener(eventMap.cast<String, dynamic>());

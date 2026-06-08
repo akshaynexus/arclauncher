@@ -1,6 +1,7 @@
 import 'package:flauncher/providers/apps_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:collection/collection.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flauncher/generated/locale_keys.g.dart';
 
@@ -19,6 +20,7 @@ class AddToCategoryDialog extends StatelessWidget {
             .where((category) => !category.applications.any((application) =>
                 application.packageName == selectedApplication.packageName))
             .toList(),
+        shouldRebuild: (prev, next) => const ListEquality().equals(prev, next),
         builder: (context, categories, _) {
           return SidePanelDialog(
             width: 300,
@@ -37,17 +39,19 @@ class AddToCategoryDialog extends StatelessWidget {
                     itemCount: categories.length,
                     itemBuilder: (context, index) {
                       final category = categories[index];
-                      return Card(
-                        clipBehavior: Clip.antiAlias,
-                        margin: EdgeInsets.only(bottom: 8),
-                        child: ListTile(
-                          onTap: () async {
-                            await context
-                                .read<AppsService>()
-                                .addToCategory(selectedApplication, category);
-                            Navigator.of(context).pop();
-                          },
-                          title: Text(category.name),
+                      return RepaintBoundary(
+                        child: Card(
+                          clipBehavior: Clip.antiAlias,
+                          margin: EdgeInsets.only(bottom: 8),
+                          child: ListTile(
+                            onTap: () async {
+                              await context
+                                  .read<AppsService>()
+                                  .addToCategory(selectedApplication, category);
+                              Navigator.of(context).pop();
+                            },
+                            title: Text(category.name),
+                          ),
                         ),
                       );
                     },

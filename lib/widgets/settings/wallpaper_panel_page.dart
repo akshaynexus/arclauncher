@@ -37,7 +37,7 @@ class WallpaperPanelPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return ListView(
       children: [
         Text(LocaleKeys.wallpaper.tr(),
             style: Theme.of(context).textTheme.titleLarge),
@@ -47,19 +47,41 @@ class WallpaperPanelPage extends StatelessWidget {
           return RoundedSwitchListTile(
             title: Text(LocaleKeys.aerialViews.tr()),
             secondary: Icon(Icons.flight),
-            value: aerialService.feed.isNotEmpty,
+            value: aerialService.enabled,
             onChanged: (value) => _toggleAerial(context, value),
           );
         }),
         // Aerial Views settings (shown when enabled)
         Consumer<AerialWallpaperService>(builder: (_, aerialService, __) {
-          if (aerialService.feed.isEmpty) return SizedBox.shrink();
+          if (!aerialService.enabled) return SizedBox.shrink();
           return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildSourceDropdown(context, aerialService),
-              _buildQualityDropdown(context, aerialService),
+              Padding(
+                padding: const EdgeInsets.only(left: 16, top: 12, bottom: 4),
+                child: Text(
+                  'Sources',
+                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                ),
+              ),
+              _buildSourceTiles(context, aerialService),
+              const SizedBox(height: 8),
+              Padding(
+                padding: const EdgeInsets.only(left: 16, top: 8, bottom: 4),
+                child: Text(
+                  'Quality',
+                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                ),
+              ),
+              _buildQualityTiles(context, aerialService),
+              const SizedBox(height: 8),
               _buildShuffleToggle(context, aerialService),
-              _buildFilterChips(context, aerialService),
+              const SizedBox(height: 8),
+              _buildFilterSection(context, aerialService),
             ],
           );
         }),
@@ -137,124 +159,75 @@ class WallpaperPanelPage extends StatelessWidget {
 
   Future<void> _toggleAerial(BuildContext context, bool enabled) async {
     final aerialService = context.read<AerialWallpaperService>();
+    final settingsService = context.read<SettingsService>();
+    await settingsService.setAerialEnabled(enabled);
     if (enabled) {
       await aerialService.initialize();
     } else {
-      // Clear the feed
-      aerialService.refreshFeed();
+      aerialService.clearFeed();
     }
   }
 
-  Widget _buildSourceDropdown(BuildContext context, AerialWallpaperService service) {
+  Widget _buildSourceTiles(BuildContext context, AerialWallpaperService service) {
     final accentColor = Theme.of(context).colorScheme.primary;
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: Row(
-        children: [
-          Icon(Icons.source, size: 20, color: accentColor),
-          const SizedBox(width: 12),
-          Text('Source:', style: Theme.of(context).textTheme.bodyMedium),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              decoration: BoxDecoration(
-                color: Colors.white10,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: DropdownButton<int>(
-                value: service.selectedSourceIndex,
-                dropdownColor: const Color(0xFF2A2A4E),
-                style: const TextStyle(color: Colors.white),
-                underline: const SizedBox(),
-                isDense: true,
-                isExpanded: true,
-                items: List.generate(AerialWallpaperService.sources.length, (i) {
-                  final source = AerialWallpaperService.sources[i];
-                  return DropdownMenuItem(
-                    value: i,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(source.icon, size: 16, color: accentColor),
-                        const SizedBox(width: 8),
-                        Text(source.name, style: const TextStyle(fontSize: 13)),
-                      ],
-                    ),
-                  );
-                }),
-                onChanged: (index) {
-                  if (index != null) service.setSource(index);
-                },
-              ),
-            ),
+    return Column(
+      children: List.generate(AerialWallpaperService.sources.length, (i) {
+        final source = AerialWallpaperService.sources[i];
+        final isMultiSelected = service.selectedSources.contains(i);
+        return FocusableSettingsTile(
+          autofocus: i == 0,
+          leading: Icon(source.icon, size: 20),
+          title: Text(
+            source.name,
+            style: Theme.of(context).textTheme.bodyMedium,
           ),
-        ],
-      ),
+          trailing: Icon(
+            isMultiSelected ? Icons.check_box : Icons.check_box_outline_blank,
+            color: isMultiSelected ? accentColor : Colors.white38,
+            size: 24,
+          ),
+          onPressed: () => service.toggleSource(i),
+        );
+      }),
     );
   }
 
-  Widget _buildQualityDropdown(BuildContext context, AerialWallpaperService service) {
+  Widget _buildQualityTiles(BuildContext context, AerialWallpaperService service) {
     final accentColor = Theme.of(context).colorScheme.primary;
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: Row(
-        children: [
-          Icon(Icons.high_quality, size: 20, color: accentColor),
-          const SizedBox(width: 12),
-          Text('Quality:', style: Theme.of(context).textTheme.bodyMedium),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              decoration: BoxDecoration(
-                color: Colors.white10,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: DropdownButton<VideoQuality>(
-                value: service.selectedQuality,
-                dropdownColor: const Color(0xFF2A2A4E),
-                style: const TextStyle(color: Colors.white),
-                underline: const SizedBox(),
-                isDense: true,
-                isExpanded: true,
-                items: AerialWallpaperService.qualities.map((q) {
-                  return DropdownMenuItem(
-                    value: q,
-                    child: Text(qualityToString(q), style: const TextStyle(fontSize: 13)),
-                  );
-                }).toList(),
-                onChanged: (q) {
-                  if (q != null) service.setQuality(q);
-                },
-              ),
-            ),
+    return Column(
+      children: AerialWallpaperService.qualities.map((q) {
+        final isSelected = q == service.selectedQuality;
+        return FocusableSettingsTile(
+          title: Text(
+            qualityToString(q),
+            style: Theme.of(context).textTheme.bodyMedium,
           ),
-        ],
-      ),
+          trailing: isSelected
+              ? Icon(Icons.check_circle, color: accentColor, size: 20)
+              : Icon(Icons.radio_button_unchecked,
+                  color: Colors.white38, size: 20),
+          onPressed: () => service.setQuality(q),
+        );
+      }).toList(),
     );
   }
 
   Widget _buildShuffleToggle(BuildContext context, AerialWallpaperService service) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: Row(
-        children: [
-          Icon(Icons.shuffle, size: 20, color: Theme.of(context).colorScheme.primary),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Text('Shuffle videos', style: Theme.of(context).textTheme.bodyMedium),
-          ),
-          Switch(
-            value: service.shuffle,
-            onChanged: (_) => service.toggleShuffle(),
-          ),
-        ],
+    return FocusableSettingsTile(
+      leading: Icon(Icons.shuffle),
+      title: Text(
+        'Shuffle videos',
+        style: Theme.of(context).textTheme.bodyMedium,
       ),
+      trailing: Switch(
+        value: service.shuffle,
+        onChanged: (_) => service.toggleShuffle(),
+      ),
+      onPressed: () => service.toggleShuffle(),
     );
   }
 
-  Widget _buildFilterChips(BuildContext context, AerialWallpaperService service) {
+  Widget _buildFilterSection(BuildContext context, AerialWallpaperService service) {
     final accentColor = Theme.of(context).colorScheme.primary;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -265,71 +238,62 @@ class WallpaperPanelPage extends StatelessWidget {
             children: [
               Icon(Icons.filter_list, size: 20, color: accentColor),
               const SizedBox(width: 12),
-              Text('Time of Day:', style: Theme.of(context).textTheme.bodyMedium),
+              Text('Filters', style: Theme.of(context).textTheme.bodyMedium),
             ],
           ),
           const SizedBox(height: 8),
+          Text('Time of Day', style: Theme.of(context).textTheme.bodySmall),
+          const SizedBox(height: 4),
           Wrap(
             spacing: 8,
             runSpacing: 8,
             children: TimeOfDay.values.where((t) => t != TimeOfDay.unknown).map((t) {
               final isSelected = service.timeOfDayFilter.contains(t);
-              return FilterChip(
-                label: Text(timeOfDayToString(t), style: const TextStyle(fontSize: 12)),
-                selected: isSelected,
-                onSelected: (selected) {
-                  if (selected) {
-                    service.addTimeOfDayFilter(t);
-                  } else {
+              return _TvFilterChip(
+                label: timeOfDayToString(t),
+                isSelected: isSelected,
+                accentColor: accentColor,
+                onPressed: () {
+                  if (isSelected) {
                     service.removeTimeOfDayFilter(t);
+                  } else {
+                    service.addTimeOfDayFilter(t);
                   }
                 },
-                backgroundColor: Colors.white10,
-                selectedColor: accentColor,
-                checkmarkColor: Colors.white,
-                labelStyle: TextStyle(
-                    color: isSelected ? Colors.white : Colors.white70),
               );
             }).toList(),
           ),
-          const SizedBox(height: 16),
-          Row(
-            children: [
-              Icon(Icons.landscape, size: 20, color: accentColor),
-              const SizedBox(width: 12),
-              Text('Scene:', style: Theme.of(context).textTheme.bodyMedium),
-            ],
-          ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 12),
+          Text('Scene', style: Theme.of(context).textTheme.bodySmall),
+          const SizedBox(height: 4),
           Wrap(
             spacing: 8,
             runSpacing: 8,
             children: SceneType.values.where((s) => s != SceneType.unknown).map((s) {
               final isSelected = service.sceneFilter.contains(s);
-              return FilterChip(
-                label: Text(sceneTypeToString(s), style: const TextStyle(fontSize: 12)),
-                selected: isSelected,
-                onSelected: (selected) {
-                  if (selected) {
-                    service.addSceneFilter(s);
-                  } else {
+              return _TvFilterChip(
+                label: sceneTypeToString(s),
+                isSelected: isSelected,
+                accentColor: accentColor,
+                onPressed: () {
+                  if (isSelected) {
                     service.removeSceneFilter(s);
+                  } else {
+                    service.addSceneFilter(s);
                   }
                 },
-                backgroundColor: Colors.white10,
-                selectedColor: accentColor,
-                checkmarkColor: Colors.white,
-                labelStyle: TextStyle(
-                    color: isSelected ? Colors.white : Colors.white70),
               );
             }).toList(),
           ),
           if (service.timeOfDayFilter.isNotEmpty || service.sceneFilter.isNotEmpty)
             Padding(
               padding: const EdgeInsets.only(top: 12),
-              child: TextButton(
+              child: _TvFilterChip(
+                label: 'Clear all filters',
+                isSelected: false,
+                accentColor: accentColor,
+                icon: Icons.clear_all,
                 onPressed: () => service.clearFilters(),
-                child: Text('Clear all filters'),
               ),
             ),
         ],
@@ -366,5 +330,123 @@ class WallpaperPanelPage extends StatelessWidget {
         );
       }
     }
+  }
+}
+
+/// TV-optimized chip with clear focus/selected/focus+selected states.
+/// Replaces FilterChip which has poor TV navigation visibility.
+class _TvFilterChip extends StatefulWidget {
+  final String label;
+  final bool isSelected;
+  final Color accentColor;
+  final VoidCallback onPressed;
+  final IconData? icon;
+
+  const _TvFilterChip({
+    required this.label,
+    required this.isSelected,
+    required this.accentColor,
+    required this.onPressed,
+    this.icon,
+  });
+
+  @override
+  State<_TvFilterChip> createState() => _TvFilterChipState();
+}
+
+class _TvFilterChipState extends State<_TvFilterChip> {
+  bool _focused = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final isFocused = _focused;
+    final isSelected = widget.isSelected;
+    final accent = widget.accentColor;
+
+    // Background: selected = semi-transparent accent, otherwise subtle white
+    Color bgColor;
+    if (isSelected && isFocused) {
+      bgColor = accent.withValues(alpha: 0.35);
+    } else if (isSelected) {
+      bgColor = accent.withValues(alpha: 0.25);
+    } else if (isFocused) {
+      bgColor = Colors.white.withValues(alpha: 0.12);
+    } else {
+      bgColor = Colors.white.withValues(alpha: 0.06);
+    }
+
+    // Border: focused gets accent border, selected gets subtle accent
+    Color borderColor;
+    double borderWidth;
+    if (isFocused) {
+      borderColor = accent;
+      borderWidth = 2.0;
+    } else if (isSelected) {
+      borderColor = accent.withValues(alpha: 0.5);
+      borderWidth = 1.5;
+    } else {
+      borderColor = Colors.white.withValues(alpha: 0.1);
+      borderWidth = 1.0;
+    }
+
+    // Text color: always readable
+    final textColor = (isSelected || isFocused) ? Colors.white : Colors.white70;
+
+    return Actions(
+      actions: <Type, Action<Intent>>{
+        ActivateIntent: CallbackAction<ActivateIntent>(
+            onInvoke: (_) => widget.onPressed()),
+        ButtonActivateIntent: CallbackAction<ButtonActivateIntent>(
+            onInvoke: (_) => widget.onPressed()),
+      },
+      child: Focus(
+        onFocusChange: (hasFocus) => setState(() => _focused = hasFocus),
+        child: GestureDetector(
+          onTap: widget.onPressed,
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 150),
+            curve: Curves.easeOut,
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+            decoration: BoxDecoration(
+              color: bgColor,
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: borderColor, width: borderWidth),
+              boxShadow: isFocused
+                  ? [
+                      BoxShadow(
+                        color: accent.withValues(alpha: 0.3),
+                        blurRadius: 10,
+                        spreadRadius: 0,
+                      ),
+                    ]
+                  : null,
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (isSelected) ...[
+                  Icon(Icons.check, size: 16, color: accent),
+                  const SizedBox(width: 6),
+                ],
+                if (widget.icon != null && !isSelected) ...[
+                  Icon(widget.icon, size: 16, color: textColor),
+                  const SizedBox(width: 6),
+                ],
+                Text(
+                  widget.label,
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: textColor,
+                    fontWeight: (isSelected || isFocused)
+                        ? FontWeight.w600
+                        : FontWeight.normal,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
