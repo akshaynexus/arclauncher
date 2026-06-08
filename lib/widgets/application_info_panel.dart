@@ -24,7 +24,8 @@ import 'package:flauncher/widgets/add_to_category_dialog.dart';
 import 'package:flauncher/widgets/side_panel_dialog.dart';
 import 'package:flauncher/widgets/tv_media_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:flauncher/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flauncher/generated/locale_keys.g.dart';
 
 import '../models/app.dart';
 import '../models/category.dart';
@@ -56,8 +57,6 @@ class _ApplicationInfoPanelState extends State<ApplicationInfoPanel> {
 
   @override
   Widget build(BuildContext context) {
-    AppLocalizations localizations = AppLocalizations.of(context)!;
-
     return SidePanelDialog(
         width: 300,
         isRightSide: false,
@@ -120,7 +119,7 @@ class _ApplicationInfoPanelState extends State<ApplicationInfoPanel> {
                   children: [
                     const Icon(Icons.open_with),
                     Container(width: 8),
-                    Text(localizations.reorder,
+                    Text(LocaleKeys.reorder.tr(),
                         style: Theme.of(context).textTheme.bodyMedium),
                   ],
                 ),
@@ -132,8 +131,8 @@ class _ApplicationInfoPanelState extends State<ApplicationInfoPanel> {
                 children: [
                   const Icon(Icons.open_in_new),
                   Container(width: 8),
-                  Text(localizations.open,
-                      style: Theme.of(context).textTheme.bodyMedium),
+                    Text(LocaleKeys.open.tr(),
+                        style: Theme.of(context).textTheme.bodyMedium),
                 ],
               ),
               onPressed: () async {
@@ -177,8 +176,8 @@ class _ApplicationInfoPanelState extends State<ApplicationInfoPanel> {
                   Container(width: 8),
                   Text(
                       widget.application.hidden
-                          ? localizations.show
-                          : localizations.hide,
+                          ? LocaleKeys.show.tr()
+                          : LocaleKeys.hide.tr(),
                       style: Theme.of(context).textTheme.bodyMedium),
                 ],
               ),
@@ -203,7 +202,7 @@ class _ApplicationInfoPanelState extends State<ApplicationInfoPanel> {
                     Container(width: 8),
                     Flexible(
                       child: Text(
-                        localizations.removeFrom(widget.category!.name),
+                        LocaleKeys.removeFrom.tr(args: [widget.category!.name]),
                         style: Theme.of(context).textTheme.bodyMedium,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
@@ -322,7 +321,7 @@ class _ApplicationInfoPanelState extends State<ApplicationInfoPanel> {
                 children: [
                   const Icon(Icons.info_outlined),
                   Container(width: 8),
-                  Text(localizations.appInfo,
+                  Text(LocaleKeys.appInfo.tr(),
                       style: Theme.of(context).textTheme.bodyMedium),
                 ],
               ),
@@ -334,7 +333,7 @@ class _ApplicationInfoPanelState extends State<ApplicationInfoPanel> {
                 children: [
                   const Icon(Icons.delete_outlined),
                   Container(width: 8),
-                  Text(localizations.uninstall,
+                  Text(LocaleKeys.uninstall.tr(),
                       style: Theme.of(context).textTheme.bodyMedium),
                 ],
               ),

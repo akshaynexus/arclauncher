@@ -26,7 +26,8 @@ import 'package:flauncher/widgets/settings/general_settings_page.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
-import 'package:flauncher/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flauncher/generated/locale_keys.g.dart';
 
 import 'focusable_settings_tile.dart';
 
@@ -35,10 +36,8 @@ class SettingsPanelPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    AppLocalizations localizations = AppLocalizations.of(context)!;
-
     return Column(children: [
-      Text(localizations.settings,
+      Text(LocaleKeys.settings.tr(),
           style: Theme.of(context).textTheme.titleLarge),
       const Divider(),
       Expanded(
@@ -47,7 +46,7 @@ class SettingsPanelPage extends StatelessWidget {
         FocusableSettingsTile(
           autofocus: true,
           leading: const Icon(Icons.apps),
-          title: Text(localizations.applications,
+          title: Text(LocaleKeys.applications.tr(),
               style: Theme.of(context).textTheme.bodyMedium),
           onPressed: () =>
               Navigator.of(context).pushNamed(ApplicationsPanelPage.routeName),
@@ -68,19 +67,19 @@ class SettingsPanelPage extends StatelessWidget {
         const Divider(),
         FocusableSettingsTile(
           leading: const Icon(Icons.settings_outlined),
-          title: Text(localizations.systemSettings,
+          title: Text(LocaleKeys.systemSettings.tr(),
               style: Theme.of(context).textTheme.bodyMedium),
           onPressed: () => context.read<AppsService>().openSettings(),
         ),
         FocusableSettingsTile(
           leading: const Icon(Icons.system_update_alt),
-          title: Text(localizations.updateCheck,
+          title: Text(LocaleKeys.updateCheck.tr(),
               style: Theme.of(context).textTheme.bodyMedium),
           onPressed: () => _checkForUpdates(context),
         ),
         FocusableSettingsTile(
             leading: const Icon(Icons.info_outline),
-            title: Text(localizations.aboutFlauncher,
+            title: Text(LocaleKeys.aboutFlauncher.tr(),
                 style: Theme.of(context).textTheme.bodyMedium),
             onPressed: () => showDialog(
                 context: context,
@@ -99,13 +98,12 @@ class SettingsPanelPage extends StatelessWidget {
 }
 
 Future<void> _checkForUpdates(BuildContext context) async {
-  final localizations = AppLocalizations.of(context)!;
   final updateService = UpdateService();
   final navigator = Navigator.of(context, rootNavigator: true);
 
   showUpdateProgressDialog(
     context,
-    label: localizations.updateCheck,
+    label: LocaleKeys.updateCheck.tr(),
   );
 
   try {
@@ -120,7 +118,6 @@ Future<void> _checkForUpdates(BuildContext context) async {
     if (!update.updateAvailable) {
       await showNoUpdateDialog(
         context,
-        localizations,
         currentVersion: update.currentVersion,
       );
       return;
@@ -128,7 +125,6 @@ Future<void> _checkForUpdates(BuildContext context) async {
 
     final download = await showUpdateAvailableDialog(
       context,
-      localizations,
       latestVersion: update.latestVersion,
       currentVersion: update.currentVersion,
     );
@@ -139,7 +135,7 @@ Future<void> _checkForUpdates(BuildContext context) async {
 
     showUpdateProgressDialog(
       context,
-      label: localizations.updateDownloadButton,
+      label: LocaleKeys.updateDownloadButton.tr(),
     );
 
     final downloadedApk = await updateService.downloadApk(update);
@@ -152,7 +148,6 @@ Future<void> _checkForUpdates(BuildContext context) async {
 
     final install = await showReadyToInstallDialog(
       context,
-      localizations,
       latestVersion: downloadedApk.version,
     );
 
@@ -167,7 +162,6 @@ Future<void> _checkForUpdates(BuildContext context) async {
 
     await showInstallPermissionDialog(
       context,
-      localizations,
       onOpenPermissionSettings: () =>
           updateService.requestInstallUnknownAppsPermission(),
     );
@@ -179,7 +173,7 @@ Future<void> _checkForUpdates(BuildContext context) async {
       return;
     }
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(localizations.updateErrorGeneric)),
+      SnackBar(content: Text(LocaleKeys.updateErrorGeneric.tr())),
     );
   }
 }

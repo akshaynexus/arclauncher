@@ -17,7 +17,8 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flauncher/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flauncher/generated/locale_keys.g.dart';
 import 'focusable_settings_tile.dart';
 import 'launcher_sections_panel_page.dart';
 import 'wallpaper_panel_page.dart';
@@ -32,8 +33,6 @@ class InterfaceSettingsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    AppLocalizations localizations = AppLocalizations.of(context)!;
-
     return Column(
       children: [
         Text('Interface', style: Theme.of(context).textTheme.titleLarge),
@@ -45,21 +44,21 @@ class InterfaceSettingsPage extends StatelessWidget {
                 FocusableSettingsTile(
                   autofocus: true,
                   leading: const Icon(Icons.category),
-                  title: Text(localizations.launcherSections,
+                  title: Text(LocaleKeys.launcherSections.tr(),
                       style: Theme.of(context).textTheme.bodyMedium),
                   onPressed: () => Navigator.of(context)
                       .pushNamed(LauncherSectionsPanelPage.routeName),
                 ),
                 FocusableSettingsTile(
                   leading: const Icon(Icons.wallpaper_outlined),
-                  title: Text(localizations.wallpaper,
+                  title: Text(LocaleKeys.wallpaper.tr(),
                       style: Theme.of(context).textTheme.bodyMedium),
                   onPressed: () => Navigator.of(context)
                       .pushNamed(WallpaperPanelPage.routeName),
                 ),
                 FocusableSettingsTile(
                   leading: const Icon(Icons.tips_and_updates),
-                  title: Text(localizations.statusBar,
+                  title: Text(LocaleKeys.statusBar.tr(),
                       style: Theme.of(context).textTheme.bodyMedium),
                   onPressed: () => Navigator.of(context)
                       .pushNamed(StatusBarPanelPage.routeName),

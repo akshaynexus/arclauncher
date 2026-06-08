@@ -18,7 +18,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:flauncher/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flauncher/generated/locale_keys.g.dart';
 
 class LTvLauncherAboutDialog extends StatelessWidget {
   final PackageInfo packageInfo;
@@ -30,8 +31,6 @@ class LTvLauncherAboutDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    AppLocalizations localizations = AppLocalizations.of(context)!;
-
     return AboutDialog(
       applicationName: "Arc Launcher",
       applicationVersion:
@@ -44,8 +43,8 @@ class LTvLauncherAboutDialog extends StatelessWidget {
           "Developed by Badis Meddouri\nBased on LTvLauncher © 2026 LeanBitLab",
       children: [
         SizedBox(height: 24),
-        Text(localizations
-            .textAboutDialog("https://github.com/meddouribadis/arclauncher"))
+        Text(LocaleKeys.textAboutDialog.tr(
+            args: ["https://github.com/meddouribadis/arclauncher"]))
       ],
     );
   }

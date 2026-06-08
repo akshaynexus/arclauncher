@@ -3,7 +3,8 @@ import 'package:flauncher/widgets/settings/back_button_actions.dart';
 import 'package:flauncher/widgets/settings/focusable_settings_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flauncher/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flauncher/generated/locale_keys.g.dart';
 
 class BackButtonActionPage extends StatelessWidget {
   static const String routeName = "back_button_action_panel";
@@ -12,28 +13,26 @@ class BackButtonActionPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    AppLocalizations localizations = AppLocalizations.of(context)!;
-
     return Consumer<SettingsService>(builder: (context, service, _) {
       return Column(
         children: [
-          Text(localizations.backButtonAction,
+          Text(LocaleKeys.backButtonAction.tr(),
               style: Theme.of(context).textTheme.titleLarge),
           const Divider(),
           Expanded(
             child: ListView(
               children: [
                 _radioTile(context, service,
-                    localizations.dialogOptionBackButtonActionDoNothing, ""),
+                    LocaleKeys.dialogOptionBackButtonActionDoNothing.tr(), ""),
                 _radioTile(
                     context,
                     service,
-                    localizations.dialogOptionBackButtonActionShowClock,
+                    LocaleKeys.dialogOptionBackButtonActionShowClock.tr(),
                     BACK_BUTTON_ACTION_CLOCK),
                 _radioTile(
                     context,
                     service,
-                    localizations.dialogOptionBackButtonActionShowScreensaver,
+                    LocaleKeys.dialogOptionBackButtonActionShowScreensaver.tr(),
                     BACK_BUTTON_ACTION_SCREENSAVER),
               ],
             ),

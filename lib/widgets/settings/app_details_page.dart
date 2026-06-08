@@ -6,7 +6,8 @@ import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/widgets/add_to_category_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flauncher/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flauncher/generated/locale_keys.g.dart';
 
 class AppDetailsPage extends StatelessWidget {
   static const String routeName = "app_details_page";
@@ -17,7 +18,6 @@ class AppDetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    AppLocalizations localizations = AppLocalizations.of(context)!;
     AppsService appsService = context.watch<AppsService>();
 
     return Column(
@@ -62,7 +62,7 @@ class AppDetailsPage extends StatelessWidget {
               _buildListTile(
                 context,
                 icon: Icons.open_in_new,
-                title: localizations.open,
+                title: LocaleKeys.open.tr(),
                 onTap: () async {
                   await appsService.launchApp(application);
                   Navigator.of(context)
@@ -85,8 +85,8 @@ class AppDetailsPage extends StatelessWidget {
                     ? Icons.visibility
                     : Icons.visibility_off_outlined,
                 title: application.hidden
-                    ? localizations.show
-                    : localizations.hide,
+                    ? LocaleKeys.show.tr()
+                    : LocaleKeys.hide.tr(),
                 onTap: () {
                   if (application.hidden) {
                     appsService.showApplication(application);
@@ -109,13 +109,13 @@ class AppDetailsPage extends StatelessWidget {
               _buildListTile(
                 context,
                 icon: Icons.info_outlined,
-                title: localizations.appInfo,
+                title: LocaleKeys.appInfo.tr(),
                 onTap: () => appsService.openAppInfo(application),
               ),
               _buildListTile(
                 context,
                 icon: Icons.delete_outlined,
-                title: localizations.uninstall,
+                title: LocaleKeys.uninstall.tr(),
                 onTap: () async {
                   await appsService.uninstallApp(application);
                   Navigator.of(context).pop();

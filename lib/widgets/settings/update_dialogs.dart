@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flauncher/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flauncher/generated/locale_keys.g.dart';
 
 Future<void> showUpdateProgressDialog(
   BuildContext context, {
@@ -25,15 +26,14 @@ Future<void> showUpdateProgressDialog(
 }
 
 Future<void> showNoUpdateDialog(
-  BuildContext context,
-  AppLocalizations localizations, {
+  BuildContext context, {
   required String currentVersion,
 }) {
   return showDialog<void>(
     context: context,
     builder: (dialogContext) => AlertDialog(
-      title: Text(localizations.updateNoUpdateTitle),
-      content: Text(localizations.updateNoUpdateBody(currentVersion)),
+      title: Text(LocaleKeys.updateNoUpdateTitle.tr()),
+      content: Text(LocaleKeys.updateNoUpdateBody.tr(args: [currentVersion])),
       actions: [
         TextButton(
           onPressed: () => Navigator.of(dialogContext).pop(),
@@ -45,17 +45,16 @@ Future<void> showNoUpdateDialog(
 }
 
 Future<bool> showUpdateAvailableDialog(
-  BuildContext context,
-  AppLocalizations localizations, {
+  BuildContext context, {
   required String latestVersion,
   required String currentVersion,
 }) async {
   return await showDialog<bool>(
         context: context,
         builder: (dialogContext) => AlertDialog(
-          title: Text(localizations.updateAvailableTitle),
+          title: Text(LocaleKeys.updateAvailableTitle.tr()),
           content: Text(
-              localizations.updateAvailableBody(latestVersion, currentVersion)),
+              LocaleKeys.updateAvailableBody.tr(args: [latestVersion, currentVersion])),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(false),
@@ -64,7 +63,7 @@ Future<bool> showUpdateAvailableDialog(
             ),
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(true),
-              child: Text(localizations.updateDownloadButton),
+              child: Text(LocaleKeys.updateDownloadButton.tr()),
             ),
           ],
         ),
@@ -73,15 +72,14 @@ Future<bool> showUpdateAvailableDialog(
 }
 
 Future<bool> showReadyToInstallDialog(
-  BuildContext context,
-  AppLocalizations localizations, {
+  BuildContext context, {
   required String latestVersion,
 }) async {
   return await showDialog<bool>(
         context: context,
         builder: (dialogContext) => AlertDialog(
-          title: Text(localizations.updateReadyToInstallTitle),
-          content: Text(localizations.updateReadyToInstallBody(latestVersion)),
+          title: Text(LocaleKeys.updateReadyToInstallTitle.tr()),
+          content: Text(LocaleKeys.updateReadyToInstallBody.tr(args: [latestVersion])),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(false),
@@ -90,7 +88,7 @@ Future<bool> showReadyToInstallDialog(
             ),
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(true),
-              child: Text(localizations.updateInstallButton),
+              child: Text(LocaleKeys.updateInstallButton.tr()),
             ),
           ],
         ),
@@ -99,15 +97,14 @@ Future<bool> showReadyToInstallDialog(
 }
 
 Future<void> showInstallPermissionDialog(
-  BuildContext context,
-  AppLocalizations localizations, {
+  BuildContext context, {
   required VoidCallback onOpenPermissionSettings,
 }) {
   return showDialog<void>(
     context: context,
     builder: (dialogContext) => AlertDialog(
-      title: Text(localizations.updateInstallPermissionTitle),
-      content: Text(localizations.updateInstallPermissionBody),
+      title: Text(LocaleKeys.updateInstallPermissionTitle.tr()),
+      content: Text(LocaleKeys.updateInstallPermissionBody.tr()),
       actions: [
         TextButton(
           onPressed: () => Navigator.of(dialogContext).pop(),
@@ -119,7 +116,7 @@ Future<void> showInstallPermissionDialog(
             Navigator.of(dialogContext).pop();
             onOpenPermissionSettings();
           },
-          child: Text(localizations.updateOpenPermissionSettingsButton),
+          child: Text(LocaleKeys.updateOpenPermissionSettingsButton.tr()),
         ),
       ],
     ),

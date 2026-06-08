@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
-import 'package:flauncher/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import '../../mocks.dart';
 import '../../mocks.mocks.dart';
@@ -38,16 +38,22 @@ void main() {
     when(appsService.categories).thenReturn([]);
 
     await tester.pumpWidget(
-      MultiProvider(
-        providers: [
-          ChangeNotifierProvider<AppsService>.value(value: appsService),
-        ],
-        builder: (_, __) => MaterialApp(
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: const Scaffold(body: ApplicationsPanelPage()),
-          onGenerateRoute: (settings) =>
-              MaterialPageRoute(builder: (_) => Container()),
+      EasyLocalization(
+        supportedLocales: const [Locale('en')],
+        path: 'assets/translations',
+        fallbackLocale: const Locale('en'),
+        child: MultiProvider(
+          providers: [
+            ChangeNotifierProvider<AppsService>.value(value: appsService),
+          ],
+          builder: (_, __) => MaterialApp(
+            localizationsDelegates: context.localizationDelegates,
+            supportedLocales: context.supportedLocales,
+            locale: context.locale,
+            home: const Scaffold(body: ApplicationsPanelPage()),
+            onGenerateRoute: (settings) =>
+                MaterialPageRoute(builder: (_) => Container()),
+          ),
         ),
       ),
     );

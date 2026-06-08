@@ -2,6 +2,7 @@
     "aboutFlauncher": "About Arc Launcher",
     "addCategory": "Add category",
     "addSection": "Add section",
+    "aerialViews": "Aerial Views",
     "alphabetical": "Alphabetical",
     "appCardHighlightAnimation": "App card highlight animation",
     "appInfo": "Application info",
@@ -21,29 +22,8 @@
     "dialogTextNoFileExplorer": "Please install a file explorer in order to pick a picture.",
     "dialogTitleBackButtonAction": "Choose the back button action",
     "disambiguateCategoryTitle": "{title} (Category)",
-    "@disambiguateCategoryTitle": {
-        "placeholders": {
-            "title": {
-                "type": "String"
-            }
-        }
-    },
     "formattedDate": "Formatted date: {dateString}",
-    "@formattedDate": {
-        "placeholders": {
-            "dateString": {
-                "type": "String"
-            }
-        }
-    },
     "formattedTime": "Formatted time: {timeString}",
-    "@formattedTime": {
-        "placeholders": {
-            "timeString": {
-                "type": "String"
-            }
-        }
-    },
     "gradient": "Gradient",
     "favoriteApps": "Favorite Apps",
     "grid": "Grid",
@@ -66,11 +46,6 @@
     "orSelectFormatSpecifiers": "Or select format specifiers",
     "picture": "Picture",
     "removeFrom": "Remove from {name}",
-    "@removeFrom": {
-        "placeholders": {
-            "name": { "type": "String" }
-        }
-    },
     "renameCategory": "Rename category",
     "reorder": "Reorder",
     "row": "Row",
@@ -87,48 +62,17 @@
     "updateCheck": "Check for updates",
     "updateNoUpdateTitle": "No updates available",
     "updateNoUpdateBody": "You are already on the latest version ({currentVersion}).",
-    "@updateNoUpdateBody": {
-        "placeholders": {
-            "currentVersion": {
-                "type": "String"
-            }
-        }
-    },
     "updateAvailableTitle": "Update available",
     "updateAvailableBody": "Version {latestVersion} is available (current: {currentVersion}).",
-    "@updateAvailableBody": {
-        "placeholders": {
-            "latestVersion": {
-                "type": "String"
-            },
-            "currentVersion": {
-                "type": "String"
-            }
-        }
-    },
     "updateDownloadButton": "Download",
     "updateReadyToInstallTitle": "Ready to install",
     "updateReadyToInstallBody": "The APK for version {latestVersion} is downloaded. Start installation now?",
-    "@updateReadyToInstallBody": {
-        "placeholders": {
-            "latestVersion": {
-                "type": "String"
-            }
-        }
-    },
     "updateInstallButton": "Install",
     "updateInstallPermissionTitle": "Installer permission required",
     "updateInstallPermissionBody": "Allow Arc Launcher to install unknown apps, then retry the update.",
     "updateOpenPermissionSettingsButton": "Open permission settings",
     "updateErrorGeneric": "Update check failed. Please try again.",
     "textAboutDialog": "Arc Launcher is a customized open-source launcher for Android TV, based on FLauncher.\n\nDeveloped by Meddouri Badis.\nSource code available at {repoUrl}.",
-    "@textAboutDialog": {
-        "placeholders": {
-            "repoUrl": {
-                "type": "String"
-            }
-        }
-    },
     "textEmptyCategory": "This category is empty.",
     "time": "Time",
     "titleStatusBarSettingsPage": "Choose what to display in the status bar",

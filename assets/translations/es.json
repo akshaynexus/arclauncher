@@ -2,6 +2,7 @@
     "aboutFlauncher": "Acerca de FLauncher",
     "addCategory": "Agregar categoría",
     "addSection": "Agregar sección",
+    "aerialViews": "Vistas Aéreas",
     "alphabetical": "Alfabético",
     "appCardHighlightAnimation": "Resaltar aplicaciones",
     "appInfo": "Datos de la aplicación",
@@ -21,29 +22,8 @@
     "dialogTextNoFileExplorer": "Por favor, instale un gestor de archivos para seleccionar una imagen.",
     "dialogTitleBackButtonAction": "Elegir la acción del botón 'Atrás'",
     "disambiguateCategoryTitle": "{title} (Categoría)",
-    "@disambiguateCategoryTitle": {
-        "placeholders": {
-            "title": {
-                "type": "String"
-            }
-        }
-    },
     "formattedDate": "Fecha con formato: {dateString}",
-    "@formattedDate": {
-        "placeholders": {
-            "dateString": {
-                "type": "String"
-            }
-        }
-    },
     "formattedTime": "Hora con formato: {timeString}",
-    "@formattedTime": {
-        "placeholders": {
-            "timeString": {
-                "type": "String"
-            }
-        }
-    },
     "gradient": "Gradiente",
     "favoriteApps": "Favoritas",
     "grid": "Cuadrícula",
@@ -66,11 +46,6 @@
     "orSelectFormatSpecifiers": "O seleccione especificadores de formato",
     "picture": "Imagen",
     "removeFrom": "Remover de {name}",
-    "@removeFrom": {
-        "placeholders": {
-            "name": { "type": "String" }
-        }
-    },
     "renameCategory": "Renombrar categoría",
     "reorder": "Reordenar",
     "row": "Row",
@@ -87,48 +62,17 @@
     "updateCheck": "Buscar actualizaciones",
     "updateNoUpdateTitle": "No hay actualizaciones",
     "updateNoUpdateBody": "Ya tienes la última versión ({currentVersion}).",
-    "@updateNoUpdateBody": {
-        "placeholders": {
-            "currentVersion": {
-                "type": "String"
-            }
-        }
-    },
     "updateAvailableTitle": "Actualización disponible",
     "updateAvailableBody": "La versión {latestVersion} está disponible (actual: {currentVersion}).",
-    "@updateAvailableBody": {
-        "placeholders": {
-            "latestVersion": {
-                "type": "String"
-            },
-            "currentVersion": {
-                "type": "String"
-            }
-        }
-    },
     "updateDownloadButton": "Descargar",
     "updateReadyToInstallTitle": "Lista para instalar",
     "updateReadyToInstallBody": "El APK de la versión {latestVersion} ya se descargó. ¿Instalar ahora?",
-    "@updateReadyToInstallBody": {
-        "placeholders": {
-            "latestVersion": {
-                "type": "String"
-            }
-        }
-    },
     "updateInstallButton": "Instalar",
     "updateInstallPermissionTitle": "Se requiere permiso de instalación",
     "updateInstallPermissionBody": "Permite que Arc Launcher instale apps desconocidas y vuelve a intentar la actualización.",
     "updateOpenPermissionSettingsButton": "Abrir ajustes de permisos",
     "updateErrorGeneric": "La actualización falló. Inténtalo de nuevo.",
     "textAboutDialog": "Arc Launcher es un lanzador de código abierto personalizado para Android TV, basado en FLauncher.\n\nDesarrollado por Meddouri Badis.\nCódigo fuente disponible en {repoUrl}.",
-    "@textAboutDialog": {
-        "placeholders": {
-            "repoUrl": {
-                "type": "String"
-            }
-        }
-    },
     "textEmptyCategory": "Esta categoría está vacía.",
     "time": "Hora",
     "titleStatusBarSettingsPage": "Elija la información a mostrar en la barra de estado",

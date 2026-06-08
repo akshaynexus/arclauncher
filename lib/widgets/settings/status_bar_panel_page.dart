@@ -19,7 +19,8 @@
 import 'package:flauncher/widgets/rounded_switch_list_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flauncher/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flauncher/generated/locale_keys.g.dart';
 
 import '../../providers/settings_service.dart';
 
@@ -28,12 +29,11 @@ class StatusBarPanelPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    AppLocalizations localizations = AppLocalizations.of(context)!;
     SettingsService settingsService = Provider.of(context);
 
     return Column(
       children: [
-        Text(localizations.statusBar,
+        Text(LocaleKeys.statusBar.tr(),
             style: Theme.of(context).textTheme.titleLarge),
         Divider(),
         Expanded(
@@ -45,7 +45,7 @@ class StatusBarPanelPage extends StatelessWidget {
                 value: settingsService.autoHideAppBarEnabled,
                 onChanged: (value) =>
                     settingsService.setAutoHideAppBarEnabled(value),
-                title: Text(localizations.autoHideAppBar,
+                title: Text(LocaleKeys.autoHideAppBar.tr(),
                     style: Theme.of(context).textTheme.bodyMedium),
                 secondary: Icon(Icons.visibility_off_outlined),
               ),
@@ -54,13 +54,13 @@ class StatusBarPanelPage extends StatelessWidget {
                   value: settingsService.showDateInStatusBar,
                   onChanged: (value) =>
                       settingsService.setShowDateInStatusBar(value),
-                  title: Text(localizations.date),
+                  title: Text(LocaleKeys.date.tr()),
                   secondary: Icon(Icons.calendar_today_outlined)),
               RoundedSwitchListTile(
                   value: settingsService.showTimeInStatusBar,
                   onChanged: (value) =>
                       settingsService.setShowTimeInStatusBar(value),
-                  title: Text(localizations.time),
+                  title: Text(LocaleKeys.time.tr()),
                   secondary: Icon(Icons.watch_later_outlined)),
               RoundedSwitchListTile(
                   value: settingsService.showWifiWidgetInStatusBar,

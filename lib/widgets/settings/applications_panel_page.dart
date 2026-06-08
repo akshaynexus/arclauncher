@@ -23,7 +23,8 @@ import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/widgets/ensure_visible.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flauncher/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flauncher/generated/locale_keys.g.dart';
 import 'package:flauncher/widgets/settings/app_details_page.dart';
 import 'package:flutter/services.dart';
 
@@ -45,9 +46,9 @@ class _ApplicationsPanelPageState extends State<ApplicationsPanelPage> {
   bool _isSwitchingViaKeyboard = false;
 
   final List<_TabData> _tabs = [
-    _TabData(0, Icons.apps, (l) => l.allApplications),
-    _TabData(1, Icons.star, (l) => l.favoriteApps),
-    _TabData(2, Icons.visibility_off_outlined, (l) => l.hiddenApplications),
+    _TabData(0, Icons.apps, () => LocaleKeys.allApplications.tr()),
+    _TabData(1, Icons.star, () => LocaleKeys.favoriteApps.tr()),
+    _TabData(2, Icons.visibility_off_outlined, () => LocaleKeys.hiddenApplications.tr()),
   ];
 
   late List<FocusNode> _tabFocusNodes;
@@ -68,9 +69,8 @@ class _ApplicationsPanelPageState extends State<ApplicationsPanelPage> {
 
   @override
   Widget build(BuildContext context) {
-    AppLocalizations localizations = AppLocalizations.of(context)!;
     if (_title.isEmpty) {
-      _title = _tabs[0].getTitle(localizations);
+      _title = _tabs[0].getTitle();
     }
 
     return Column(
@@ -83,7 +83,7 @@ class _ApplicationsPanelPageState extends State<ApplicationsPanelPage> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: _tabs
                 .map((tab) => _buildTabButton(
-                    tab.index, tab.icon, tab.getTitle(localizations)))
+                    tab.index, tab.icon, tab.getTitle()))
                 .toList(),
           ),
         ),
@@ -125,10 +125,8 @@ class _ApplicationsPanelPageState extends State<ApplicationsPanelPage> {
 
     final newIndex = (_selectedIndex + direction).clamp(0, _tabs.length - 1);
     if (newIndex != _selectedIndex) {
-      final localizations = AppLocalizations.of(context)!;
-
       _isSwitchingViaKeyboard = true;
-      _selectTab(newIndex, _tabs[newIndex].getTitle(localizations));
+      _selectTab(newIndex, _tabs[newIndex].getTitle());
 
       _tabFocusNodes[newIndex].requestFocus();
 
@@ -215,7 +213,7 @@ class _ApplicationsPanelPageState extends State<ApplicationsPanelPage> {
 class _TabData {
   final int index;
   final IconData icon;
-  final String Function(AppLocalizations) getTitle;
+  final String Function() getTitle;
 
   _TabData(this.index, this.icon, this.getTitle);
 }

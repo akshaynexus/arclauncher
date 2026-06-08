@@ -2,7 +2,8 @@ import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/widgets/rounded_switch_list_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flauncher/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flauncher/generated/locale_keys.g.dart';
 
 class MiscPanelPage extends StatelessWidget {
   static const String routeName = "misc_panel";
@@ -11,7 +12,6 @@ class MiscPanelPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    AppLocalizations localizations = AppLocalizations.of(context)!;
     SettingsService settingsService = Provider.of(context);
 
     return Column(
@@ -27,7 +27,7 @@ class MiscPanelPage extends StatelessWidget {
                 value: settingsService.appHighlightAnimationEnabled,
                 onChanged: (value) =>
                     settingsService.setAppHighlightAnimationEnabled(value),
-                title: Text(localizations.appCardHighlightAnimation,
+                title: Text(LocaleKeys.appCardHighlightAnimation.tr(),
                     style: Theme.of(context).textTheme.bodyMedium),
                 secondary: Icon(Icons.filter_center_focus),
               ),
@@ -35,7 +35,7 @@ class MiscPanelPage extends StatelessWidget {
                 value: settingsService.appKeyClickEnabled,
                 onChanged: (value) =>
                     settingsService.setAppKeyClickEnabled(value),
-                title: Text(localizations.appKeyClick,
+                title: Text(LocaleKeys.appKeyClick.tr(),
                     style: Theme.of(context).textTheme.bodyMedium),
                 secondary: Icon(Icons.notifications_active),
               ),
@@ -43,7 +43,7 @@ class MiscPanelPage extends StatelessWidget {
                 value: settingsService.showCategoryTitles,
                 onChanged: (value) =>
                     settingsService.setShowCategoryTitles(value),
-                title: Text(localizations.showCategoryTitles,
+                title: Text(LocaleKeys.showCategoryTitles.tr(),
                     style: Theme.of(context).textTheme.bodyMedium),
                 secondary: Icon(Icons.abc),
               ),

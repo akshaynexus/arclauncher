@@ -31,42 +31,49 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import 'flauncher_app.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await EasyLocalization.ensureInitialized();
   initializeDateFormatting();
 
   final sharedPreferences = await SharedPreferences.getInstance();
   final fLauncherChannel = FLauncherChannel();
   final fLauncherDatabase = FLauncherDatabase(connect());
 
-  runApp(MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
-            create: (_) => SettingsService(sharedPreferences),
-            lazy: false),
-        ChangeNotifierProvider(create: (_) => AppsService(fLauncherChannel, fLauncherDatabase)),
-        ChangeNotifierProvider(create: (_) => LauncherState()),
-        ChangeNotifierProvider(create: (_) => NetworkService(fLauncherChannel)),
-        ChangeNotifierProvider(
-            create: (context) {
-              SettingsService settingsService = Provider.of(context, listen: false);
-              return WallpaperService(settingsService);
-            }
-        ),
-        ChangeNotifierProvider(
-            create: (context) {
-              SettingsService settingsService = Provider.of(context, listen: false);
-              return AerialWallpaperService(settingsService);
-            },
-            lazy: false),
-        ChangeNotifierProvider(
-            create: (_) => BrightnessService(sharedPreferences),
-            lazy: false),
-      ],
-      child: FLauncherApp()
+  runApp(EasyLocalization(
+    supportedLocales: const [Locale('en'), Locale('es')],
+    path: 'assets/translations',
+    fallbackLocale: const Locale('en'),
+    child: MultiProvider(
+        providers: [
+          ChangeNotifierProvider(
+              create: (_) => SettingsService(sharedPreferences),
+              lazy: false),
+          ChangeNotifierProvider(create: (_) => AppsService(fLauncherChannel, fLauncherDatabase)),
+          ChangeNotifierProvider(create: (_) => LauncherState()),
+          ChangeNotifierProvider(create: (_) => NetworkService(fLauncherChannel)),
+          ChangeNotifierProvider(
+              create: (context) {
+                SettingsService settingsService = Provider.of(context, listen: false);
+                return WallpaperService(settingsService);
+              }
+          ),
+          ChangeNotifierProvider(
+              create: (context) {
+                SettingsService settingsService = Provider.of(context, listen: false);
+                return AerialWallpaperService(settingsService);
+              },
+              lazy: false),
+          ChangeNotifierProvider(
+              create: (_) => BrightnessService(sharedPreferences),
+              lazy: false),
+        ],
+        child: FLauncherApp()
+      )
     )
   );
 }

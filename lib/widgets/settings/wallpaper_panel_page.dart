@@ -27,7 +27,8 @@ import 'package:flauncher/widgets/settings/gradient_panel_page.dart';
 import 'package:flauncher/widgets/tv_media_picker.dart';
 import 'package:flutter/material.dart' hide TimeOfDay;
 import 'package:provider/provider.dart';
-import 'package:flauncher/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flauncher/generated/locale_keys.g.dart';
 
 import 'package:flauncher/widgets/rounded_switch_list_tile.dart';
 
@@ -36,17 +37,15 @@ class WallpaperPanelPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    AppLocalizations localizations = AppLocalizations.of(context)!;
-
     return Column(
       children: [
-        Text(localizations.wallpaper,
+        Text(LocaleKeys.wallpaper.tr(),
             style: Theme.of(context).textTheme.titleLarge),
         Divider(),
         // Aerial Views toggle
         Consumer<AerialWallpaperService>(builder: (_, aerialService, __) {
           return RoundedSwitchListTile(
-            title: Text(localizations.aerialViews),
+            title: Text(LocaleKeys.aerialViews.tr()),
             secondary: Icon(Icons.flight),
             value: aerialService.feed.isNotEmpty,
             onChanged: (value) => _toggleAerial(context, value),
@@ -66,7 +65,7 @@ class WallpaperPanelPage extends StatelessWidget {
         }),
         Consumer<SettingsService>(builder: (_, settings, __) {
           return RoundedSwitchListTile(
-            title: Text(localizations.timeBasedWallpaper),
+            title: Text(LocaleKeys.timeBasedWallpaper.tr()),
             secondary: Icon(Icons.access_time),
             value: settings.timeBasedWallpaperEnabled,
             onChanged: (value) => settings.setTimeBasedWallpaperEnabled(value),
@@ -79,27 +78,27 @@ class WallpaperPanelPage extends StatelessWidget {
               children: [
                 FocusableSettingsTile(
                   leading: Icon(Icons.wb_sunny),
-                  title: Text(localizations.pickDayWallpaper),
+                  title: Text(LocaleKeys.pickDayWallpaper.tr()),
                   onPressed: () => _pickWallpaper(
-                      context, wallpaperService.setWallpaperDay, false, localizations),
+                      context, wallpaperService.setWallpaperDay, false),
                 ),
                 FocusableSettingsTile(
                   leading: Icon(Icons.videocam_outlined),
-                  title: Text(localizations.pickDayVideoWallpaper),
+                  title: Text(LocaleKeys.pickDayVideoWallpaper.tr()),
                   onPressed: () => _pickWallpaper(
-                      context, wallpaperService.setVideoWallpaperDay, true, localizations),
+                      context, wallpaperService.setVideoWallpaperDay, true),
                 ),
                 FocusableSettingsTile(
                   leading: Icon(Icons.nights_stay),
-                  title: Text(localizations.pickNightWallpaper),
+                  title: Text(LocaleKeys.pickNightWallpaper.tr()),
                   onPressed: () => _pickWallpaper(
-                      context, wallpaperService.setWallpaperNight, false, localizations),
+                      context, wallpaperService.setWallpaperNight, false),
                 ),
                 FocusableSettingsTile(
                   leading: Icon(Icons.videocam_outlined),
-                  title: Text(localizations.pickNightVideoWallpaper),
+                  title: Text(LocaleKeys.pickNightVideoWallpaper.tr()),
                   onPressed: () => _pickWallpaper(
-                      context, wallpaperService.setVideoWallpaperNight, true, localizations),
+                      context, wallpaperService.setVideoWallpaperNight, true),
                 ),
               ],
             );
@@ -109,24 +108,24 @@ class WallpaperPanelPage extends StatelessWidget {
                 FocusableSettingsTile(
                   autofocus: true,
                   leading: Icon(Icons.gradient),
-                  title: Text(localizations.gradient,
+                  title: Text(LocaleKeys.gradient.tr(),
                       style: Theme.of(context).textTheme.bodyMedium),
                   onPressed: () => Navigator.of(context)
                       .pushNamed(GradientPanelPage.routeName),
                 ),
                 FocusableSettingsTile(
                   leading: Icon(Icons.insert_drive_file_outlined),
-                  title: Text(localizations.picture,
+                  title: Text(LocaleKeys.picture.tr(),
                       style: Theme.of(context).textTheme.bodyMedium),
                   onPressed: () => _pickWallpaper(
-                      context, wallpaperService.setWallpaper, false, localizations),
+                      context, wallpaperService.setWallpaper, false),
                 ),
                 FocusableSettingsTile(
                   leading: Icon(Icons.videocam_outlined),
-                  title: Text(localizations.video,
+                  title: Text(LocaleKeys.video.tr(),
                       style: Theme.of(context).textTheme.bodyMedium),
                   onPressed: () => _pickWallpaper(
-                      context, wallpaperService.setVideoWallpaper, true, localizations),
+                      context, wallpaperService.setVideoWallpaper, true),
                 ),
               ],
             );
@@ -341,8 +340,7 @@ class WallpaperPanelPage extends StatelessWidget {
   Future<void> _pickWallpaper(
       BuildContext context,
       Future<void> Function(File) action,
-      bool isVideo,
-      AppLocalizations? localizations) async {
+      bool isVideo) async {
     try {
       final path = await TvMediaPicker.show(
         context,
@@ -353,7 +351,7 @@ class WallpaperPanelPage extends StatelessWidget {
         await action(File(path));
       }
     } on NoFileExplorerException {
-      if (localizations != null && context.mounted) {
+      if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             duration: Duration(seconds: 8),
@@ -361,7 +359,7 @@ class WallpaperPanelPage extends StatelessWidget {
               children: [
                 Icon(Icons.error_outline, color: Colors.red),
                 SizedBox(width: 8),
-                Text(localizations.dialogTextNoFileExplorer)
+                Text(LocaleKeys.dialogTextNoFileExplorer.tr())
               ],
             ),
           ),

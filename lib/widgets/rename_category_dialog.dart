@@ -17,7 +17,8 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flauncher/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flauncher/generated/locale_keys.g.dart';
 
 class AddCategoryDialog extends StatelessWidget {
   final String initialValue;
@@ -28,19 +29,17 @@ class AddCategoryDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    AppLocalizations localizations = AppLocalizations.of(context)!;
-
     return SimpleDialog(
       insetPadding: EdgeInsets.only(bottom: 120),
       contentPadding: EdgeInsets.all(24),
-      title: Text(localizations.renameCategory),
+      title: Text(LocaleKeys.renameCategory.tr()),
       children: [
         TextFormField(
           autofocus: true,
           initialValue: initialValue,
-          decoration: InputDecoration(labelText: localizations.name),
+          decoration: InputDecoration(labelText: LocaleKeys.name.tr()),
           validator: (value) =>
-              value!.trim().isEmpty ? localizations.mustNotBeEmpty : null,
+              value!.trim().isEmpty ? LocaleKeys.mustNotBeEmpty.tr() : null,
           autovalidateMode: AutovalidateMode.always,
           keyboardType: TextInputType.text,
           textCapitalization: TextCapitalization.sentences,

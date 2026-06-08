@@ -22,7 +22,8 @@ import 'package:flauncher/providers/apps_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:flauncher/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flauncher/generated/locale_keys.g.dart';
 
 import '../../models/category.dart';
 
@@ -136,8 +137,6 @@ class LauncherSectionPanelPage extends StatelessWidget {
   LauncherSectionPanelPage({Key? key, this.sectionIndex}) : super(key: key);
 
   Widget build(BuildContext context) {
-    AppLocalizations localizations = AppLocalizations.of(context)!;
-
     return ChangeNotifierProvider(
         create: (_) {
           AppsService service = context.read();
@@ -165,9 +164,9 @@ class LauncherSectionPanelPage extends StatelessWidget {
                     spacer: launcherSection as LauncherSpacer?);
               }
 
-              String title = localizations.newSection;
+              String title = LocaleKeys.newSection.tr();
               if (!creating) {
-                title = localizations.modifySection;
+                title = LocaleKeys.modifySection.tr();
               }
 
               return SingleChildScrollView(
@@ -235,7 +234,7 @@ class LauncherSectionPanelPage extends StatelessWidget {
                                       padding: MaterialStatePropertyAll(
                                           EdgeInsets.symmetric(vertical: 12))),
                                   onPressed: onSavePressed,
-                                  child: Text(localizations.save),
+                                  child: Text(LocaleKeys.save.tr()),
                                 ));
                           }),
                       if (!creating)
@@ -271,7 +270,7 @@ class LauncherSectionPanelPage extends StatelessWidget {
                                     .deleteSection(sectionIndex!);
                                 Navigator.of(context).pop();
                               },
-                              child: Text(localizations.delete),
+                              child: Text(LocaleKeys.delete.tr()),
                             ))
                     ]),
               );
@@ -374,12 +373,10 @@ class _CategorySettingsState extends State<_CategorySettings> {
 
   @override
   Widget build(BuildContext context) {
-    AppLocalizations localizations = AppLocalizations.of(context)!;
-
     return Column(children: [
       _listTile(
           context,
-          Text(localizations.name),
+          Text(LocaleKeys.name.tr()),
           Padding(
               padding: EdgeInsets.only(top: 4),
               child: DropdownButtonFormField<String>(
@@ -439,7 +436,7 @@ class _CategorySettingsState extends State<_CategorySettings> {
                 ))),
       _listTile(
           context,
-          Text(localizations.sort),
+          Text(LocaleKeys.sort.tr()),
           Padding(
               padding: EdgeInsets.only(top: 4),
               child: DropdownButtonFormField<CategorySort>(
@@ -462,12 +459,12 @@ class _CategorySettingsState extends State<_CategorySettings> {
                   items: [
                     DropdownMenuItem(
                       value: CategorySort.alphabetical,
-                      child: Text(localizations.alphabetical,
+                      child: Text(LocaleKeys.alphabetical.tr(),
                           style: Theme.of(context).textTheme.bodySmall),
                     ),
                     DropdownMenuItem(
                       value: CategorySort.manual,
-                      child: Text(localizations.manual,
+                      child: Text(LocaleKeys.manual.tr(),
                           style: Theme.of(context).textTheme.bodySmall),
                     ),
                     DropdownMenuItem(
@@ -478,7 +475,7 @@ class _CategorySettingsState extends State<_CategorySettings> {
                   ]))),
       _listTile(
           context,
-          Text(localizations.layout),
+          Text(LocaleKeys.layout.tr()),
           Padding(
               padding: EdgeInsets.only(top: 4),
               child: DropdownButtonFormField<CategoryType>(
@@ -501,17 +498,17 @@ class _CategorySettingsState extends State<_CategorySettings> {
                   items: [
                     DropdownMenuItem(
                         value: CategoryType.row,
-                        child: Text(localizations.row,
+                        child: Text(LocaleKeys.row.tr(),
                             style: Theme.of(context).textTheme.bodySmall)),
                     DropdownMenuItem(
                         value: CategoryType.grid,
-                        child: Text(localizations.grid,
+                        child: Text(LocaleKeys.grid.tr(),
                             style: Theme.of(context).textTheme.bodySmall))
                   ]))),
       if (_categoryType == CategoryType.grid)
         _listTile(
             context,
-            Text(localizations.columnCount),
+            Text(LocaleKeys.columnCount.tr()),
             Padding(
                 padding: EdgeInsets.only(top: 4),
                 child: DropdownButtonFormField<int>(
@@ -544,7 +541,7 @@ class _CategorySettingsState extends State<_CategorySettings> {
       if (_categoryType == CategoryType.row)
         _listTile(
             context,
-            Text(localizations.rowHeight),
+            Text(LocaleKeys.rowHeight.tr()),
             Padding(
                 padding: EdgeInsets.only(top: 4),
                 child: DropdownButtonFormField<int>(
@@ -686,11 +683,9 @@ class _LauncherSpacerSettingsState extends State<_LauncherSpacerSettings> {
 
   @override
   Widget build(BuildContext context) {
-    AppLocalizations localizations = AppLocalizations.of(context)!;
-
     return _listTile(
         context,
-        Text(localizations.height),
+        Text(LocaleKeys.height.tr()),
         Padding(
             padding: EdgeInsets.only(top: 4),
             child: DropdownButtonFormField<int>(

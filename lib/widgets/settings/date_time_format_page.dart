@@ -23,7 +23,8 @@ import 'package:flauncher/widgets/settings/focusable_settings_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:flauncher/l10n/app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flauncher/generated/locale_keys.g.dart';
 
 // Date format presets
 const List<(String format, String example)> dateFormatPresets = [
@@ -61,12 +62,10 @@ class _DateTimeFormatPageState extends State<DateTimeFormatPage> {
 
   @override
   Widget build(BuildContext context) {
-    AppLocalizations localizations = AppLocalizations.of(context)!;
-
     return Consumer<SettingsService>(builder: (context, service, _) {
       return Column(
         children: [
-          Text(localizations.dateAndTimeFormat,
+          Text(LocaleKeys.dateAndTimeFormat.tr(),
               style: Theme.of(context).textTheme.titleLarge),
           const Divider(),
           Expanded(
@@ -79,7 +78,7 @@ class _DateTimeFormatPageState extends State<DateTimeFormatPage> {
 
                 // Date format section
                 Text(
-                  localizations.date,
+                  LocaleKeys.date.tr(),
                   style: Theme.of(context)
                       .textTheme
                       .titleMedium
@@ -118,7 +117,7 @@ class _DateTimeFormatPageState extends State<DateTimeFormatPage> {
 
                 // Time format section
                 Text(
-                  localizations.time,
+                  LocaleKeys.time.tr(),
                   style: Theme.of(context)
                       .textTheme
                       .titleMedium
