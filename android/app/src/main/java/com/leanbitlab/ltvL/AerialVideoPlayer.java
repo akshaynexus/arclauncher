@@ -33,11 +33,14 @@ import androidx.media3.common.MediaItem;
 import androidx.media3.common.PlaybackException;
 import androidx.media3.common.Player;
 import androidx.media3.common.VideoSize;
+import androidx.media3.datasource.DefaultDataSource;
+import androidx.media3.datasource.DefaultHttpDataSource;
 import androidx.media3.exoplayer.DefaultLoadControl;
 import androidx.media3.exoplayer.DefaultRenderersFactory;
 import androidx.media3.exoplayer.ExoPlayer;
 import androidx.media3.exoplayer.analytics.AnalyticsListener;
 import androidx.media3.exoplayer.analytics.AnalyticsListener.EventTime;
+import androidx.media3.exoplayer.source.DefaultMediaSourceFactory;
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector;
 
 import java.util.ArrayList;
@@ -145,10 +148,21 @@ public class AerialVideoPlayer {
                 .setTargetBufferBytes(C.LENGTH_UNSET)
                 .build();
 
+        DefaultHttpDataSource.Factory httpDataSourceFactory = new DefaultHttpDataSource.Factory()
+                .setAllowCrossProtocolRedirects(true)
+                .setConnectTimeoutMs(15_000)
+                .setReadTimeoutMs(30_000)
+                .setUserAgent("ArcLauncher/1.0 ExoPlayer");
+
+        DefaultDataSource.Factory dataSourceFactory = new DefaultDataSource.Factory(
+                activity.getApplicationContext(),
+                httpDataSourceFactory);
+
         player = new ExoPlayer.Builder(activity.getApplicationContext())
                 .setTrackSelector(trackSelector)
                 .setRenderersFactory(renderersFactory)
                 .setLoadControl(loadControl)
+                .setMediaSourceFactory(new DefaultMediaSourceFactory(dataSourceFactory))
                 .build();
         player.setVolume(0f);
         player.setRepeatMode(Player.REPEAT_MODE_ALL);
@@ -201,7 +215,10 @@ public class AerialVideoPlayer {
 
     private void handlePlayerError(@NonNull PlaybackException error) {
         consecutiveErrors++;
-        addLog("error #" + consecutiveErrors + " code=" + error.getErrorCodeName() + " message=" + error.getMessage());
+        addLog("error #" + consecutiveErrors + " code=" + error.getErrorCodeName()
+                + " uri=" + currentUri()
+                + " message=" + error.getMessage()
+                + " cause=" + rootCauseMessage(error));
         if (player == null) return;
 
         if (consecutiveErrors > MAX_CONSECUTIVE_ERRORS) {
@@ -274,6 +291,23 @@ public class AerialVideoPlayer {
             case Player.STATE_ENDED -> "ended";
             default -> "unknown";
         };
+    }
+
+    private String currentUri() {
+        if (player == null || player.getCurrentMediaItem() == null ||
+                player.getCurrentMediaItem().localConfiguration == null) {
+            return "";
+        }
+        return player.getCurrentMediaItem().localConfiguration.uri.toString();
+    }
+
+    private String rootCauseMessage(Throwable error) {
+        Throwable cause = error;
+        while (cause.getCause() != null) {
+            cause = cause.getCause();
+        }
+        String message = cause.getMessage();
+        return cause.getClass().getSimpleName() + (message == null ? "" : ": " + message);
     }
 
     public void onResume() {
