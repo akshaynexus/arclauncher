@@ -18,6 +18,7 @@
 
 import 'dart:async';
 import 'dart:developer' as developer;
+import 'dart:io';
 
 import 'package:aerial_views/aerial_views.dart';
 import 'package:flauncher/providers/aerial_wallpaper_service.dart';
@@ -62,29 +63,34 @@ class _AerialVideoBackgroundState extends State<AerialVideoBackground>
 
     _player = Player(
       configuration: const PlayerConfiguration(
-        bufferSize: 20 * 1024 * 1024,
+        bufferSize: 32 * 1024 * 1024,
       ),
     );
-    _videoController = VideoController(_player!);
+    // On Android TV, render through MediaCodec directly onto the video
+    // Surface (zero-copy). This bypasses mpv's GL pipeline entirely: the
+    // hardware decoder output goes straight to the display, so 4K plays
+    // without per-frame GPU conversion and HDR10/HLG is passed through
+    // natively by the platform video pipeline — no tone-mapping needed.
+    _videoController = VideoController(
+      _player!,
+      configuration: Platform.isAndroid
+          ? const VideoControllerConfiguration(
+              vo: 'mediacodec_embed',
+              hwdec: 'mediacodec',
+            )
+          : const VideoControllerConfiguration(),
+    );
 
-    // Hardware decode pipeline — let mpv pick best available decoder
-    await _player!.setProperty('hwdec', 'auto');
-    await _player!.setProperty('hwdec-codecs', 'all');
-    // Optimal thread count for decode parallelism
-    await _player!.setProperty('vd-lavc-threads', '0');
-    // Buffer tuning for network streams
-    await _player!.setProperty('demuxer-max-bytes', '${32 * 1024 * 1024}');
+    // Background wallpaper is always muted — skip audio decoding entirely.
+    await _player!.setProperty('aid', 'no');
+    // Buffer tuning for network streams (4K HDR streams peak >50 Mbps)
+    await _player!.setProperty('demuxer-max-bytes', '${64 * 1024 * 1024}');
     await _player!.setProperty('demuxer-max-back-bytes', '${8 * 1024 * 1024}');
-    // Enable explicit cache for HTTP streaming
     await _player!.setProperty('cache', 'yes');
     await _player!.setProperty('cache-secs', '30');
     await _player!.setProperty('demuxer-readahead-secs', '20');
-
-    // HDR to SDR tone mapping properties
-    await _player!.setProperty('tone-mapping', 'bt.2446a');
-    await _player!.setProperty('target-trc', 'srgb');
-    await _player!.setProperty('target-prim', 'bt.709');
-    await _player!.setProperty('hdr-compute-peak', 'no');
+    // Drop late frames instead of stalling the whole pipeline.
+    await _player!.setProperty('framedrop', 'vo');
 
     if (!mounted) return;
     setState(() => _playerReady = true);
@@ -110,7 +116,7 @@ class _AerialVideoBackgroundState extends State<AerialVideoBackground>
     final player = _player;
     if (player == null || !player.state.playing) return;
     try {
-      final propValue = await player.getProperty('drop-frame-count');
+      final propValue = await player.getProperty('frame-drop-count');
       if (propValue.isNotEmpty) {
         final currentDrops = int.tryParse(propValue) ?? 0;
         if (currentDrops > _lastFrameCount) {

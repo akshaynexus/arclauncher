@@ -46,15 +46,17 @@ Future<void> main() async {
   if (Platform.isAndroid) {
     try {
       await FlutterDisplayMode.setHighRefreshRate();
+      // HDR mode is engaged automatically by the platform when the
+      // MediaCodec HDR decode session starts (vo=mediacodec_embed).
     } catch (e) {
       debugPrint('Error setting high refresh rate display mode: $e');
     }
   }
 
-  // Defer heavy MediaKit native init to after first frame
-  WidgetsBinding.instance.addPostFrameCallback((_) {
-    MediaKit.ensureInitialized();
-  });
+  // Must run before any Player is created; it only resolves the native
+  // library path (cheap), so doing it before runApp is safe and removes
+  // the race with AerialVideoBackground's deferred player init.
+  MediaKit.ensureInitialized();
 
   final fLauncherChannel = FLauncherChannel();
   final fLauncherDatabase = FLauncherDatabase(connect());
