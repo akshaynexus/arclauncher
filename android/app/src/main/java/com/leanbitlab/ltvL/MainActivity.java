@@ -51,6 +51,7 @@ import android.app.AppOpsManager;
 import android.os.RemoteException;
 
 import io.flutter.embedding.android.FlutterActivity;
+import io.flutter.embedding.android.FlutterActivityLaunchConfigs;
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.EventChannel;
@@ -74,11 +75,44 @@ public class MainActivity extends FlutterActivity {
     private final String APPS_EVENT_CHANNEL = "me.efesser.flauncher/event_apps";
     private final String NETWORK_EVENT_CHANNEL = "me.efesser.flauncher/event_network";
 
+    private AerialVideoPlayer aerialVideoPlayer;
+
+    // Transparent FlutterView so the aerial video SurfaceView placed
+    // behind it shows through wherever Flutter doesn't paint.
+    @NonNull
+    @Override
+    protected FlutterActivityLaunchConfigs.BackgroundMode getBackgroundMode() {
+        return FlutterActivityLaunchConfigs.BackgroundMode.transparent;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (aerialVideoPlayer != null) aerialVideoPlayer.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (aerialVideoPlayer != null) aerialVideoPlayer.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (aerialVideoPlayer != null) {
+            aerialVideoPlayer.release();
+            aerialVideoPlayer = null;
+        }
+        super.onDestroy();
+    }
+
     @Override
     public void configureFlutterEngine(@NonNull FlutterEngine flutterEngine) {
         super.configureFlutterEngine(flutterEngine);
 
         BinaryMessenger messenger = flutterEngine.getDartExecutor().getBinaryMessenger();
+
+        aerialVideoPlayer = new AerialVideoPlayer(this, messenger);
 
         new MethodChannel(messenger, METHOD_CHANNEL).setMethodCallHandler((call, result) -> {
             switch (call.method) {

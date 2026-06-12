@@ -38,6 +38,7 @@ class _AerialVideoBackgroundState extends State<AerialVideoBackground>
 
   bool _playerReady = false;
   String? _nativePlaylistKey;
+  String? _pendingPlaylistKey;
 
   // Frame drop diagnostics
   int _lastFrameCount = 0;
@@ -51,6 +52,7 @@ class _AerialVideoBackgroundState extends State<AerialVideoBackground>
   int _itemCount = 0;
   int _consecutiveErrors = 0;
   List<String> _debugLogs = const [];
+  final List<String> _localDebugLogs = [];
 
   @override
   void initState() {
@@ -65,7 +67,7 @@ class _AerialVideoBackgroundState extends State<AerialVideoBackground>
 
     setState(() => _playerReady = true);
     _setupDiagnostics();
-    _openPlaylist();
+    unawaited(_openPlaylist());
   }
 
   void _setupDiagnostics() {
@@ -113,19 +115,66 @@ class _AerialVideoBackgroundState extends State<AerialVideoBackground>
     }
   }
 
-  void _openPlaylist() {
+  Future<void> _openPlaylist() async {
+    await Future<void>.delayed(Duration.zero);
+    if (!mounted) return;
     final service = context.read<AerialWallpaperService>();
-    if (service.feed.isEmpty || service.isLoading) return;
+    if (service.feed.isEmpty || service.isLoading) {
+      _appendLocalDebugLog(
+        'skip push feed=${service.feed.length} loading=${service.isLoading}',
+      );
+      return;
+    }
 
     final urls = service.feed.map((video) => video.url).toList();
     final playlistKey = '${service.shuffle}:${urls.join('\n')}';
-    if (_nativePlaylistKey == playlistKey) return;
+    if (_nativePlaylistKey == playlistKey ||
+        _pendingPlaylistKey == playlistKey) {
+      return;
+    }
 
-    _nativePlaylistKey = playlistKey;
-    _nativeAerialVideoChannel.invokeMethod<void>('setPlaylist', {
-      'urls': urls,
-      'shuffle': service.shuffle,
-    });
+    _pendingPlaylistKey = playlistKey;
+    _appendLocalDebugLog(
+      'push playlist count=${urls.length} shuffle=${service.shuffle}',
+    );
+
+    try {
+      await _nativeAerialVideoChannel.invokeMethod<void>('setPlaylist', {
+        'urls': urls,
+        'shuffle': service.shuffle,
+      });
+      if (!mounted) return;
+      _nativePlaylistKey = playlistKey;
+      _appendLocalDebugLog('push playlist ok');
+    } catch (error) {
+      if (!mounted) return;
+      _appendLocalDebugLog('push playlist failed: $error');
+      Future<void>.delayed(const Duration(seconds: 2), () {
+        if (mounted && _nativePlaylistKey != playlistKey) {
+          unawaited(_openPlaylist());
+        }
+      });
+    } finally {
+      if (_pendingPlaylistKey == playlistKey) {
+        _pendingPlaylistKey = null;
+      }
+    }
+  }
+
+  Future<void> _stopNativePlayer(String reason) async {
+    await Future<void>.delayed(Duration.zero);
+    if (!mounted || (_nativePlaylistKey == null && _pendingPlaylistKey == null)) {
+      return;
+    }
+
+    _nativePlaylistKey = null;
+    _pendingPlaylistKey = null;
+    _appendLocalDebugLog('stop player: $reason');
+    try {
+      await _nativeAerialVideoChannel.invokeMethod<void>('stop');
+    } catch (error) {
+      _appendLocalDebugLog('stop failed: $error');
+    }
   }
 
   void _updateFpsTimer(bool showFps) {
@@ -148,9 +197,14 @@ class _AerialVideoBackgroundState extends State<AerialVideoBackground>
                 .invokeListMethod<String>('getDebugLog');
             if (!mounted || logs == null) return;
             setState(() {
-              _debugLogs = logs.takeLast(8).toList(growable: false);
+              _debugLogs = [
+                ..._localDebugLogs.takeLast(4),
+                ...logs.takeLast(6),
+              ];
             });
-          } catch (_) {}
+          } catch (error) {
+            _appendLocalDebugLog('stats failed: $error');
+          }
         });
       }
     } else {
@@ -173,11 +227,14 @@ class _AerialVideoBackgroundState extends State<AerialVideoBackground>
     final showFps = service.showFps;
 
     if (feedEmpty || isLoading || !_playerReady) {
+      if (feedEmpty && !isLoading) {
+        unawaited(_stopNativePlayer('empty feed'));
+      }
       _updateFpsTimer(false);
       return const ColoredBox(color: Colors.black);
     }
 
-    _openPlaylist();
+    unawaited(_openPlaylist());
     _updateFpsTimer(showFps);
 
     return Stack(
@@ -229,6 +286,20 @@ class _AerialVideoBackgroundState extends State<AerialVideoBackground>
         ),
       ),
     );
+  }
+
+  void _appendLocalDebugLog(String message) {
+    final line = '${DateTime.now().toIso8601String()} dart $message';
+    developer.log(message, name: 'AerialVideoBackground');
+    _localDebugLogs.add(line);
+    if (_localDebugLogs.length > 20) {
+      _localDebugLogs.removeAt(0);
+    }
+    if (mounted) {
+      setState(() {
+        _debugLogs = _localDebugLogs.takeLast(8).toList(growable: false);
+      });
+    }
   }
 }
 

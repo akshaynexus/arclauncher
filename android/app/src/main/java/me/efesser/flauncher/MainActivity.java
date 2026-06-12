@@ -46,6 +46,8 @@ import android.app.usage.NetworkStatsManager;
 import android.app.AppOpsManager;
 import android.os.RemoteException;
 
+import com.omeda.arc.AerialVideoPlayer;
+
 import io.flutter.embedding.android.FlutterActivity;
 import io.flutter.embedding.android.FlutterActivityLaunchConfigs;
 import io.flutter.embedding.engine.FlutterEngine;
