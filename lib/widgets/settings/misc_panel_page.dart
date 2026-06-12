@@ -56,6 +56,14 @@ class MiscPanelPage extends StatelessWidget {
                 secondary: Icon(Icons.subtitles),
               ),
               RoundedSwitchListTile(
+                value: settingsService.appCardTransparent,
+                onChanged: (value) =>
+                    settingsService.setAppCardTransparent(value),
+                title: Text("Transparent App Tiles (iOS Style)",
+                    style: Theme.of(context).textTheme.bodyMedium),
+                secondary: Icon(Icons.apps),
+              ),
+              RoundedSwitchListTile(
                 value: settingsService.dockBackdropFilterDisabled,
                 onChanged: (value) =>
                     settingsService.setDockBackdropFilterDisabled(value),

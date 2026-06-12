@@ -31,6 +31,7 @@ const _backButtonAction = "back_button_action";
 const _dateFormat = "date_format";
 const _showCategoryTitles = "show_category_titles";
 const _showAppNamesBelowIcons = "show_app_names_below_icons";
+const _appCardTransparent = "app_card_transparent";
 const _showDateInStatusBar = "show_date_in_status_bar";
 const _showTimeInStatusBar = "show_time_in_status_bar";
 const _timeFormat = "time_format";
@@ -91,6 +92,10 @@ class SettingsService extends ChangeNotifier {
   bool get showCategoryTitles => _sharedPreferences.getBool(_showCategoryTitles) ?? false;
 
   bool get showAppNamesBelowIcons => _sharedPreferences.getBool(_showAppNamesBelowIcons) ?? false;
+
+  /// iOS-style tiles: app icon + name on a transparent background instead
+  /// of the TV banner image.
+  bool get appCardTransparent => _sharedPreferences.getBool(_appCardTransparent) ?? false;
 
   bool get showDateInStatusBar => _sharedPreferences.getBool(_showDateInStatusBar) ?? false;
 
@@ -197,6 +202,10 @@ class SettingsService extends ChangeNotifier {
 
   Future<void> setShowAppNamesBelowIcons(bool show) async {
     return set(_showAppNamesBelowIcons, show);
+  }
+
+  Future<void> setAppCardTransparent(bool value) async {
+    return set(_appCardTransparent, value);
   }
 
   Future<void> setShowDateInStatusBar(bool show) async {

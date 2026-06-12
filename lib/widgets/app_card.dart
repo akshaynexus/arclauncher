@@ -75,6 +75,9 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
   // late Future<(AppImageType, ImageProvider)> _appImageLoadFuture;
   (AppImageType, ImageProvider)? _loadedImage;
   bool _imageLoadError = false;
+  // Which mode the current image was loaded for, so toggling the
+  // transparent-tiles setting reloads it (icon vs banner).
+  bool? _loadedForTransparentMode;
 
   late final AnimationController _animation = AnimationController(
     vsync: this,
@@ -163,7 +166,15 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
   Widget build(BuildContext context) {
     final bool showAppNames =
         context.select<SettingsService, bool>((s) => s.showAppNamesBelowIcons);
-    final appImageWidget = _appImage();
+    final bool transparentMode =
+        context.select<SettingsService, bool>((s) => s.appCardTransparent);
+    if (_loadedForTransparentMode != null &&
+        _loadedForTransparentMode != transparentMode) {
+      _loadedImage = null;
+      _imageLoadError = false;
+      _loadAppImage(Provider.of<AppsService>(context, listen: false));
+    }
+    final appImageWidget = _appImage(transparentMode);
     final bool shouldHighlight = _shouldHighlight();
 
     return FocusKeyboardListener(
@@ -189,9 +200,11 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
                       alignment: Alignment.center,
                       curve: Curves.easeInOut,
                       child: Material(
+                        color: transparentMode ? Colors.transparent : null,
                         borderRadius: BorderRadius.circular(12),
                         clipBehavior: Clip.antiAlias,
-                        elevation: shouldHighlight ? 16 : 4,
+                        elevation:
+                            transparentMode ? 0 : (shouldHighlight ? 16 : 4),
                         shadowColor: Colors.black,
                         child: Stack(
                           fit: StackFit.expand,
@@ -209,15 +222,16 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
                               },
                             ),
                             if (_moving) ..._arrows(),
-                            IgnorePointer(
-                              child: AnimatedContainer(
-                                duration: const Duration(milliseconds: 200),
-                                curve: Curves.easeInOut,
-                                color: shouldHighlight
-                                    ? const Color(0x00000000)
-                                    : const Color(0x1A000000),
+                            if (!transparentMode)
+                              IgnorePointer(
+                                child: AnimatedContainer(
+                                  duration: const Duration(milliseconds: 200),
+                                  curve: Curves.easeInOut,
+                                  color: shouldHighlight
+                                      ? const Color(0x00000000)
+                                      : const Color(0x1A000000),
+                                ),
                               ),
-                            ),
                             Selector<SettingsService, (bool, String)>(
                               selector: (_, settingsService) => (
                                 settingsService.appHighlightAnimationEnabled,
@@ -268,7 +282,8 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
                   ),
                 ),
               ),
-              if (showAppNames)
+              // iOS-style tiles always show the app name under the icon.
+              if (showAppNames || transparentMode)
                 Padding(
                   padding: const EdgeInsets.only(top: 8.0),
                   child: _AppNameLabel(name: widget.application.name),
@@ -281,18 +296,30 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
   }
 
   Future<void> _loadAppImage(AppsService service) async {
+    final transparentMode = Provider.of<SettingsService>(context, listen: false)
+        .appCardTransparent;
+    _loadedForTransparentMode = transparentMode;
     try {
       Uint8List bytes = Uint8List(0);
+      AppImageType type;
 
-      bytes = await service.getAppBanner(widget.application.packageName);
-      AppImageType type = AppImageType.Banner;
-      if (bytes.isEmpty) {
+      if (transparentMode) {
+        // iOS-style tiles always use the app icon, never the banner.
         type = AppImageType.Icon;
         bytes = await service.getAppIcon(widget.application.packageName);
+      } else {
+        bytes = await service.getAppBanner(widget.application.packageName);
+        type = AppImageType.Banner;
+        if (bytes.isEmpty) {
+          type = AppImageType.Icon;
+          bytes = await service.getAppIcon(widget.application.packageName);
+        }
       }
       if (mounted) {
         setState(() {
-          final targetWidth = type == AppImageType.Banner ? 480 : 120;
+          final targetWidth = type == AppImageType.Banner
+              ? 480
+              : (transparentMode ? 192 : 120);
           _loadedImage = (type, ResizeImage(MemoryImage(bytes), width: targetWidth));
         });
       }
@@ -303,11 +330,21 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
     }
   }
 
-  Widget _appImage() {
+  Widget _appImage(bool transparentMode) {
     App app = widget.application;
 
     if (_loadedImage != null) {
       final (type, image) = _loadedImage!;
+      if (transparentMode) {
+        // iOS-style: just the logo, centered, no card background.
+        return Center(
+          child: FractionallySizedBox(
+            widthFactor: 0.55,
+            heightFactor: 0.55,
+            child: Ink.image(image: image, fit: BoxFit.contain),
+          ),
+        );
+      }
       if (type == AppImageType.Banner) {
         return Ink.image(image: image, fit: BoxFit.cover);
       } else {
