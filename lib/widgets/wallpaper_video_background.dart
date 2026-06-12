@@ -21,15 +21,15 @@ import 'dart:developer' as developer;
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:media_kit/media_kit.dart';
-import 'package:media_kit_video/media_kit_video.dart';
+import 'package:flutter/services.dart';
 
 class WallpaperVideoBackground extends StatefulWidget {
   const WallpaperVideoBackground({
     super.key,
     this.file,
     this.url,
-  }) : assert(file != null || url != null, 'Either file or url must be provided');
+  }) : assert(
+            file != null || url != null, 'Either file or url must be provided');
 
   final File? file;
   final String? url;
@@ -41,9 +41,11 @@ class WallpaperVideoBackground extends StatefulWidget {
 
 class _WallpaperVideoBackgroundState extends State<WallpaperVideoBackground>
     with WidgetsBindingObserver {
-  Player? _player;
-  VideoController? _videoController;
+  static const MethodChannel _nativeAerialVideoChannel =
+      MethodChannel('me.efesser.flauncher/aerial_video');
+
   bool _playerReady = false;
+  String? _mediaKey;
 
   // Frame drop diagnostics
   int _lastFrameCount = 0;
@@ -60,27 +62,6 @@ class _WallpaperVideoBackgroundState extends State<WallpaperVideoBackground>
   void _initPlayer() async {
     if (!mounted) return;
 
-    _player = Player(
-      configuration: const PlayerConfiguration(
-        bufferSize: 20 * 1024 * 1024,
-      ),
-    );
-    _videoController = VideoController(_player!);
-
-    // Hardware decode pipeline — let mpv pick best available decoder
-    await _player!.setProperty('hwdec', 'auto');
-    await _player!.setProperty('hwdec-codecs', 'all');
-    // Optimal thread count for decode parallelism
-    await _player!.setProperty('vd-lavc-threads', '0');
-    // Buffer tuning for local/network video
-    await _player!.setProperty('demuxer-max-bytes', '${32 * 1024 * 1024}');
-    await _player!.setProperty('demuxer-max-back-bytes', '${8 * 1024 * 1024}');
-    // Enable explicit cache for HTTP streaming
-    await _player!.setProperty('cache', 'yes');
-    await _player!.setProperty('cache-secs', '30');
-    await _player!.setProperty('demuxer-readahead-secs', '20');
-
-    if (!mounted) return;
     setState(() => _playerReady = true);
 
     _setupDiagnostics();
@@ -94,22 +75,21 @@ class _WallpaperVideoBackgroundState extends State<WallpaperVideoBackground>
   }
 
   Future<void> _checkFrameDrops() async {
-    final player = _player;
-    if (player == null || !player.state.playing) return;
     try {
-      final propValue = await player.getProperty('drop-frame-count');
-      if (propValue.isNotEmpty) {
-        final currentDrops = int.tryParse(propValue) ?? 0;
-        if (currentDrops > _lastFrameCount) {
-          final newDrops = currentDrops - _lastFrameCount;
-          if (newDrops > 5) {
-            developer.log(
-              'Frame drop: $newDrops frames dropped (potential performance issue)',
-              name: 'WallpaperVideoBackground',
-            );
-          }
-          _lastFrameCount = currentDrops;
+      final stats =
+          await _nativeAerialVideoChannel.invokeMapMethod<String, Object?>(
+        'getStats',
+      );
+      final currentDrops = (stats?['droppedFrames'] as num?)?.toInt() ?? 0;
+      if (currentDrops > _lastFrameCount) {
+        final newDrops = currentDrops - _lastFrameCount;
+        if (newDrops > 5) {
+          developer.log(
+            'Frame drop: $newDrops frames dropped (potential performance issue)',
+            name: 'WallpaperVideoBackground',
+          );
         }
+        _lastFrameCount = currentDrops;
       }
     } catch (_) {}
   }
@@ -123,23 +103,22 @@ class _WallpaperVideoBackgroundState extends State<WallpaperVideoBackground>
     final newUrl = widget.url;
 
     if (oldPath != newPath || oldUrl != newUrl) {
-      _player?.stop();
+      _nativeAerialVideoChannel.invokeMethod<void>('stop');
+      _mediaKey = null;
       _openMedia();
     }
   }
 
   void _openMedia() async {
-    final player = _player;
-    if (player == null) return;
-    try {
-      if (widget.url != null) {
-        await player.open(Media(widget.url!));
-      } else {
-        await player.open(Media('file://${widget.file!.path}'));
-      }
+    final uri = widget.url ?? widget.file!.uri.toString();
+    if (_mediaKey == uri) return;
 
-      player.setPlaylistMode(PlaylistMode.single);
-      player.setVolume(0);
+    _mediaKey = uri;
+    try {
+      await _nativeAerialVideoChannel.invokeMethod<void>('setPlaylist', {
+        'urls': [uri],
+        'shuffle': false,
+      });
     } catch (error) {
       debugPrint('Video wallpaper initialization failed: $error');
     }
@@ -149,32 +128,26 @@ class _WallpaperVideoBackgroundState extends State<WallpaperVideoBackground>
   void dispose() {
     _frameDropTimer?.cancel();
     WidgetsBinding.instance.removeObserver(this);
-    _player?.stop();
-    _player?.dispose();
+    _nativeAerialVideoChannel.invokeMethod<void>('stop');
     super.dispose();
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      _player?.play();
+      _nativeAerialVideoChannel.invokeMethod<void>('play');
     } else if (state == AppLifecycleState.paused ||
         state == AppLifecycleState.inactive) {
-      _player?.pause();
+      _nativeAerialVideoChannel.invokeMethod<void>('pause');
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (!_playerReady || _videoController == null) {
+    if (!_playerReady) {
       return const ColoredBox(color: Colors.black);
     }
 
-    return RepaintBoundary(
-      child: Video(
-        controller: _videoController!,
-        controls: NoVideoControls,
-      ),
-    );
+    return const SizedBox.expand();
   }
 }

@@ -34,7 +34,6 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:media_kit/media_kit.dart';
 
 import 'flauncher_app.dart';
 
@@ -52,11 +51,6 @@ Future<void> main() async {
       debugPrint('Error setting high refresh rate display mode: $e');
     }
   }
-
-  // Must run before any Player is created; it only resolves the native
-  // library path (cheap), so doing it before runApp is safe and removes
-  // the race with AerialVideoBackground's deferred player init.
-  MediaKit.ensureInitialized();
 
   final fLauncherChannel = FLauncherChannel();
   final fLauncherDatabase = FLauncherDatabase(connect());

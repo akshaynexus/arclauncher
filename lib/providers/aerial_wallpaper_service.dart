@@ -21,7 +21,6 @@ import 'dart:math';
 import 'package:aerial_views/aerial_views.dart';
 import 'package:flutter/material.dart' hide TimeOfDay;
 import 'package:flauncher/providers/settings_service.dart';
-import 'package:media_kit/media_kit.dart';
 
 class AerialWallpaperService extends ChangeNotifier {
   final SettingsService _settingsService;
@@ -40,7 +39,6 @@ class AerialWallpaperService extends ChangeNotifier {
   final Set<String> _cityFilter = {};
   bool _showFps = false;
 
-
   List<AerialMedia> get feed => _feed;
   bool get isLoading => _isLoading;
   String? get error => _error;
@@ -54,14 +52,6 @@ class AerialWallpaperService extends ChangeNotifier {
   Set<String> get cityFilter => Set.unmodifiable(_cityFilter);
   bool get showFps => _showFps;
   int get totalCount => _feed.length;
-
-
-  /// Convert feed to a media_kit Playlist
-  Playlist toPlaylist() {
-    return Playlist(
-      _feed.map((v) => Media(v.url)).toList(),
-    );
-  }
 
   static const List<AerialSource> sources = [
     AerialSource(
@@ -107,7 +97,6 @@ class AerialWallpaperService extends ChangeNotifier {
     'San Francisco',
   ];
 
-
   AerialWallpaperService(this._settingsService) {
     _loadPreferences();
     if (enabled) {
@@ -123,7 +112,8 @@ class AerialWallpaperService extends ChangeNotifier {
     } else {
       _selectedSources.add(_selectedSourceIndex);
     }
-    _selectedQuality = VideoQuality.values[_settingsService.aerialVideoQualityIndex];
+    _selectedQuality =
+        VideoQuality.values[_settingsService.aerialVideoQualityIndex];
     _shuffle = _settingsService.aerialVideoShuffle;
     _showFps = _settingsService.aerialShowFps;
 
@@ -149,7 +139,6 @@ class AerialWallpaperService extends ChangeNotifier {
     _cityFilter.clear();
     _cityFilter.addAll(savedCities);
   }
-
 
   Future<void> initialize() async {
     await refreshFeed();
@@ -179,7 +168,8 @@ class AerialWallpaperService extends ChangeNotifier {
         allVideos.retainWhere((item) {
           if (item.metadata.scene == SceneType.city) {
             final desc = item.metadata.shortDescription;
-            return _cityFilter.any((city) => desc.toLowerCase().contains(city.toLowerCase()));
+            return _cityFilter
+                .any((city) => desc.toLowerCase().contains(city.toLowerCase()));
           }
           return true;
         });
@@ -190,7 +180,6 @@ class AerialWallpaperService extends ChangeNotifier {
       }
 
       _feed = allVideos;
-
     } catch (e) {
       _error = e.toString();
     } finally {
@@ -289,11 +278,12 @@ class AerialWallpaperService extends ChangeNotifier {
   }
 
   void _saveFilters() {
-    _settingsService.setAerialTimeOfDayFilters(_timeOfDayFilter.map((t) => t.name).toList());
-    _settingsService.setAerialSceneFilters(_sceneFilter.map((s) => s.name).toList());
+    _settingsService.setAerialTimeOfDayFilters(
+        _timeOfDayFilter.map((t) => t.name).toList());
+    _settingsService
+        .setAerialSceneFilters(_sceneFilter.map((s) => s.name).toList());
     _settingsService.setAerialCityFilters(_cityFilter.toList());
   }
-
 
   /// Add time of day filter
   void addTimeOfDayFilter(TimeOfDay timeOfDay) {
@@ -345,7 +335,6 @@ class AerialWallpaperService extends ChangeNotifier {
     _saveFilters();
     refreshFeed();
   }
-
 
   void clearError() {
     _error = null;

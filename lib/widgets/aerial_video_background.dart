@@ -18,13 +18,10 @@
 
 import 'dart:async';
 import 'dart:developer' as developer;
-import 'dart:io';
 
-import 'package:aerial_views/aerial_views.dart';
 import 'package:flauncher/providers/aerial_wallpaper_service.dart';
 import 'package:flutter/material.dart';
-import 'package:media_kit/media_kit.dart';
-import 'package:media_kit_video/media_kit_video.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 class AerialVideoBackground extends StatefulWidget {
@@ -36,11 +33,11 @@ class AerialVideoBackground extends StatefulWidget {
 
 class _AerialVideoBackgroundState extends State<AerialVideoBackground>
     with WidgetsBindingObserver {
-  Player? _player;
-  VideoController? _videoController;
-  StreamSubscription<Playlist>? _playlistSubscription;
-  bool _playlistOpened = false;
+  static const MethodChannel _nativeAerialVideoChannel =
+      MethodChannel('me.efesser.flauncher/aerial_video');
+
   bool _playerReady = false;
+  String? _nativePlaylistKey;
 
   // Frame drop diagnostics
   int _lastFrameCount = 0;
@@ -61,48 +58,8 @@ class _AerialVideoBackgroundState extends State<AerialVideoBackground>
   void _initPlayer() async {
     if (!mounted) return;
 
-    _player = Player(
-      configuration: const PlayerConfiguration(
-        bufferSize: 32 * 1024 * 1024,
-      ),
-    );
-    // On Android TV, render through MediaCodec directly onto the video
-    // Surface (zero-copy). This bypasses mpv's GL pipeline entirely: the
-    // hardware decoder output goes straight to the display, so 4K plays
-    // without per-frame GPU conversion and HDR10/HLG is passed through
-    // natively by the platform video pipeline — no tone-mapping needed.
-    _videoController = VideoController(
-      _player!,
-      configuration: Platform.isAndroid
-          ? const VideoControllerConfiguration(
-              vo: 'mediacodec_embed',
-              hwdec: 'mediacodec',
-            )
-          : const VideoControllerConfiguration(),
-    );
-
-    // Background wallpaper is always muted — skip audio decoding entirely.
-    await _player!.setProperty('aid', 'no');
-    // Buffer tuning for network streams (4K HDR streams peak >50 Mbps)
-    await _player!.setProperty('demuxer-max-bytes', '${64 * 1024 * 1024}');
-    await _player!.setProperty('demuxer-max-back-bytes', '${8 * 1024 * 1024}');
-    await _player!.setProperty('cache', 'yes');
-    await _player!.setProperty('cache-secs', '30');
-    await _player!.setProperty('demuxer-readahead-secs', '20');
-    // Drop late frames instead of stalling the whole pipeline.
-    await _player!.setProperty('framedrop', 'vo');
-
-    if (!mounted) return;
     setState(() => _playerReady = true);
-
     _setupDiagnostics();
-
-    _playlistSubscription = _player!.stream.playlist.listen((playlist) {
-      if (playlist.medias.isEmpty && mounted && _playlistOpened) {
-        _openPlaylist();
-      }
-    });
-
     _openPlaylist();
   }
 
@@ -113,22 +70,21 @@ class _AerialVideoBackgroundState extends State<AerialVideoBackground>
   }
 
   Future<void> _checkFrameDrops() async {
-    final player = _player;
-    if (player == null || !player.state.playing) return;
     try {
-      final propValue = await player.getProperty('frame-drop-count');
-      if (propValue.isNotEmpty) {
-        final currentDrops = int.tryParse(propValue) ?? 0;
-        if (currentDrops > _lastFrameCount) {
-          final newDrops = currentDrops - _lastFrameCount;
-          if (newDrops > 5) {
-            developer.log(
-              'Frame drop: $newDrops frames dropped (potential performance issue)',
-              name: 'AerialVideoBackground',
-            );
-          }
-          _lastFrameCount = currentDrops;
+      final stats =
+          await _nativeAerialVideoChannel.invokeMapMethod<String, Object?>(
+        'getStats',
+      );
+      final currentDrops = (stats?['droppedFrames'] as num?)?.toInt() ?? 0;
+      if (currentDrops > _lastFrameCount) {
+        final newDrops = currentDrops - _lastFrameCount;
+        if (newDrops > 5) {
+          developer.log(
+            'Frame drop: $newDrops frames dropped (potential performance issue)',
+            name: 'AerialVideoBackground',
+          );
         }
+        _lastFrameCount = currentDrops;
       }
     } catch (_) {}
   }
@@ -138,68 +94,47 @@ class _AerialVideoBackgroundState extends State<AerialVideoBackground>
     _fpsTimer?.cancel();
     _frameDropTimer?.cancel();
     WidgetsBinding.instance.removeObserver(this);
-    _playlistSubscription?.cancel();
-    _player?.stop();
-    _player?.dispose();
+    _nativeAerialVideoChannel.invokeMethod<void>('stop');
     super.dispose();
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      _player?.play();
+      _nativeAerialVideoChannel.invokeMethod<void>('play');
     } else if (state == AppLifecycleState.paused ||
         state == AppLifecycleState.inactive) {
-      _player?.pause();
+      _nativeAerialVideoChannel.invokeMethod<void>('pause');
     }
   }
 
   void _openPlaylist() {
-    final player = _player;
-    if (player == null) return;
     final service = context.read<AerialWallpaperService>();
     if (service.feed.isEmpty || service.isLoading) return;
 
-    final playlist = service.toPlaylist();
-    if (playlist.medias.isEmpty) return;
+    final urls = service.feed.map((video) => video.url).toList();
+    final playlistKey = '${service.shuffle}:${urls.join('\n')}';
+    if (_nativePlaylistKey == playlistKey) return;
 
-    _playlistOpened = true;
-    player.open(playlist, play: true);
-    player.setVolume(0);
-    player.setPlaylistMode(PlaylistMode.loop);
-    player.setShuffle(service.shuffle);
-  }
-
-  AerialMedia? _getCurrentVideo() {
-    final player = _player;
-    if (player == null) return null;
-    final service = context.read<AerialWallpaperService>();
-    final playlist = player.state.playlist;
-    if (playlist.medias.isEmpty) return null;
-
-    final index = playlist.index;
-    if (index < 0 || index >= service.feed.length) return null;
-    return service.feed[index];
+    _nativePlaylistKey = playlistKey;
+    _nativeAerialVideoChannel.invokeMethod<void>('setPlaylist', {
+      'urls': urls,
+      'shuffle': service.shuffle,
+    });
   }
 
   void _updateFpsTimer(bool showFps) {
     if (showFps) {
-      if (_fpsTimer == null && _playerReady && _player != null) {
+      if (_fpsTimer == null && _playerReady) {
         _fpsTimer = Timer.periodic(const Duration(seconds: 1), (_) async {
-          final player = _player;
-          if (player != null && player.state.playing) {
-            try {
-              final fpsStr = await player.getProperty('estimated-vf-fps');
-              if (fpsStr.isNotEmpty) {
-                final parsed = double.tryParse(fpsStr) ?? 0.0;
-                if (mounted) {
-                  setState(() {
-                    _currentFps = parsed;
-                  });
-                }
-              }
-            } catch (_) {}
-          }
+          try {
+            final stats = await _nativeAerialVideoChannel
+                .invokeMapMethod<String, Object?>('getStats');
+            if (!mounted) return;
+            setState(() {
+              _currentFps = (stats?['fps'] as num?)?.toDouble() ?? 0.0;
+            });
+          } catch (_) {}
         });
       }
     } else {
@@ -218,22 +153,17 @@ class _AerialVideoBackgroundState extends State<AerialVideoBackground>
     final feedEmpty = service.feed.isEmpty;
     final showFps = service.showFps;
 
-    if (feedEmpty || isLoading || !_playerReady || _videoController == null) {
+    if (feedEmpty || isLoading || !_playerReady) {
       _updateFpsTimer(false);
       return const ColoredBox(color: Colors.black);
     }
 
+    _openPlaylist();
     _updateFpsTimer(showFps);
 
     return Stack(
       children: [
-        RepaintBoundary(
-          child: Video(
-            controller: _videoController!,
-            controls: NoVideoControls,
-          ),
-        ),
-        // _buildDescriptionOverlay(),
+        const SizedBox.expand(),
         if (showFps) _buildFpsOverlay(),
       ],
     );
@@ -261,55 +191,6 @@ class _AerialVideoBackgroundState extends State<AerialVideoBackground>
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildDescriptionOverlay() {
-    final player = _player;
-    if (player == null) return const SizedBox.shrink();
-
-    return StreamBuilder<Playlist>(
-      stream: player.stream.playlist,
-      builder: (context, snapshot) {
-        final video = _getCurrentVideo();
-        if (video == null || video.metadata.shortDescription.isEmpty) {
-          return const SizedBox.shrink();
-        }
-
-        return Positioned(
-          bottom: 60,
-          left: 40,
-          right: 40,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  Colors.transparent,
-                  Colors.black.withValues(alpha: 0.7),
-                ],
-              ),
-            ),
-            child: Text(
-              video.metadata.shortDescription,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 16,
-                shadows: [
-                  Shadow(
-                    blurRadius: 8,
-                    color: Colors.black,
-                  ),
-                ],
-              ),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        );
-      },
     );
   }
 }
