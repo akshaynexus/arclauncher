@@ -124,7 +124,9 @@ class SettingsService extends ChangeNotifier {
 
   int get aerialVideoSourceIndex => _sharedPreferences.getInt(_aerialVideoSourceIndex) ?? 0;
 
-  int get aerialVideoQualityIndex => _sharedPreferences.getInt(_aerialVideoQualityIndex) ?? 1;
+  /// -1 means "not set by the user" — the aerial service then picks a
+  /// default matching the TV's resolution and HDR capability.
+  int get aerialVideoQualityIndex => _sharedPreferences.getInt(_aerialVideoQualityIndex) ?? -1;
 
   bool get aerialVideoShuffle => _sharedPreferences.getBool(_aerialVideoShuffle) ?? true;
 

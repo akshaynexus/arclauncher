@@ -19,9 +19,11 @@
 package com.omeda.arc;
 
 import android.app.Activity;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.view.Display;
 import android.view.SurfaceView;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -43,9 +45,12 @@ import androidx.media3.exoplayer.analytics.AnalyticsListener.EventTime;
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory;
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import io.flutter.plugin.common.BinaryMessenger;
@@ -97,6 +102,7 @@ public class AerialVideoPlayer {
                     result.success(null);
                 }
                 case "getStats" -> result.success(getStats());
+                case "getDisplayCapabilities" -> result.success(getDisplayCapabilities());
                 case "getDebugLog" -> result.success(getDebugLog());
                 case "clearDebugLog" -> {
                     clearDebugLog();
@@ -166,6 +172,11 @@ public class AerialVideoPlayer {
                 .build();
         player.setVolume(0f);
         player.setRepeatMode(Player.REPEAT_MODE_ALL);
+        // Don't let the TV switch display modes to match each video's frame
+        // rate — every transition would flash the launcher to black.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            player.setVideoChangeFrameRateStrategy(C.VIDEO_CHANGE_FRAME_RATE_STRATEGY_OFF);
+        }
         player.addAnalyticsListener(new AnalyticsListener() {
             @Override
             public void onDroppedVideoFrames(@NonNull EventTime eventTime, int count, long elapsedMs) {
@@ -257,7 +268,37 @@ public class AerialVideoPlayer {
         stats.put("isPlaying", player.isPlaying());
         stats.put("itemCount", player.getMediaItemCount());
         stats.put("consecutiveErrors", consecutiveErrors);
+        stats.put("shuffle", player.getShuffleModeEnabled());
+        String uri = currentUri();
+        stats.put("video", uri.isEmpty() ? "" : uri.substring(uri.lastIndexOf('/') + 1));
         return stats;
+    }
+
+    /// The TV's UI may run at 1080p while the panel supports 4K — report
+    /// the largest supported display mode, plus HDR capability.
+    private Map<String, Object> getDisplayCapabilities() {
+        Map<String, Object> caps = new HashMap<>();
+        Display display = activity.getWindowManager().getDefaultDisplay();
+        int maxWidth = 0;
+        int maxHeight = 0;
+        for (Display.Mode mode : display.getSupportedModes()) {
+            if (mode.getPhysicalWidth() > maxWidth) {
+                maxWidth = mode.getPhysicalWidth();
+                maxHeight = mode.getPhysicalHeight();
+            }
+        }
+        boolean isHdr;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            isHdr = display.isHdr();
+        } else {
+            Display.HdrCapabilities hdrCaps = display.getHdrCapabilities();
+            isHdr = hdrCaps != null && hdrCaps.getSupportedHdrTypes().length > 0;
+        }
+        caps.put("width", maxWidth);
+        caps.put("height", maxHeight);
+        caps.put("isHdr", isHdr);
+        addLog("display caps " + maxWidth + "x" + maxHeight + " hdr=" + isHdr);
+        return caps;
     }
 
     private List<String> getDebugLog() {
@@ -273,7 +314,9 @@ public class AerialVideoPlayer {
     }
 
     private void addLog(String message) {
-        String line = System.currentTimeMillis() + " " + message;
+        String timestamp =
+                new SimpleDateFormat("HH:mm:ss", Locale.US).format(new Date());
+        String line = timestamp + "  " + message;
         Log.d(TAG, message);
         synchronized (debugLog) {
             debugLog.add(line);

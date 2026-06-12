@@ -20,10 +20,15 @@ import 'dart:math';
 
 import 'package:aerial_views/aerial_views.dart';
 import 'package:flutter/material.dart' hide TimeOfDay;
+import 'package:flutter/services.dart';
 import 'package:flauncher/providers/settings_service.dart';
 
 class AerialWallpaperService extends ChangeNotifier {
+  static const MethodChannel _nativeAerialVideoChannel =
+      MethodChannel('me.efesser.flauncher/aerial_video');
+
   final SettingsService _settingsService;
+  bool _autoQuality = false;
 
   List<AerialMedia> _feed = [];
   bool _isLoading = false;
@@ -52,6 +57,14 @@ class AerialWallpaperService extends ChangeNotifier {
   Set<String> get cityFilter => Set.unmodifiable(_cityFilter);
   bool get showFps => _showFps;
   int get totalCount => _feed.length;
+
+  /// Apple's CDN (sylvan.apple.com) serves these videos over plain http
+  /// reliably, while its https endpoint fails certificate validation on
+  /// many TVs — always force http for Apple videos.
+  static String playableUrl(AerialMedia media) =>
+      media.source == AerialMediaSource.apple
+          ? media.url.replaceFirst('https://', 'http://')
+          : media.url;
 
   static const List<AerialSource> sources = [
     AerialSource(
@@ -112,8 +125,13 @@ class AerialWallpaperService extends ChangeNotifier {
     } else {
       _selectedSources.add(_selectedSourceIndex);
     }
-    _selectedQuality =
-        VideoQuality.values[_settingsService.aerialVideoQualityIndex];
+    final qualityIndex = _settingsService.aerialVideoQualityIndex;
+    if (qualityIndex >= 0 && qualityIndex < VideoQuality.values.length) {
+      _selectedQuality = VideoQuality.values[qualityIndex];
+    } else {
+      // No explicit choice — match the TV's capabilities during initialize().
+      _autoQuality = true;
+    }
     _shuffle = _settingsService.aerialVideoShuffle;
     _showFps = _settingsService.aerialShowFps;
 
@@ -141,7 +159,29 @@ class AerialWallpaperService extends ChangeNotifier {
   }
 
   Future<void> initialize() async {
+    if (_autoQuality) {
+      await _detectDefaultQuality();
+    }
     await refreshFeed();
+  }
+
+  /// Pick the best default quality for this TV: 4K and/or HDR when the
+  /// display supports it, instead of always starting at 1080p SDR.
+  Future<void> _detectDefaultQuality() async {
+    try {
+      final caps = await _nativeAerialVideoChannel
+          .invokeMapMethod<String, Object?>('getDisplayCapabilities');
+      final width = (caps?['width'] as num?)?.toInt() ?? 0;
+      final isHdr = caps?['isHdr'] == true;
+      final is4k = width >= 3000;
+      _selectedQuality = is4k
+          ? (isHdr ? VideoQuality.video4kHdr : VideoQuality.video4kSdr)
+          : (isHdr ? VideoQuality.video1080Hdr : VideoQuality.video1080Sdr);
+    } catch (_) {
+      _selectedQuality = VideoQuality.video1080Sdr;
+    }
+    // Not persisted: stays automatic until the user picks one explicitly.
+    _autoQuality = false;
   }
 
   Future<void> refreshFeed() async {
