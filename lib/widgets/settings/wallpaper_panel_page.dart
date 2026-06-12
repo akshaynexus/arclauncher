@@ -233,7 +233,7 @@ class WallpaperPanelPage extends StatelessWidget {
     return FocusableSettingsTile(
       leading: Icon(Icons.speed),
       title: Text(
-        'Show player FPS',
+        'Show player debug',
         style: Theme.of(context).textTheme.bodyMedium,
       ),
       trailing: Switch(

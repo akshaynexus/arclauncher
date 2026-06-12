@@ -46,6 +46,11 @@ class _AerialVideoBackgroundState extends State<AerialVideoBackground>
   // FPS overlay
   Timer? _fpsTimer;
   double _currentFps = 0.0;
+  String _playerState = 'unknown';
+  bool _isPlaying = false;
+  int _itemCount = 0;
+  int _consecutiveErrors = 0;
+  List<String> _debugLogs = const [];
 
   @override
   void initState() {
@@ -133,6 +138,17 @@ class _AerialVideoBackgroundState extends State<AerialVideoBackground>
             if (!mounted) return;
             setState(() {
               _currentFps = (stats?['fps'] as num?)?.toDouble() ?? 0.0;
+              _playerState = stats?['state']?.toString() ?? 'unknown';
+              _isPlaying = stats?['isPlaying'] == true;
+              _itemCount = (stats?['itemCount'] as num?)?.toInt() ?? 0;
+              _consecutiveErrors =
+                  (stats?['consecutiveErrors'] as num?)?.toInt() ?? 0;
+            });
+            final logs = await _nativeAerialVideoChannel
+                .invokeListMethod<String>('getDebugLog');
+            if (!mounted || logs == null) return;
+            setState(() {
+              _debugLogs = logs.takeLast(8).toList(growable: false);
             });
           } catch (_) {}
         });
@@ -142,6 +158,9 @@ class _AerialVideoBackgroundState extends State<AerialVideoBackground>
       _fpsTimer = null;
       if (_currentFps != 0.0) {
         _currentFps = 0.0;
+      }
+      if (_debugLogs.isNotEmpty) {
+        _debugLogs = const [];
       }
     }
   }
@@ -164,33 +183,59 @@ class _AerialVideoBackgroundState extends State<AerialVideoBackground>
     return Stack(
       children: [
         const SizedBox.expand(),
-        if (showFps) _buildFpsOverlay(),
+        if (showFps) _buildDebugOverlay(),
       ],
     );
   }
 
-  Widget _buildFpsOverlay() {
+  Widget _buildDebugOverlay() {
     return Positioned(
       top: 40,
       right: 40,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        width: 560,
+        constraints: const BoxConstraints(maxHeight: 360),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         decoration: BoxDecoration(
           color: Colors.black.withValues(alpha: 0.75),
           borderRadius: BorderRadius.circular(4),
           border: Border.all(
               color: Colors.greenAccent.withValues(alpha: 0.4), width: 1.5),
         ),
-        child: Text(
-          'FPS: ${_currentFps.toStringAsFixed(1)}',
+        child: DefaultTextStyle(
           style: const TextStyle(
-            color: Colors.greenAccent,
-            fontSize: 14,
-            fontWeight: FontWeight.bold,
-            fontFamily: 'monospace',
+              color: Colors.greenAccent, fontSize: 13, fontFamily: 'monospace'),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'VIDEO DEBUG  fps=${_currentFps.toStringAsFixed(1)} '
+                'state=$_playerState playing=$_isPlaying '
+                'items=$_itemCount errors=$_consecutiveErrors',
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+              const SizedBox(height: 8),
+              ..._debugLogs.map(
+                (line) => Text(
+                  line,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
           ),
         ),
       ),
     );
+  }
+}
+
+extension _TakeLastExtension<T> on Iterable<T> {
+  Iterable<T> takeLast(int count) {
+    final items = toList(growable: false);
+    if (items.length <= count) return items;
+    return items.skip(items.length - count);
   }
 }

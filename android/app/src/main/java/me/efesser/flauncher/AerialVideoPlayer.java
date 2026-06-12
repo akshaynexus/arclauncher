@@ -19,6 +19,9 @@
 package me.efesser.flauncher;
 
 import android.app.Activity;
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
 import android.view.SurfaceView;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -29,6 +32,7 @@ import androidx.media3.common.Format;
 import androidx.media3.common.MediaItem;
 import androidx.media3.common.PlaybackException;
 import androidx.media3.common.Player;
+import androidx.media3.common.VideoSize;
 import androidx.media3.exoplayer.DefaultLoadControl;
 import androidx.media3.exoplayer.DefaultRenderersFactory;
 import androidx.media3.exoplayer.ExoPlayer;
@@ -53,12 +57,19 @@ import io.flutter.plugin.common.MethodChannel;
  */
 @androidx.media3.common.util.UnstableApi
 public class AerialVideoPlayer {
+    private static final String TAG = "AerialVideoPlayer";
+    private static final int MAX_LOG_LINES = 80;
+    private static final int MAX_CONSECUTIVE_ERRORS = 5;
+
     private final Activity activity;
     private final MethodChannel channel;
+    private final Handler mainHandler = new Handler(Looper.getMainLooper());
+    private final List<String> debugLog = new ArrayList<>();
 
     private ExoPlayer player;
     private SurfaceView surfaceView;
     private long droppedFrames = 0;
+    private int consecutiveErrors = 0;
 
     public AerialVideoPlayer(@NonNull Activity activity, @NonNull BinaryMessenger messenger) {
         this.activity = activity;
@@ -83,6 +94,11 @@ public class AerialVideoPlayer {
                     result.success(null);
                 }
                 case "getStats" -> result.success(getStats());
+                case "getDebugLog" -> result.success(getDebugLog());
+                case "clearDebugLog" -> {
+                    clearDebugLog();
+                    result.success(null);
+                }
                 default -> result.notImplemented();
             }
         });
@@ -93,10 +109,12 @@ public class AerialVideoPlayer {
         List<String> urls = (List<String>) args.get("urls");
         boolean shuffle = Boolean.TRUE.equals(args.get("shuffle"));
         if (urls == null || urls.isEmpty()) {
+            addLog("setPlaylist empty; releasing player");
             release();
             return;
         }
 
+        addLog("setPlaylist count=" + urls.size() + " shuffle=" + shuffle + " first=" + urls.get(0));
         ensurePlayer();
 
         List<MediaItem> items = new ArrayList<>(urls.size());
@@ -105,13 +123,16 @@ public class AerialVideoPlayer {
         }
         player.setMediaItems(items);
         player.setShuffleModeEnabled(shuffle);
+        consecutiveErrors = 0;
         player.prepare();
         player.play();
+        addLog("prepare/play requested");
     }
 
     private void ensurePlayer() {
         if (player != null) return;
 
+        addLog("creating ExoPlayer");
         // Same configuration as the AerialViews screensaver: decoder
         // fallback enabled, modest buffers so 4K streams don't hog memory.
         DefaultTrackSelector trackSelector = new DefaultTrackSelector(activity);
@@ -135,6 +156,14 @@ public class AerialVideoPlayer {
             @Override
             public void onDroppedVideoFrames(@NonNull EventTime eventTime, int count, long elapsedMs) {
                 droppedFrames += count;
+                if (count > 5) {
+                    addLog("droppedFrames +" + count + " total=" + droppedFrames);
+                }
+            }
+
+            @Override
+            public void onVideoSizeChanged(@NonNull EventTime eventTime, @NonNull VideoSize videoSize) {
+                addLog("videoSize " + videoSize.width + "x" + videoSize.height + " ratio=" + videoSize.pixelWidthHeightRatio);
             }
         });
         // Skip to the next video instead of freezing the wallpaper on a
@@ -142,11 +171,20 @@ public class AerialVideoPlayer {
         player.addListener(new Player.Listener() {
             @Override
             public void onPlayerError(@NonNull PlaybackException error) {
-                if (player != null) {
-                    player.seekToNextMediaItem();
-                    player.prepare();
-                    player.play();
+                handlePlayerError(error);
+            }
+
+            @Override
+            public void onPlaybackStateChanged(int playbackState) {
+                addLog("state=" + stateName(playbackState) + " index=" + player.getCurrentMediaItemIndex());
+                if (playbackState == Player.STATE_READY) {
+                    consecutiveErrors = 0;
                 }
+            }
+
+            @Override
+            public void onIsPlayingChanged(boolean isPlaying) {
+                addLog("isPlaying=" + isPlaying);
             }
         });
 
@@ -158,6 +196,32 @@ public class AerialVideoPlayer {
         // punched-through SurfaceView.
         activity.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         player.setVideoSurfaceView(surfaceView);
+        addLog("surface attached");
+    }
+
+    private void handlePlayerError(@NonNull PlaybackException error) {
+        consecutiveErrors++;
+        addLog("error #" + consecutiveErrors + " code=" + error.getErrorCodeName() + " message=" + error.getMessage());
+        if (player == null) return;
+
+        if (consecutiveErrors > MAX_CONSECUTIVE_ERRORS) {
+            addLog("too many consecutive errors; pausing recovery");
+            player.pause();
+            return;
+        }
+
+        mainHandler.removeCallbacksAndMessages(null);
+        mainHandler.postDelayed(() -> {
+            if (player == null) return;
+            int itemCount = player.getMediaItemCount();
+            if (itemCount == 0) return;
+
+            int nextIndex = (player.getCurrentMediaItemIndex() + 1) % itemCount;
+            addLog("recovering with item " + nextIndex + "/" + itemCount);
+            player.seekToDefaultPosition(nextIndex);
+            player.prepare();
+            player.play();
+        }, 1000);
     }
 
     private Map<String, Object> getStats() {
@@ -172,18 +236,59 @@ public class AerialVideoPlayer {
         }
         stats.put("droppedFrames", droppedFrames);
         stats.put("index", player.getCurrentMediaItemIndex());
+        stats.put("state", stateName(player.getPlaybackState()));
+        stats.put("isPlaying", player.isPlaying());
+        stats.put("itemCount", player.getMediaItemCount());
+        stats.put("consecutiveErrors", consecutiveErrors);
         return stats;
     }
 
+    private List<String> getDebugLog() {
+        synchronized (debugLog) {
+            return new ArrayList<>(debugLog);
+        }
+    }
+
+    private void clearDebugLog() {
+        synchronized (debugLog) {
+            debugLog.clear();
+        }
+    }
+
+    private void addLog(String message) {
+        String line = System.currentTimeMillis() + " " + message;
+        Log.d(TAG, message);
+        synchronized (debugLog) {
+            debugLog.add(line);
+            if (debugLog.size() > MAX_LOG_LINES) {
+                debugLog.remove(0);
+            }
+        }
+    }
+
+    private String stateName(int playbackState) {
+        return switch (playbackState) {
+            case Player.STATE_IDLE -> "idle";
+            case Player.STATE_BUFFERING -> "buffering";
+            case Player.STATE_READY -> "ready";
+            case Player.STATE_ENDED -> "ended";
+            default -> "unknown";
+        };
+    }
+
     public void onResume() {
+        addLog("onResume");
         if (player != null) player.play();
     }
 
     public void onPause() {
+        addLog("onPause");
         if (player != null) player.pause();
     }
 
     public void release() {
+        addLog("release");
+        mainHandler.removeCallbacksAndMessages(null);
         if (player != null) {
             player.setVideoSurface(null);
             player.release();
@@ -195,5 +300,6 @@ public class AerialVideoPlayer {
             surfaceView = null;
         }
         droppedFrames = 0;
+        consecutiveErrors = 0;
     }
 }
