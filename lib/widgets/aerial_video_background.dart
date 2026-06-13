@@ -43,6 +43,7 @@ class _AerialVideoBackgroundState extends State<AerialVideoBackground>
   // Frame drop diagnostics
   int _lastFrameCount = 0;
   Timer? _frameDropTimer;
+  Timer? _playbackIndexTimer;
 
   // FPS overlay
   Timer? _fpsTimer;
@@ -81,6 +82,9 @@ class _AerialVideoBackgroundState extends State<AerialVideoBackground>
     _frameDropTimer = Timer.periodic(const Duration(seconds: 30), (_) {
       _checkFrameDrops();
     });
+    _playbackIndexTimer = Timer.periodic(const Duration(seconds: 15), (_) {
+      unawaited(_savePlaybackIndex());
+    });
   }
 
   Future<void> _checkFrameDrops() async {
@@ -107,7 +111,9 @@ class _AerialVideoBackgroundState extends State<AerialVideoBackground>
   void dispose() {
     _fpsTimer?.cancel();
     _frameDropTimer?.cancel();
+    _playbackIndexTimer?.cancel();
     WidgetsBinding.instance.removeObserver(this);
+    unawaited(_savePlaybackIndex());
     _nativeAerialVideoChannel.invokeMethod<void>('stop');
     super.dispose();
   }
@@ -118,6 +124,7 @@ class _AerialVideoBackgroundState extends State<AerialVideoBackground>
       _nativeAerialVideoChannel.invokeMethod<void>('play');
     } else if (state == AppLifecycleState.paused ||
         state == AppLifecycleState.inactive) {
+      unawaited(_savePlaybackIndex());
       _nativeAerialVideoChannel.invokeMethod<void>('pause');
     }
   }
@@ -133,8 +140,7 @@ class _AerialVideoBackgroundState extends State<AerialVideoBackground>
       return;
     }
 
-    final urls =
-        service.feed.map(AerialWallpaperService.playableUrl).toList();
+    final urls = service.feed.map(AerialWallpaperService.playableUrl).toList();
     final playlistKey = '${service.shuffle}:${urls.join('\n')}';
     if (_nativePlaylistKey == playlistKey ||
         _pendingPlaylistKey == playlistKey) {
@@ -150,6 +156,8 @@ class _AerialVideoBackgroundState extends State<AerialVideoBackground>
       await _nativeAerialVideoChannel.invokeMethod<void>('setPlaylist', {
         'urls': urls,
         'shuffle': service.shuffle,
+        'nativeShuffle': false,
+        'startIndex': service.playbackResumeIndex,
       });
       if (!mounted) return;
       _nativePlaylistKey = playlistKey;
@@ -169,9 +177,21 @@ class _AerialVideoBackgroundState extends State<AerialVideoBackground>
     }
   }
 
+  Future<void> _savePlaybackIndex() async {
+    if (!mounted) return;
+    try {
+      final stats = await _nativeAerialVideoChannel
+          .invokeMapMethod<String, Object?>('getStats');
+      final index = (stats?['index'] as num?)?.toInt();
+      if (index == null) return;
+      await context.read<AerialWallpaperService>().savePlaybackIndex(index);
+    } catch (_) {}
+  }
+
   Future<void> _stopNativePlayer(String reason) async {
     await Future<void>.delayed(Duration.zero);
-    if (!mounted || (_nativePlaylistKey == null && _pendingPlaylistKey == null)) {
+    if (!mounted ||
+        (_nativePlaylistKey == null && _pendingPlaylistKey == null)) {
       return;
     }
 
@@ -266,8 +286,7 @@ class _AerialVideoBackgroundState extends State<AerialVideoBackground>
     final isHdrStream = _codecs.toLowerCase().contains('hvc1.2') ||
         _videoHeight >= 2160 && _codecs.toLowerCase().contains('hev');
 
-    String row(String label, String value) =>
-        '${label.padRight(10)} $value';
+    String row(String label, String value) => '${label.padRight(10)} $value';
 
     final statusRows = [
       row('Status', '$_playerState${_isPlaying ? " · playing" : " · paused"}'),
@@ -307,8 +326,8 @@ class _AerialVideoBackgroundState extends State<AerialVideoBackground>
               const Text('AERIAL VIDEO DEBUG',
                   style: TextStyle(fontWeight: FontWeight.bold)),
               const SizedBox(height: 6),
-              ...statusRows.map((line) => Text(line,
-                  maxLines: 1, overflow: TextOverflow.ellipsis)),
+              ...statusRows.map((line) =>
+                  Text(line, maxLines: 1, overflow: TextOverflow.ellipsis)),
               if (_debugLogs.isNotEmpty) ...[
                 const SizedBox(height: 8),
                 Text('LOG',
