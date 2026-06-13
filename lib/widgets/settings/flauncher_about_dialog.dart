@@ -43,8 +43,8 @@ class LTvLauncherAboutDialog extends StatelessWidget {
           "Developed by Badis Meddouri\nBased on LTvLauncher © 2026 LeanBitLab",
       children: [
         SizedBox(height: 24),
-        Text(LocaleKeys.textAboutDialog.tr(
-            args: ["https://github.com/meddouribadis/arclauncher"]))
+        Text(LocaleKeys.textAboutDialog
+            .tr(args: ["https://github.com/meddouribadis/arclauncher"]))
       ],
     );
   }

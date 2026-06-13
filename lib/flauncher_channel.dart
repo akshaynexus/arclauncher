@@ -22,44 +22,56 @@ import 'package:flutter/services.dart';
 
 class FLauncherChannel {
   static const _methodChannel = MethodChannel('com.hseuniversal.tidytv/method');
-  static const _appsEventChannel = EventChannel('com.hseuniversal.tidytv/event_apps');
-  static const _networkEventChannel = EventChannel('com.hseuniversal.tidytv/event_network');
+  static const _appsEventChannel =
+      EventChannel('com.hseuniversal.tidytv/event_apps');
+  static const _networkEventChannel =
+      EventChannel('com.hseuniversal.tidytv/event_network');
 
   Future<List<Map<dynamic, dynamic>>> getApplications() async {
-    List<Map<dynamic, dynamic>>? applications = await _methodChannel.invokeListMethod("getApplications");
+    List<Map<dynamic, dynamic>>? applications =
+        await _methodChannel.invokeListMethod("getApplications");
     return applications!;
   }
 
   Future<Uint8List> getApplicationBanner(String packageName) async {
-    Uint8List bytes = await _methodChannel.invokeMethod("getApplicationBanner", packageName);
+    Uint8List bytes =
+        await _methodChannel.invokeMethod("getApplicationBanner", packageName);
     return bytes;
   }
 
   Future<Uint8List> getApplicationIcon(String packageName) async {
-    Uint8List bytes = await _methodChannel.invokeMethod("getApplicationIcon", packageName);
+    Uint8List bytes =
+        await _methodChannel.invokeMethod("getApplicationIcon", packageName);
     return bytes;
   }
 
   Future<bool> applicationExists(String packageName) async =>
       await _methodChannel.invokeMethod('applicationExists', packageName);
 
-  Future<void> launchActivityFromAction(String action) async => await _methodChannel.invokeMethod('launchActivityFromAction', action);
+  Future<void> launchActivityFromAction(String action) async =>
+      await _methodChannel.invokeMethod('launchActivityFromAction', action);
 
-  Future<void> launchApp(String packageName) async => await _methodChannel.invokeMethod('launchApp', packageName);
+  Future<void> launchApp(String packageName) async =>
+      await _methodChannel.invokeMethod('launchApp', packageName);
 
-  Future<void> openSettings() async => await _methodChannel.invokeMethod('openSettings');
+  Future<void> openSettings() async =>
+      await _methodChannel.invokeMethod('openSettings');
 
-  Future<void> openAppInfo(String packageName) async => await _methodChannel.invokeMethod('openAppInfo', packageName);
+  Future<void> openAppInfo(String packageName) async =>
+      await _methodChannel.invokeMethod('openAppInfo', packageName);
 
-  Future<void> uninstallApp(String packageName) async => await _methodChannel.invokeMethod('uninstallApp', packageName);
+  Future<void> uninstallApp(String packageName) async =>
+      await _methodChannel.invokeMethod('uninstallApp', packageName);
 
-  Future<bool> isDefaultLauncher() async => await _methodChannel.invokeMethod('isDefaultLauncher');
+  Future<bool> isDefaultLauncher() async =>
+      await _methodChannel.invokeMethod('isDefaultLauncher');
 
   Future<bool> checkForGetContentAvailability() async =>
       await _methodChannel.invokeMethod("checkForGetContentAvailability");
 
   Future<Map<String, dynamic>> getActiveNetworkInformation() async {
-    Map<dynamic, dynamic> map = await _methodChannel.invokeMethod("getActiveNetworkInformation");
+    Map<dynamic, dynamic> map =
+        await _methodChannel.invokeMethod("getActiveNetworkInformation");
     return map.cast<String, dynamic>();
   }
 
@@ -83,7 +95,8 @@ class FLauncherChannel {
 
   Future<int> getMonthlyWifiUsage() async {
     try {
-      final int usage = await _methodChannel.invokeMethod("getMonthlyWifiUsage");
+      final int usage =
+          await _methodChannel.invokeMethod("getMonthlyWifiUsage");
       return usage;
     } on PlatformException catch (_) {
       return -1;
@@ -109,12 +122,14 @@ class FLauncherChannel {
       await _methodChannel.invokeMethod("requestMediaPermissions");
 
   Future<List<Map<String, dynamic>>> getMediaStoreImages() async {
-    List<Map<dynamic, dynamic>>? images = await _methodChannel.invokeListMethod("getMediaStoreImages");
+    List<Map<dynamic, dynamic>>? images =
+        await _methodChannel.invokeListMethod("getMediaStoreImages");
     return images?.map((e) => e.cast<String, dynamic>()).toList() ?? [];
   }
 
   Future<List<Map<String, dynamic>>> getMediaStoreVideos() async {
-    List<Map<dynamic, dynamic>>? videos = await _methodChannel.invokeListMethod("getMediaStoreVideos");
+    List<Map<dynamic, dynamic>>? videos =
+        await _methodChannel.invokeListMethod("getMediaStoreVideos");
     return videos?.map((e) => e.cast<String, dynamic>()).toList() ?? [];
   }
 
@@ -124,13 +139,15 @@ class FLauncherChannel {
   Future<void> requestInstallUnknownAppsPermission() async =>
       await _methodChannel.invokeMethod("requestInstallUnknownAppsPermission");
 
-  StreamSubscription<dynamic> addAppsChangedListener(void Function(Map<String, dynamic>) listener) =>
+  StreamSubscription<dynamic> addAppsChangedListener(
+          void Function(Map<String, dynamic>) listener) =>
       _appsEventChannel.receiveBroadcastStream().listen((event) {
         Map<dynamic, dynamic> eventMap = event;
         listener(eventMap.cast<String, dynamic>());
       });
 
-  StreamSubscription<dynamic> addNetworkChangedListener(void Function(Map<String, dynamic>) listener) =>
+  StreamSubscription<dynamic> addNetworkChangedListener(
+          void Function(Map<String, dynamic>) listener) =>
       _networkEventChannel.receiveBroadcastStream().listen((event) {
         Map<dynamic, dynamic> eventMap = event;
         listener(eventMap.cast<String, dynamic>());

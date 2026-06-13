@@ -27,7 +27,7 @@ class SidePanelDialog extends StatelessWidget {
           width: width,
           padding: const EdgeInsets.all(16),
           child: Actions(
-            actions: { BackIntent: BackAction(context) },
+            actions: {BackIntent: BackAction(context)},
             child: child,
           ),
         ),

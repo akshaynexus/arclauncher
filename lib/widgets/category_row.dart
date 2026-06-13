@@ -27,8 +27,7 @@ import '../models/app.dart';
 import '../models/category.dart';
 import '../providers/settings_service.dart';
 
-class CategoryRow extends StatelessWidget
-{
+class CategoryRow extends StatelessWidget {
   final Category category;
   final List<App> applications;
 
@@ -48,32 +47,27 @@ class CategoryRow extends StatelessWidget
     Widget categoryContent;
     if (applications.isEmpty) {
       categoryContent = categoryContainerEmptyState(context);
-    }
-    else {
+    } else {
       categoryContent = SizedBox(
-        height: category.rowHeight.toDouble(),
-        child: ListView.custom(
-          padding: const EdgeInsets.all(8),
-          scrollDirection: Axis.horizontal,
-          scrollCacheExtent: const ScrollCacheExtent.pixels(400.0),
-          childrenDelegate: SliverChildBuilderDelegate(
-            childCount: applications.length,
-            findChildIndexCallback: _findChildIndex,
-            (context, index) => Padding(
-                key: Key(applications[index].packageName),
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                child: AppCard(
-                  category: category,
-                  application: applications[index],
-                  autofocus: index == 0,
-                  handleUpNavigationToSettings: isFirstSection,
-                  onMove: (direction) => _onMove(context, direction, index),
-                  onMoveEnd: () => _onMoveEnd(context)
-                )
-            )
-          )
-        )
-      );
+          height: category.rowHeight.toDouble(),
+          child: ListView.custom(
+              padding: const EdgeInsets.all(8),
+              scrollDirection: Axis.horizontal,
+              scrollCacheExtent: const ScrollCacheExtent.pixels(400.0),
+              childrenDelegate: SliverChildBuilderDelegate(
+                  childCount: applications.length,
+                  findChildIndexCallback: _findChildIndex,
+                  (context, index) => Padding(
+                      key: Key(applications[index].packageName),
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      child: AppCard(
+                          category: category,
+                          application: applications[index],
+                          autofocus: index == 0,
+                          handleUpNavigationToSettings: isFirstSection,
+                          onMove: (direction) =>
+                              _onMove(context, direction, index),
+                          onMoveEnd: () => _onMoveEnd(context))))));
     }
 
     if (!showTitle) return categoryContent;
@@ -82,23 +76,24 @@ class CategoryRow extends StatelessWidget
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Selector<SettingsService, bool>(
-          selector: (context, service) => service.showCategoryTitles,
-          builder: (context, showCategoriesTitle, _) {
-            if (showCategoriesTitle) {
-              return Padding(
-                padding: const EdgeInsets.only(left: 16, bottom: 8),
-                child: Text(category.name,
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleLarge!
-                      .copyWith(shadows: [const Shadow(color: Colors.black54, offset: Offset(1, 1), blurRadius: 8)])
-                ),
-              );
-            }
+            selector: (context, service) => service.showCategoryTitles,
+            builder: (context, showCategoriesTitle, _) {
+              if (showCategoriesTitle) {
+                return Padding(
+                  padding: const EdgeInsets.only(left: 16, bottom: 8),
+                  child: Text(category.name,
+                      style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                          shadows: [
+                            const Shadow(
+                                color: Colors.black54,
+                                offset: Offset(1, 1),
+                                blurRadius: 8)
+                          ])),
+                );
+              }
 
-            return SizedBox.shrink();
-          }
-        ),
+              return SizedBox.shrink();
+            }),
         categoryContent
       ],
     );
@@ -106,7 +101,8 @@ class CategoryRow extends StatelessWidget
 
   int? _findChildIndex(Key key) {
     final valueKey = key as ValueKey<String>;
-    final index = applications.indexWhere((app) => app.packageName == valueKey.value);
+    final index =
+        applications.indexWhere((app) => app.packageName == valueKey.value);
     return index >= 0 ? index : null;
   }
 

@@ -39,12 +39,12 @@ class AnimatedCharacter extends StatelessWidget {
       transitionBuilder: (Widget child, Animation<double> animation) {
         // Determine if this is the incoming or outgoing widget
         final isNewChild = child.key == ValueKey(character);
-        
+
         // Slide animation: old slides up, new slides in from below
         final slideOffset = isNewChild
             ? Tween<Offset>(begin: const Offset(0, 0.5), end: Offset.zero)
             : Tween<Offset>(begin: Offset.zero, end: const Offset(0, -0.5));
-        
+
         return SlideTransition(
           position: slideOffset.animate(CurvedAnimation(
             parent: animation,

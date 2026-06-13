@@ -31,8 +31,7 @@ import 'package:flutter/widgets.dart' hide Category;
 import '../models/app.dart';
 import '../models/category.dart';
 
-class AppsService extends ChangeNotifier
-{
+class AppsService extends ChangeNotifier {
   final FLauncherChannel _fLauncherChannel;
   final FLauncherDatabase _database;
 
@@ -74,17 +73,21 @@ class AppsService extends ChangeNotifier
     _pendingReorderFocusPackage = null;
     _pendingReorderFocusCategoryId = null;
   }
+
   void setPendingReorderFocus(String packageName, int categoryId) {
     _pendingReorderFocusPackage = packageName;
     _pendingReorderFocusCategoryId = categoryId;
   }
 
   final Set<String> _dirtyImagePackages = {};
-  bool consumeDirtyImage(String packageName) => _dirtyImagePackages.remove(packageName);
+  bool consumeDirtyImage(String packageName) =>
+      _dirtyImagePackages.remove(packageName);
 
-  List<App> get applications => UnmodifiableListView(_applications.values.sortedBy((application) => application.name));
+  List<App> get applications => UnmodifiableListView(
+      _applications.values.sortedBy((application) => application.name));
 
-  List<LauncherSection> get launcherSections => List.unmodifiable(_launcherSections);
+  List<LauncherSection> get launcherSections =>
+      List.unmodifiable(_launcherSections);
   List<Category> get categories => _categoriesById.values
       .map((category) => category.unmodifiable())
       .toList(growable: false);
@@ -102,7 +105,8 @@ class AppsService extends ChangeNotifier
         await _initDefaultCategories();
       }
 
-      debugPrint('AppsService loaded from DB: ${_applications.length} apps, ${_categoriesById.length} categories');
+      debugPrint(
+          'AppsService loaded from DB: ${_applications.length} apps, ${_categoriesById.length} categories');
 
       // Phase 2: Sync with system before marking initialized so UI
       // never sees an empty app list on fresh install.
@@ -125,13 +129,14 @@ class AppsService extends ChangeNotifier
         await _initDefaultCategories();
       }
 
-      _appsSubscription = _fLauncherChannel.addAppsChangedListener((event) async {
+      _appsSubscription =
+          _fLauncherChannel.addAppsChangedListener((event) async {
         try {
           String? changedPackageName;
           if (event.containsKey('packageName')) {
             changedPackageName = event['packageName'];
           } else if (event.containsKey('activityInfo')) {
-             changedPackageName = event['activityInfo']['packageName'];
+            changedPackageName = event['activityInfo']['packageName'];
           }
 
           if (changedPackageName != null) {
@@ -144,7 +149,8 @@ class AppsService extends ChangeNotifier
             case "PACKAGE_ADDED":
             case "PACKAGE_CHANGED":
               Map<dynamic, dynamic> applicationInfo = event['activityInfo'];
-              await _database.persistApps([_buildAppCompanion(applicationInfo)]);
+              await _database
+                  .persistApps([_buildAppCompanion(applicationInfo)]);
 
               App newApp = App.fromSystem(applicationInfo);
               App? existingApp = _applications[newApp.packageName];
@@ -168,13 +174,15 @@ class AppsService extends ChangeNotifier
                 _applications[newApp.packageName] = newApp;
                 final targetCategory = _findTargetCategoryForNewApp();
                 if (targetCategory != null) {
-                  await addToCategory(newApp, targetCategory, shouldNotifyListeners: false);
+                  await addToCategory(newApp, targetCategory,
+                      shouldNotifyListeners: false);
                 }
               }
               break;
             case "PACKAGES_AVAILABLE":
               List<dynamic> applicationsInfo = event["activitiesInfo"];
-              await _database.persistApps((applicationsInfo).map(_buildAppCompanion));
+              await _database
+                  .persistApps((applicationsInfo).map(_buildAppCompanion));
 
               for (Map<dynamic, dynamic> applicationInfo in applicationsInfo) {
                 App newApp = App.fromSystem(applicationInfo);
@@ -229,7 +237,8 @@ class AppsService extends ChangeNotifier
         }
       });
 
-      debugPrint('AppsService initialized: ${_applications.length} apps, ${_categoriesById.length} categories');
+      debugPrint(
+          'AppsService initialized: ${_applications.length} apps, ${_categoriesById.length} categories');
     } catch (e) {
       debugPrint('Error initializing AppsService: $e');
     } finally {
@@ -297,8 +306,10 @@ class AppsService extends ChangeNotifier
     List<Category> categories = results[2] as List<Category>;
     List<LauncherSpacer> spacers = results[3] as List<LauncherSpacer>;
 
-    _categoriesById = Map.fromEntries(categories.map((category) => MapEntry(category.id, category)));
-    _applications = Map.fromEntries(appsFromDatabase.map((application) => MapEntry(application.packageName, application)));
+    _categoriesById = Map.fromEntries(
+        categories.map((category) => MapEntry(category.id, category)));
+    _applications = Map.fromEntries(appsFromDatabase
+        .map((application) => MapEntry(application.packageName, application)));
 
     _launcherSections.clear();
     _launcherSections.addAll(categories);
@@ -312,7 +323,8 @@ class AppsService extends ChangeNotifier
       );
       for (App application in _applications.values) {
         if (application.hidden) continue;
-        final currentCategories = appsCategoriesByPackage[application.packageName] ?? [];
+        final currentCategories =
+            appsCategoriesByPackage[application.packageName] ?? [];
 
         for (AppCategory appCategory in currentCategories) {
           if (_categoriesById.containsKey(appCategory.categoryId)) {
@@ -331,19 +343,24 @@ class AppsService extends ChangeNotifier
 
   Future<void> _syncWithSystem() async {
     try {
-      List<Map<dynamic, dynamic>> appsFromSystem = await _fLauncherChannel.getApplications();
-      Iterable<MapEntry<String, (Map, AppsCompanion)>> appEntries = appsFromSystem.map(
-              (appFromSystem) => MapEntry(appFromSystem['packageName'], (appFromSystem, _buildAppCompanion(appFromSystem))));
-      Map<String, (Map, AppsCompanion)> appsFromSystemByPackageName = Map.fromEntries(appEntries);
+      List<Map<dynamic, dynamic>> appsFromSystem =
+          await _fLauncherChannel.getApplications();
+      Iterable<MapEntry<String, (Map, AppsCompanion)>> appEntries =
+          appsFromSystem.map((appFromSystem) => MapEntry(
+              appFromSystem['packageName'],
+              (appFromSystem, _buildAppCompanion(appFromSystem))));
+      Map<String, (Map, AppsCompanion)> appsFromSystemByPackageName =
+          Map.fromEntries(appEntries);
 
-      final Iterable<App> appsRemovedFromSystem = _applications.values
-          .where((app) => !appsFromSystemByPackageName.containsKey(app.packageName));
+      final Iterable<App> appsRemovedFromSystem = _applications.values.where(
+          (app) => !appsFromSystemByPackageName.containsKey(app.packageName));
 
       final List<String> uninstalledApplications = [];
       if (appsRemovedFromSystem.isNotEmpty) {
         final existenceChecks = await Future.wait(
           appsRemovedFromSystem.map((app) async {
-            final exists = await _fLauncherChannel.applicationExists(app.packageName);
+            final exists =
+                await _fLauncherChannel.applicationExists(app.packageName);
             return (app.packageName, exists);
           }),
         );
@@ -355,7 +372,8 @@ class AppsService extends ChangeNotifier
       }
 
       await _database.transaction(() async {
-        await _database.persistApps(appsFromSystemByPackageName.values.map((record) => record.$2));
+        await _database.persistApps(
+            appsFromSystemByPackageName.values.map((record) => record.$2));
         await _database.deleteApps(uninstalledApplications);
       });
 
@@ -364,7 +382,8 @@ class AppsService extends ChangeNotifier
 
       // Merge system info (action, sideloaded) into loaded apps
       for (App application in _applications.values) {
-        Map? applicationFromSystem = appsFromSystemByPackageName[application.packageName]?.$1;
+        Map? applicationFromSystem =
+            appsFromSystemByPackageName[application.packageName]?.$1;
         if (applicationFromSystem != null) {
           if (applicationFromSystem.containsKey('action')) {
             application.action = applicationFromSystem['action'];
@@ -388,10 +407,13 @@ class AppsService extends ChangeNotifier
   Future<void> _preCacheIcons() async {
     // Only cache apps that are not hidden, in throttled batches
     // to avoid flooding the platform channel at startup.
-    final visibleApps = _applications.values.where((app) => !app.hidden).toList();
+    final visibleApps =
+        _applications.values.where((app) => !app.hidden).toList();
     const batchSize = 5;
     for (int i = 0; i < visibleApps.length; i += batchSize) {
-      final end = (i + batchSize < visibleApps.length) ? i + batchSize : visibleApps.length;
+      final end = (i + batchSize < visibleApps.length)
+          ? i + batchSize
+          : visibleApps.length;
       final batch = visibleApps.sublist(i, end);
       // Fire off a batch concurrently
       await Future.wait(
@@ -417,12 +439,12 @@ class AppsService extends ChangeNotifier
         packageName: Value(data["packageName"]),
         name: Value(data["name"]),
         version: Value(version),
-        hidden: const Value.absent()
-      );
+        hidden: const Value.absent());
   }
 
   Future<void> _initDefaultCategories() {
-    final allApps = _applications.values.where((application) => !application.hidden);
+    final allApps =
+        _applications.values.where((application) => !application.hidden);
     final defaultFavoriteLauncherPackageNames = [
       'com.hseuniversal.tidytv',
       'com.hseuniversal.tidytv.debug',
@@ -432,8 +454,7 @@ class AppsService extends ChangeNotifier
       int allAppsCategoryId = -1;
       if (allApps.isNotEmpty) {
         allAppsCategoryId = await addCategory("All Apps",
-            type: CategoryType.grid, shouldNotifyListeners: false
-        );
+            type: CategoryType.grid, shouldNotifyListeners: false);
 
         Category allAppsCategory = _categoriesById[allAppsCategoryId]!;
         // Batch insert all apps into "All Apps" category
@@ -452,7 +473,8 @@ class AppsService extends ChangeNotifier
         await _database.insertAppsCategories(allAppsEntries);
       }
 
-      final int favoritesId = await addCategory("Favorites", shouldNotifyListeners: false);
+      final int favoritesId =
+          await addCategory("Favorites", shouldNotifyListeners: false);
       final Category favoritesCategory = _categoriesById[favoritesId]!;
       final Category? allAppsCategory = _getAppsCategory();
 
@@ -497,19 +519,18 @@ class AppsService extends ChangeNotifier
 
   void sortCategory(Category category) {
     if (category.sort == CategorySort.alphabetical) {
-      category.applications.sortBy(
-              (application) => application.name);
-    }
-    else if (category.sort == CategorySort.lastUsed) {
+      category.applications.sortBy((application) => application.name);
+    } else if (category.sort == CategorySort.lastUsed) {
       category.applications.sort((a, b) {
-        final aTime = a.lastLaunchedAt ?? DateTime.fromMillisecondsSinceEpoch(0);
-        final bTime = b.lastLaunchedAt ?? DateTime.fromMillisecondsSinceEpoch(0);
+        final aTime =
+            a.lastLaunchedAt ?? DateTime.fromMillisecondsSinceEpoch(0);
+        final bTime =
+            b.lastLaunchedAt ?? DateTime.fromMillisecondsSinceEpoch(0);
         return bTime.compareTo(aTime); // Descending (newest first)
       });
-    }
-    else {
+    } else {
       category.applications.sortBy<num>(
-              (application) => application.categoryOrders[category.id]!);
+          (application) => application.categoryOrders[category.id]!);
     }
   }
 
@@ -627,23 +648,25 @@ class AppsService extends ChangeNotifier
 
   Future<void> launchApp(App app) async {
     app.lastLaunchedAt = DateTime.now();
-    await _database.updateApp(app.packageName, AppsCompanion(lastLaunchedAt: Value(app.lastLaunchedAt)));
+    await _database.updateApp(app.packageName,
+        AppsCompanion(lastLaunchedAt: Value(app.lastLaunchedAt)));
     notifyListeners();
 
     Future<void> future;
     if (app.action == null) {
       future = _fLauncherChannel.launchApp(app.packageName);
-    }
-    else {
+    } else {
       future = _fLauncherChannel.launchActivityFromAction(app.action!);
     }
 
     return future;
   }
 
-  Future<void> openAppInfo(App app) => _fLauncherChannel.openAppInfo(app.packageName);
+  Future<void> openAppInfo(App app) =>
+      _fLauncherChannel.openAppInfo(app.packageName);
 
-  Future<void> uninstallApp(App app) => _fLauncherChannel.uninstallApp(app.packageName);
+  Future<void> uninstallApp(App app) =>
+      _fLauncherChannel.uninstallApp(app.packageName);
 
   Future<void> openSettings() => _fLauncherChannel.openSettings();
 
@@ -651,7 +674,8 @@ class AppsService extends ChangeNotifier
 
   Future<void> startAmbientMode() => _fLauncherChannel.startAmbientMode();
 
-  Future<void> addToCategory(App app, Category category, {bool shouldNotifyListeners = true}) async {
+  Future<void> addToCategory(App app, Category category,
+      {bool shouldNotifyListeners = true}) async {
     int index = await _database.nextAppCategoryOrder(category.id) ?? 0;
     await _database.insertAppsCategories([
       AppsCategoriesCompanion.insert(
@@ -691,9 +715,9 @@ class AppsService extends ChangeNotifier
       return;
     }
     Category actualCategory = _categoriesById[category.id]!;
-    
+
     Iterable<App> appsToAdd;
-    
+
     switch (actualCategory.name) {
       case 'All Apps':
         appsToAdd = _applications.values.where((app) => !app.hidden);
@@ -701,7 +725,7 @@ class AppsService extends ChangeNotifier
       default:
         return;
     }
-    
+
     final List<AppsCategoriesCompanion> entries = [];
     int order = await _database.nextAppCategoryOrder(actualCategory.id) ?? 0;
     for (final app in appsToAdd) {
@@ -717,77 +741,77 @@ class AppsService extends ChangeNotifier
     if (entries.isNotEmpty) {
       await _database.insertAppsCategories(entries);
     }
-    
+
     notifyListeners();
   }
 
   Category? _getAppsCategory() {
     return _categoriesById.values.firstWhereOrNull(
-          (category) => category.name == 'All Apps',
+      (category) => category.name == 'All Apps',
     );
   }
 
   /// Gets the Favorites category, creating it if it doesn't exist
   Future<Category> getOrCreateFavoritesCategory() async {
-    Category? favorites = _categoriesById.values.firstWhereOrNull(
-      (category) => category.name == 'Favorites'
-    );
-    
+    Category? favorites = _categoriesById.values
+        .firstWhereOrNull((category) => category.name == 'Favorites');
+
     if (favorites != null) {
       return favorites;
     }
-    
-    int categoryId = await addCategory('Favorites', shouldNotifyListeners: false);
+
+    int categoryId =
+        await addCategory('Favorites', shouldNotifyListeners: false);
     return _categoriesById[categoryId]!;
   }
-  
+
   /// Checks if an app is in the Favorites category
   bool isAppInFavorites(App app) {
-    Category? favorites = _categoriesById.values.firstWhereOrNull(
-      (category) => category.name == 'Favorites'
-    );
-    
+    Category? favorites = _categoriesById.values
+        .firstWhereOrNull((category) => category.name == 'Favorites');
+
     if (favorites == null) {
       return false;
     }
-    
+
     return favorites.applications.any((a) => a.packageName == app.packageName);
   }
-  
+
   /// Adds an app to Favorites and removes it from the Apps category
   Future<void> addToFavorites(App app) async {
     Category favorites = await getOrCreateFavoritesCategory();
-    
+
     if (!favorites.applications.any((a) => a.packageName == app.packageName)) {
       await addToCategory(app, favorites, shouldNotifyListeners: false);
     }
 
     final appsCategory = _getAppsCategory();
     if (appsCategory != null &&
-        appsCategory.applications.any((a) => a.packageName == app.packageName)) {
+        appsCategory.applications
+            .any((a) => a.packageName == app.packageName)) {
       await removeFromCategory(app, appsCategory);
     } else {
       notifyListeners();
     }
   }
-  
+
   /// Removes an app from Favorites and puts it back in the Apps category
   Future<void> removeFromFavorites(App app) async {
-    Category? favorites = _categoriesById.values.firstWhereOrNull(
-      (category) => category.name == 'Favorites'
-    );
-    
+    Category? favorites = _categoriesById.values
+        .firstWhereOrNull((category) => category.name == 'Favorites');
+
     if (favorites != null) {
       await removeFromCategory(app, favorites);
     }
 
     final appsCategory = _getAppsCategory();
     if (appsCategory != null &&
-        !appsCategory.applications.any((a) => a.packageName == app.packageName)) {
+        !appsCategory.applications
+            .any((a) => a.packageName == app.packageName)) {
       await addToCategory(app, appsCategory);
     }
   }
-  
+
   /// Toggles an app in/out of Favorites
   Future<void> toggleFavorite(App app) async {
     if (isAppInFavorites(app)) {
@@ -801,7 +825,7 @@ class AppsService extends ChangeNotifier
     if (!_categoriesById.containsKey(category.id)) {
       return;
     }
-    
+
     Category categoryFound = _categoriesById[category.id]!;
     List<App> applications = categoryFound.applications;
     List<AppsCategoriesCompanion> orderedAppCategories = [];
@@ -817,10 +841,11 @@ class AppsService extends ChangeNotifier
     notifyListeners();
   }
 
-  Future<void> moveAppToAdjacentCategory(App app, Category currentCategory, AxisDirection direction) async {
+  Future<void> moveAppToAdjacentCategory(
+      App app, Category currentCategory, AxisDirection direction) async {
     int currentSectionIndex = _launcherSections.indexOf(currentCategory);
     if (currentSectionIndex == -1) {
-       return;
+      return;
     }
 
     int targetSectionIndex = -1;
@@ -851,15 +876,15 @@ class AppsService extends ChangeNotifier
 
     // Remove from current
     await removeFromCategory(app, currentCategory);
-    
+
     // Set pending focus package so AppCard can reclaim focus and reorder mode
     _pendingReorderFocusPackage = app.packageName;
-    
+
     // Add to target
     int newIndex = 0;
     if (direction == AxisDirection.up) {
       // If moving UP (to previous section), append to BOTTOM
-       newIndex = await _database.nextAppCategoryOrder(targetCategory.id) ?? 0;
+      newIndex = await _database.nextAppCategoryOrder(targetCategory.id) ?? 0;
     } else {
       // If moving DOWN (to next section), insert at TOP (index 0)
       newIndex = 0;
@@ -868,29 +893,29 @@ class AppsService extends ChangeNotifier
     // DB Insert Logic
     // 1. Get current items in target
     List<App> targetApps = targetCategory.applications;
-    
+
     // 2. Adjust local list
     if (direction == AxisDirection.down) {
-       targetApps.insert(0, app); // Insert at top
+      targetApps.insert(0, app); // Insert at top
     } else {
-       targetApps.add(app); // Insert at bottom
+      targetApps.add(app); // Insert at bottom
     }
-    
+
     // 3. Update orders for all items in target category
     List<AppsCategoriesCompanion> orderedAppCategories = [];
     for (int i = 0; i < targetApps.length; ++i) {
-       App a = targetApps[i];
-       a.categoryOrders[targetCategory.id] = i; // Update local map
-       orderedAppCategories.add(AppsCategoriesCompanion(
+      App a = targetApps[i];
+      a.categoryOrders[targetCategory.id] = i; // Update local map
+      orderedAppCategories.add(AppsCategoriesCompanion(
         categoryId: Value(targetCategory.id),
         appPackageName: Value(a.packageName),
         order: Value(i),
       ));
     }
-    
+
     // 4. Batch DB update
     await _database.replaceAppsCategories(orderedAppCategories);
-    
+
     notifyListeners();
   }
 
@@ -906,21 +931,22 @@ class AppsService extends ChangeNotifier
     notifyListeners();
   }
 
-  Future<int> addCategory(String categoryName, {
-    CategorySort sort = Category.Sort,
-    CategoryType type = Category.Type,
-    int columnsCount = Category.ColumnsCount,
-    int rowHeight = Category.RowHeight,
-    bool shouldNotifyListeners = true
-  }) async {
+  Future<int> addCategory(String categoryName,
+      {CategorySort sort = Category.Sort,
+      CategoryType type = Category.Type,
+      int columnsCount = Category.ColumnsCount,
+      int rowHeight = Category.RowHeight,
+      bool shouldNotifyListeners = true}) async {
     List<CategoriesCompanion> orderedCategories = [];
     int categoryOrder = 1, newCategoryId = -1;
     for (Category category in _categoriesById.values) {
-      orderedCategories.add(CategoriesCompanion(id: Value(category.id), order: Value(categoryOrder++)));
+      orderedCategories.add(CategoriesCompanion(
+          id: Value(category.id), order: Value(categoryOrder++)));
     }
 
     newCategoryId = await _database.transaction(() async {
-      int newCategoryId = await _database.insertCategory(CategoriesCompanion.insert(name: categoryName, order: 0));
+      int newCategoryId = await _database.insertCategory(
+          CategoriesCompanion.insert(name: categoryName, order: 0));
       await _database.updateCategories(orderedCategories);
 
       return newCategoryId;
@@ -934,8 +960,7 @@ class AppsService extends ChangeNotifier
         type: type,
         columnsCount: columnsCount,
         rowHeight: rowHeight,
-        order: 0
-    );
+        order: 0);
     newCategories[newCategoryId] = newCategory;
 
     categoryOrder = 1;
@@ -954,26 +979,20 @@ class AppsService extends ChangeNotifier
     return newCategoryId;
   }
 
-  Future<void> updateCategory(
-    int categoryId,
-    String name,
-    CategorySort sort,
-    CategoryType type,
-    int columnsCount,
-    int rowHeight, {
-    bool shouldNotifyListeners = true
-    }) async
-  {
+  Future<void> updateCategory(int categoryId, String name, CategorySort sort,
+      CategoryType type, int columnsCount, int rowHeight,
+      {bool shouldNotifyListeners = true}) async {
     Category? category = _categoriesById[categoryId];
     assert(category != null);
 
-    await _database.updateCategory(categoryId, CategoriesCompanion(
-      name: Value(name),
-      sort: Value(sort),
-      type: Value(type),
-      columnsCount: Value(columnsCount),
-      rowHeight: Value(rowHeight)
-    ));
+    await _database.updateCategory(
+        categoryId,
+        CategoriesCompanion(
+            name: Value(name),
+            sort: Value(sort),
+            type: Value(type),
+            columnsCount: Value(columnsCount),
+            rowHeight: Value(rowHeight)));
 
     CategorySort oldSort = category!.sort;
 
@@ -992,34 +1011,28 @@ class AppsService extends ChangeNotifier
     }
   }
 
-  Future<void> addSpacer(int height) async
-  {
+  Future<void> addSpacer(int height) async {
     int order = launcherSections.length;
     int spacerId = await _database.insertSpacer(
-        LauncherSpacersCompanion.insert(height: height, order: order)
-    );
+        LauncherSpacersCompanion.insert(height: height, order: order));
 
-    _launcherSections.add(LauncherSpacer(
-      id: spacerId,
-      height: height,
-      order: order
-    ));
+    _launcherSections
+        .add(LauncherSpacer(id: spacerId, height: height, order: order));
 
     notifyListeners();
   }
 
-  Future<void> updateSpacerHeight(LauncherSpacer spacer, int height) async
-  {
-    await _database.updateSpacer(spacer.id, LauncherSpacersCompanion(
-      height: Value(height)
-    ));
+  Future<void> updateSpacerHeight(LauncherSpacer spacer, int height) async {
+    await _database.updateSpacer(
+        spacer.id, LauncherSpacersCompanion(height: Value(height)));
 
     spacer.height = height;
     notifyListeners();
   }
 
   Future<void> renameCategory(Category category, String categoryName) async {
-    await _database.updateCategory(category.id, CategoriesCompanion(name: Value(categoryName)));
+    await _database.updateCategory(
+        category.id, CategoriesCompanion(name: Value(categoryName)));
 
     if (_categoriesById.containsKey(category.id)) {
       Category categoryFound = _categoriesById[category.id]!;
@@ -1028,28 +1041,28 @@ class AppsService extends ChangeNotifier
     }
   }
 
-  Future<void> deleteSection(int index) async
-  {
+  Future<void> deleteSection(int index) async {
     assert(index < _launcherSections.length);
 
     LauncherSection section = _launcherSections[index];
     if (section is Category) {
       await _database.deleteCategory(section.id);
       _categoriesById.remove(section.id);
-    }
-    else {
+    } else {
       await _database.deleteSpacer(section.id);
     }
-    
+
     _launcherSections.removeAt(index);
 
     notifyListeners();
   }
 
   void moveSectionInMemory(int oldIndex, int newIndex) {
-    if (oldIndex < 0 || oldIndex >= _launcherSections.length ||
-        newIndex < 0 || newIndex >= _launcherSections.length) return;
-        
+    if (oldIndex < 0 ||
+        oldIndex >= _launcherSections.length ||
+        newIndex < 0 ||
+        newIndex >= _launcherSections.length) return;
+
     final section = _launcherSections.removeAt(oldIndex);
     _launcherSections.insert(newIndex, section);
     notifyListeners();
@@ -1058,18 +1071,20 @@ class AppsService extends ChangeNotifier
   Future<void> persistSectionsOrder() async {
     List<CategoriesCompanion> orderedCategories = [];
     List<LauncherSpacersCompanion> orderedSpacers = [];
-    
+
     for (int i = 0; i < _launcherSections.length; ++i) {
       LauncherSection section = _launcherSections[i];
       // Update the order property on the object itself
-      if (section is Category) section.order = i;
+      if (section is Category)
+        section.order = i;
       else if (section is LauncherSpacer) section.order = i;
 
       if (section is Category) {
-        orderedCategories.add(CategoriesCompanion(id: Value(section.id), order: Value(i)));
-      }
-      else {
-        orderedSpacers.add(LauncherSpacersCompanion(id: Value(section.id), order: Value(i)));
+        orderedCategories
+            .add(CategoriesCompanion(id: Value(section.id), order: Value(i)));
+      } else {
+        orderedSpacers.add(
+            LauncherSpacersCompanion(id: Value(section.id), order: Value(i)));
       }
     }
 
@@ -1085,7 +1100,8 @@ class AppsService extends ChangeNotifier
   }
 
   Future<void> hideApplication(App application) async {
-    await _database.updateApp(application.packageName, const AppsCompanion(hidden: Value(true)));
+    await _database.updateApp(
+        application.packageName, const AppsCompanion(hidden: Value(true)));
 
     if (_applications.containsKey(application.packageName)) {
       App applicationFound = _applications[application.packageName]!;
@@ -1094,7 +1110,8 @@ class AppsService extends ChangeNotifier
       for (int categoryId in applicationFound.categoryOrders.keys) {
         if (_categoriesById.containsKey(categoryId)) {
           Category category = _categoriesById[categoryId]!;
-          category.applications.removeWhere((application0) => application0.packageName == application.packageName);
+          category.applications.removeWhere((application0) =>
+              application0.packageName == application.packageName);
         }
       }
 
@@ -1103,7 +1120,8 @@ class AppsService extends ChangeNotifier
   }
 
   Future<void> showApplication(App application) async {
-    await _database.updateApp(application.packageName, const AppsCompanion(hidden: Value(false)));
+    await _database.updateApp(
+        application.packageName, const AppsCompanion(hidden: Value(false)));
 
     if (_applications.containsKey(application.packageName)) {
       App applicationFound = _applications[application.packageName]!;
@@ -1121,8 +1139,10 @@ class AppsService extends ChangeNotifier
     }
   }
 
-  Future<void> setCategoryType(Category category, CategoryType type, {bool shouldNotifyListeners = true}) async {
-    await _database.updateCategory(category.id, CategoriesCompanion(type: Value(type)));
+  Future<void> setCategoryType(Category category, CategoryType type,
+      {bool shouldNotifyListeners = true}) async {
+    await _database.updateCategory(
+        category.id, CategoriesCompanion(type: Value(type)));
 
     if (_categoriesById.containsKey(category.id)) {
       Category categoryFound = _categoriesById[category.id]!;
@@ -1135,7 +1155,8 @@ class AppsService extends ChangeNotifier
   }
 
   Future<void> setCategorySort(Category category, CategorySort sort) async {
-    await _database.updateCategory(category.id, CategoriesCompanion(sort: Value(sort)));
+    await _database.updateCategory(
+        category.id, CategoriesCompanion(sort: Value(sort)));
     if (_categoriesById.containsKey(category.id)) {
       Category categoryFound = _categoriesById[category.id]!;
       categoryFound.sort = sort;
@@ -1143,11 +1164,12 @@ class AppsService extends ChangeNotifier
 
       notifyListeners();
     }
-
   }
 
-  Future<void> setCategoryColumnsCount(Category category, int columnsCount) async {
-    await _database.updateCategory(category.id, CategoriesCompanion(columnsCount: Value(columnsCount)));
+  Future<void> setCategoryColumnsCount(
+      Category category, int columnsCount) async {
+    await _database.updateCategory(
+        category.id, CategoriesCompanion(columnsCount: Value(columnsCount)));
 
     if (_categoriesById.containsKey(category.id)) {
       Category categoryFound = _categoriesById[category.id]!;
@@ -1158,7 +1180,8 @@ class AppsService extends ChangeNotifier
   }
 
   Future<void> setCategoryRowHeight(Category category, int rowHeight) async {
-    await _database.updateCategory(category.id, CategoriesCompanion(rowHeight: Value(rowHeight)));
+    await _database.updateCategory(
+        category.id, CategoriesCompanion(rowHeight: Value(rowHeight)));
 
     if (_categoriesById.containsKey(category.id)) {
       Category categoryFound = _categoriesById[category.id]!;

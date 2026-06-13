@@ -131,8 +131,8 @@ class _ApplicationInfoPanelState extends State<ApplicationInfoPanel> {
                 children: [
                   const Icon(Icons.open_in_new),
                   Container(width: 8),
-                    Text(LocaleKeys.open.tr(),
-                        style: Theme.of(context).textTheme.bodyMedium),
+                  Text(LocaleKeys.open.tr(),
+                      style: Theme.of(context).textTheme.bodyMedium),
                 ],
               ),
               onPressed: () async {
@@ -161,7 +161,9 @@ class _ApplicationInfoPanelState extends State<ApplicationInfoPanel> {
                     ],
                   ),
                   onPressed: () async {
-                    await context.read<AppsService>().toggleFavorite(widget.application);
+                    await context
+                        .read<AppsService>()
+                        .toggleFavorite(widget.application);
                     Navigator.of(context).pop(ApplicationInfoPanelResult.none);
                   },
                 );

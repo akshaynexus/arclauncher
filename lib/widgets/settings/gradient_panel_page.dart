@@ -53,10 +53,18 @@ class GradientPanelPage extends StatelessWidget {
         ],
       );
 
-  Widget _gradientCard(BuildContext context, FLauncherGradient fLauncherGradient) => Actions(
+  Widget _gradientCard(
+          BuildContext context, FLauncherGradient fLauncherGradient) =>
+      Actions(
         actions: <Type, Action<Intent>>{
-          ActivateIntent: CallbackAction<ActivateIntent>(onInvoke: (_) => context.read<WallpaperService>().setGradient(fLauncherGradient)),
-          ButtonActivateIntent: CallbackAction<ButtonActivateIntent>(onInvoke: (_) => context.read<WallpaperService>().setGradient(fLauncherGradient)),
+          ActivateIntent: CallbackAction<ActivateIntent>(
+              onInvoke: (_) => context
+                  .read<WallpaperService>()
+                  .setGradient(fLauncherGradient)),
+          ButtonActivateIntent: CallbackAction<ButtonActivateIntent>(
+              onInvoke: (_) => context
+                  .read<WallpaperService>()
+                  .setGradient(fLauncherGradient)),
         },
         child: Focus(
           key: Key("gradient-${fLauncherGradient.uuid}"),
@@ -70,9 +78,14 @@ class GradientPanelPage extends StatelessWidget {
                     clipBehavior: Clip.antiAlias,
                     shape: _cardBorder(Focus.of(context).hasFocus),
                     child: InkWell(
-                      autofocus: fLauncherGradient == FLauncherGradients.greatWhale,
-                      onTap: () => context.read<WallpaperService>().setGradient(fLauncherGradient),
-                      child: Container(decoration: BoxDecoration(gradient: fLauncherGradient.gradient)),
+                      autofocus:
+                          fLauncherGradient == FLauncherGradients.greatWhale,
+                      onTap: () => context
+                          .read<WallpaperService>()
+                          .setGradient(fLauncherGradient),
+                      child: Container(
+                          decoration: BoxDecoration(
+                              gradient: fLauncherGradient.gradient)),
                     ),
                   ),
                 ),
@@ -81,10 +94,12 @@ class GradientPanelPage extends StatelessWidget {
                   child: AnimatedDefaultTextStyle(
                     style: Theme.of(context).textTheme.bodySmall!.copyWith(
                           decoration: TextDecoration.underline,
-                          color: Focus.of(context).hasFocus ? Colors.white : null,
+                          color:
+                              Focus.of(context).hasFocus ? Colors.white : null,
                         ),
                     duration: const Duration(milliseconds: 50),
-                    child: Text(fLauncherGradient.name, overflow: TextOverflow.ellipsis),
+                    child: Text(fLauncherGradient.name,
+                        overflow: TextOverflow.ellipsis),
                   ),
                 ),
               ],
@@ -94,6 +109,8 @@ class GradientPanelPage extends StatelessWidget {
       );
 
   ShapeBorder? _cardBorder(bool hasFocus) => hasFocus
-      ? RoundedRectangleBorder(side: const BorderSide(color: Colors.white, width: 2), borderRadius: BorderRadius.circular(12))
+      ? RoundedRectangleBorder(
+          side: const BorderSide(color: Colors.white, width: 2),
+          borderRadius: BorderRadius.circular(12))
       : RoundedRectangleBorder(borderRadius: BorderRadius.circular(12));
 }

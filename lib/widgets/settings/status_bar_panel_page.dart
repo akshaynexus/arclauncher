@@ -29,7 +29,8 @@ class StatusBarPanelPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final settingsService = Provider.of<SettingsService>(context, listen: false);
+    final settingsService =
+        Provider.of<SettingsService>(context, listen: false);
 
     return Column(
       children: [

@@ -70,6 +70,14 @@ class WallpaperPanelPage extends StatelessWidget {
                   ),
                 ],
               ),
+              onPressed: () {
+                final newValue = !aerialService.enabled;
+                if (newValue && !isPro) {
+                  _showPremiumDialog(context);
+                  return;
+                }
+                _toggleAerial(context, newValue);
+              },
             );
           });
         }),
@@ -198,18 +206,36 @@ class WallpaperPanelPage extends StatelessWidget {
         options: options,
         onPurchase: (option) async {
           Navigator.of(dialogContext).pop();
-          final success = await purchasesService.purchase(option.identifier);
-          if (context.mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(success && purchasesService.isPro
-                    ? 'Welcome to Pro!'
-                    : 'Purchase cancelled or failed'),
-                backgroundColor: success && purchasesService.isPro
-                    ? Colors.green
-                    : Colors.orange,
-              ),
-            );
+          final result = await purchasesService.purchase(option.identifier);
+          if (!context.mounted) return;
+          switch (result) {
+            case PurchaseResult.success:
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: const Text('Welcome to Pro!'),
+                  backgroundColor: Colors.green,
+                ),
+              );
+            case PurchaseResult.cancelled:
+              break;
+            case PurchaseResult.error:
+              showDialog(
+                context: context,
+                builder: (ctx) => AlertDialog(
+                  backgroundColor: const Color(0xFF1E1E1E),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20)),
+                  title: const Text('Purchase Failed'),
+                  content: const Text(
+                      'There was an error processing your purchase. Please try again later.'),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.of(ctx).pop(),
+                      child: const Text('OK'),
+                    ),
+                  ],
+                ),
+              );
           }
         },
       ),

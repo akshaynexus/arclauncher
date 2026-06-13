@@ -66,9 +66,7 @@ class WallpaperService extends ChangeNotifier {
         orElse: () => FLauncherGradients.saintPetersburg,
       );
 
-  WallpaperService(this._settingsService) :
-    _wallpaper = null
-  {
+  WallpaperService(this._settingsService) : _wallpaper = null {
     _settingsService.addListener(_onSettingsChanged);
     _init();
   }
@@ -126,7 +124,8 @@ class WallpaperService extends ChangeNotifier {
   void _updateTimerState() {
     final enabled = _settingsService.timeBasedWallpaperEnabled;
     if (enabled && (_timer == null || !_timer!.isActive)) {
-      _timer = Timer.periodic(const Duration(minutes: 1), (_) => _updateWallpaper());
+      _timer =
+          Timer.periodic(const Duration(minutes: 1), (_) => _updateWallpaper());
     } else if (!enabled && _timer != null) {
       _timer?.cancel();
       _timer = null;
@@ -249,7 +248,8 @@ class WallpaperService extends ChangeNotifier {
   File? _pairedVideoForImage(File imageFile) {
     if (imageFile.path == _wallpaperFile.path) return _wallpaperVideoFile;
     if (imageFile.path == _wallpaperDayFile.path) return _wallpaperDayVideoFile;
-    if (imageFile.path == _wallpaperNightFile.path) return _wallpaperNightVideoFile;
+    if (imageFile.path == _wallpaperNightFile.path)
+      return _wallpaperNightVideoFile;
     return null;
   }
 

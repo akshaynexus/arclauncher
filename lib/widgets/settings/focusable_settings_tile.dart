@@ -31,8 +31,10 @@ class _FocusableSettingsTileState extends State<FocusableSettingsTile> {
       child: RepaintBoundary(
         child: Actions(
           actions: <Type, Action<Intent>>{
-            ActivateIntent: CallbackAction<ActivateIntent>(onInvoke: (_) => widget.onPressed?.call()),
-            ButtonActivateIntent: CallbackAction<ButtonActivateIntent>(onInvoke: (_) => widget.onPressed?.call()),
+            ActivateIntent: CallbackAction<ActivateIntent>(
+                onInvoke: (_) => widget.onPressed?.call()),
+            ButtonActivateIntent: CallbackAction<ButtonActivateIntent>(
+                onInvoke: (_) => widget.onPressed?.call()),
           },
           child: Focus(
             autofocus: widget.autofocus,
@@ -82,7 +84,8 @@ class _FocusableSettingsTileState extends State<FocusableSettingsTile> {
                       child: DefaultTextStyle.merge(
                         style: TextStyle(
                           color: _focused ? Colors.white : Colors.white70,
-                          fontWeight: _focused ? FontWeight.w600 : FontWeight.normal,
+                          fontWeight:
+                              _focused ? FontWeight.w600 : FontWeight.normal,
                         ),
                         child: widget.title,
                       ),

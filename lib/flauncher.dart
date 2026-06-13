@@ -364,9 +364,7 @@ class _FLauncherState extends State<FLauncher> {
     );
   }
 
-  Widget _wallpaper(
-      BuildContext context,
-      WallpaperService wallpaperService,
+  Widget _wallpaper(BuildContext context, WallpaperService wallpaperService,
       AerialWallpaperService aerialService) {
     final physicalSize = MediaQuery.sizeOf(context);
 

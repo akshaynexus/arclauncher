@@ -30,11 +30,13 @@ class BrightnessSettingsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final brightnessService = Provider.of<BrightnessService>(context, listen: false);
+    final brightnessService =
+        Provider.of<BrightnessService>(context, listen: false);
 
     return Column(
       children: [
-        Text('Brightness Scheduler', style: Theme.of(context).textTheme.titleLarge),
+        Text('Brightness Scheduler',
+            style: Theme.of(context).textTheme.titleLarge),
         const Divider(),
         Expanded(
           child: SingleChildScrollView(
@@ -56,21 +58,26 @@ class BrightnessSettingsPage extends StatelessWidget {
                           children: [
                             Row(
                               children: [
-                                const Icon(Icons.warning_amber_rounded, color: Colors.orange),
+                                const Icon(Icons.warning_amber_rounded,
+                                    color: Colors.orange),
                                 const SizedBox(width: 8),
                                 Expanded(
                                   child: Text(
                                     'Permission Required',
-                                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                      color: Colors.orange,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleMedium
+                                        ?.copyWith(
+                                          color: Colors.orange,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                   ),
                                 ),
                               ],
                             ),
                             const SizedBox(height: 8),
-                            const Text('To control brightness on this device, you must grant permission via ADB:'),
+                            const Text(
+                                'To control brightness on this device, you must grant permission via ADB:'),
                             const SizedBox(height: 8),
                             Container(
                               padding: const EdgeInsets.all(8),
@@ -81,10 +88,12 @@ class BrightnessSettingsPage extends StatelessWidget {
                               child: FutureBuilder<PackageInfo>(
                                 future: PackageInfo.fromPlatform(),
                                 builder: (context, snapshot) {
-                                  final packageName = snapshot.data?.packageName ?? '<package>';
+                                  final packageName =
+                                      snapshot.data?.packageName ?? '<package>';
                                   return SelectableText(
                                     'adb shell appops set $packageName WRITE_SETTINGS allow',
-                                    style: const TextStyle(fontFamily: 'monospace', fontSize: 12),
+                                    style: const TextStyle(
+                                        fontFamily: 'monospace', fontSize: 12),
                                   );
                                 },
                               ),
@@ -94,7 +103,8 @@ class BrightnessSettingsPage extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
                                 ElevatedButton.icon(
-                                  onPressed: brightnessService.requestPermission,
+                                  onPressed:
+                                      brightnessService.requestPermission,
                                   icon: const Icon(Icons.settings),
                                   label: const Text('Grant Permission'),
                                 ),
@@ -121,7 +131,8 @@ class BrightnessSettingsPage extends StatelessWidget {
                         'Enable Scheduler',
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
-                      secondary: Icon(isEnabled ? Icons.schedule : Icons.schedule_outlined),
+                      secondary: Icon(
+                          isEnabled ? Icons.schedule : Icons.schedule_outlined),
                       value: isEnabled,
                       onChanged: (value) => brightnessService.setEnabled(value),
                     );
@@ -141,23 +152,30 @@ class BrightnessSettingsPage extends StatelessWidget {
                           padding: const EdgeInsets.symmetric(horizontal: 16),
                           child: Text(
                             'Current: ${currentSlot.label}',
-                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: Theme.of(context).colorScheme.primary,
-                            ),
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodySmall
+                                ?.copyWith(
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
                           ),
                         ),
                         const Divider(),
-                        
+
                         // Time slot sliders
-                        ...TimeSlot.values.map((slot) => Selector<BrightnessService, int>(
-                          selector: (_, s) => s.getBrightnessForSlot(slot),
-                          builder: (context, brightness, _) => _TimeSlotSlider(
-                            slot: slot,
-                            isCurrentSlot: slot == currentSlot,
-                            brightness: brightness,
-                            onChanged: (value) => brightnessService.setBrightnessForSlot(slot, value),
-                          ),
-                        )),
+                        ...TimeSlot.values
+                            .map((slot) => Selector<BrightnessService, int>(
+                                  selector: (_, s) =>
+                                      s.getBrightnessForSlot(slot),
+                                  builder: (context, brightness, _) =>
+                                      _TimeSlotSlider(
+                                    slot: slot,
+                                    isCurrentSlot: slot == currentSlot,
+                                    brightness: brightness,
+                                    onChanged: (value) => brightnessService
+                                        .setBrightnessForSlot(slot, value),
+                                  ),
+                                )),
                       ],
                     );
                   },
@@ -172,19 +190,24 @@ class BrightnessSettingsPage extends StatelessWidget {
                         decoration: BoxDecoration(
                           color: Colors.red.withOpacity(0.1),
                           borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: Colors.red.withOpacity(0.3)),
+                          border:
+                              Border.all(color: Colors.red.withOpacity(0.3)),
                         ),
                         child: Row(
                           children: [
-                            const Icon(Icons.science_outlined, color: Colors.redAccent, size: 20),
+                            const Icon(Icons.science_outlined,
+                                color: Colors.redAccent, size: 20),
                             const SizedBox(width: 8),
                             Expanded(
                               child: Text(
                                 'EXPERIMENTAL: This feature is untested and may be removed in future versions based on user feedback.',
-                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                  color: Colors.redAccent,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall
+                                    ?.copyWith(
+                                      color: Colors.redAccent,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                               ),
                             ),
                           ],
@@ -194,9 +217,9 @@ class BrightnessSettingsPage extends StatelessWidget {
                       Text(
                         'Note: Some Android TV devices may not support app-level brightness control.',
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Colors.white54,
-                          fontStyle: FontStyle.italic,
-                        ),
+                              color: Colors.white54,
+                              fontStyle: FontStyle.italic,
+                            ),
                         textAlign: TextAlign.center,
                       ),
                     ],
@@ -283,12 +306,19 @@ class _TimeSlotSliderState extends State<_TimeSlotSlider> {
             margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
             padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
             decoration: BoxDecoration(
-              color: _focused 
-                  ? Colors.white10 
-                  : (widget.isCurrentSlot ? Colors.white.withOpacity(0.05) : Colors.transparent),
+              color: _focused
+                  ? Colors.white10
+                  : (widget.isCurrentSlot
+                      ? Colors.white.withOpacity(0.05)
+                      : Colors.transparent),
               borderRadius: BorderRadius.circular(8),
-              border: widget.isCurrentSlot 
-                  ? Border.all(color: Theme.of(context).colorScheme.primary.withOpacity(0.5), width: 1)
+              border: widget.isCurrentSlot
+                  ? Border.all(
+                      color: Theme.of(context)
+                          .colorScheme
+                          .primary
+                          .withOpacity(0.5),
+                      width: 1)
                   : null,
             ),
             child: Column(
@@ -302,27 +332,30 @@ class _TimeSlotSliderState extends State<_TimeSlotSlider> {
                         Icon(
                           _getIconForSlot(widget.slot),
                           size: 18,
-                          color: widget.isCurrentSlot 
-                              ? Theme.of(context).colorScheme.primary 
+                          color: widget.isCurrentSlot
+                              ? Theme.of(context).colorScheme.primary
                               : Colors.white70,
                         ),
                         const SizedBox(width: 8),
                         Text(
                           widget.slot.label,
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            fontWeight: widget.isCurrentSlot ? FontWeight.bold : FontWeight.normal,
-                            color: widget.isCurrentSlot 
-                                ? Theme.of(context).colorScheme.primary 
-                                : null,
-                          ),
+                          style:
+                              Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                    fontWeight: widget.isCurrentSlot
+                                        ? FontWeight.bold
+                                        : FontWeight.normal,
+                                    color: widget.isCurrentSlot
+                                        ? Theme.of(context).colorScheme.primary
+                                        : null,
+                                  ),
                         ),
                       ],
                     ),
                     Text(
                       '${_value.round()}%',
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                            fontWeight: FontWeight.bold,
+                          ),
                     ),
                   ],
                 ),
@@ -330,8 +363,10 @@ class _TimeSlotSliderState extends State<_TimeSlotSlider> {
                 SliderTheme(
                   data: SliderTheme.of(context).copyWith(
                     trackHeight: 4,
-                    thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 8),
-                    overlayShape: const RoundSliderOverlayShape(overlayRadius: 16),
+                    thumbShape:
+                        const RoundSliderThumbShape(enabledThumbRadius: 8),
+                    overlayShape:
+                        const RoundSliderOverlayShape(overlayRadius: 16),
                   ),
                   child: Slider(
                     value: _value,

@@ -48,7 +48,8 @@ class _ApplicationsPanelPageState extends State<ApplicationsPanelPage> {
   final List<_TabData> _tabs = [
     _TabData(0, Icons.apps, () => LocaleKeys.allApplications.tr()),
     _TabData(1, Icons.star, () => LocaleKeys.favoriteApps.tr()),
-    _TabData(2, Icons.visibility_off_outlined, () => LocaleKeys.hiddenApplications.tr()),
+    _TabData(2, Icons.visibility_off_outlined,
+        () => LocaleKeys.hiddenApplications.tr()),
   ];
 
   late List<FocusNode> _tabFocusNodes;
@@ -82,8 +83,8 @@ class _ApplicationsPanelPageState extends State<ApplicationsPanelPage> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: _tabs
-                .map((tab) => _buildTabButton(
-                    tab.index, tab.icon, tab.getTitle()))
+                .map((tab) =>
+                    _buildTabButton(tab.index, tab.icon, tab.getTitle()))
                 .toList(),
           ),
         ),
@@ -489,7 +490,8 @@ class _AppListItemState extends State<_AppListItem> {
                             Widget appIcon;
 
                             if (snapshot.hasData) {
-                              appIcon = Image(image: snapshot.data!, height: 40);
+                              appIcon =
+                                  Image(image: snapshot.data!, height: 40);
                             } else if (snapshot.hasError) {
                               appIcon = const Icon(Icons.warning);
                             } else {
@@ -498,8 +500,8 @@ class _AppListItemState extends State<_AppListItem> {
                                   width: 40,
                                   child: Padding(
                                     padding: EdgeInsets.all(8),
-                                    child:
-                                        CircularProgressIndicator(strokeWidth: 2),
+                                    child: CircularProgressIndicator(
+                                        strokeWidth: 2),
                                   ));
                             }
 
@@ -522,7 +524,8 @@ class _AppListItemState extends State<_AppListItem> {
                               leading: appIcon,
                               trailing: Icon(Icons.chevron_right,
                                   size: 20,
-                                  color: focused ? primaryColor : Colors.white30),
+                                  color:
+                                      focused ? primaryColor : Colors.white30),
                             );
                           },
                         ),

@@ -7,8 +7,7 @@ import 'daily_wifi_usage_widget.dart';
 import 'date_time_widget.dart';
 import 'network_widget.dart';
 
-class FocusAwareAppBar extends StatefulWidget implements PreferredSizeWidget
-{
+class FocusAwareAppBar extends StatefulWidget implements PreferredSizeWidget {
   const FocusAwareAppBar({Key? key}) : super(key: key);
 
   @override
@@ -20,8 +19,7 @@ class FocusAwareAppBar extends StatefulWidget implements PreferredSizeWidget
   Size get preferredSize => Size.fromHeight(kToolbarHeight);
 }
 
-class FocusAwareAppBarState extends State<FocusAwareAppBar>
-{
+class FocusAwareAppBarState extends State<FocusAwareAppBar> {
   bool focused = false;
   late FocusNode _settingsFocusNode;
 
@@ -48,19 +46,17 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar>
       builder: (context, autoHide, widget) {
         if (autoHide) {
           return Focus(
-            canRequestFocus: false,
-            child: AnimatedContainer(
-              curve: Curves.decelerate,
-              duration: Duration(milliseconds: 150),
-              height: focused ? kToolbarHeight : 0,
-              child: widget!
-            ),
-            onFocusChange: (hasFocus) {
-              this.setState(() {
-                focused = hasFocus;
+              canRequestFocus: false,
+              child: AnimatedContainer(
+                  curve: Curves.decelerate,
+                  duration: Duration(milliseconds: 150),
+                  height: focused ? kToolbarHeight : 0,
+                  child: widget!),
+              onFocusChange: (hasFocus) {
+                this.setState(() {
+                  focused = hasFocus;
+                });
               });
-            }
-          );
         }
 
         return widget!;
@@ -78,25 +74,27 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar>
               _FocusableIconButton(
                 icon: Icons.settings_outlined,
                 focusNode: _settingsFocusNode,
-                onPressed: () => showDialog(context: context, builder: (_) => const SettingsPanel()),
+                onPressed: () => showDialog(
+                    context: context, builder: (_) => const SettingsPanel()),
               ),
               const SizedBox(width: 16),
               // Network indicator (conditionally shown)
               Selector<SettingsService, bool>(
-                selector: (_, settings) => settings.showNetworkIndicatorInStatusBar,
+                selector: (_, settings) =>
+                    settings.showNetworkIndicatorInStatusBar,
                 builder: (context, showNetwork, _) => showNetwork
-                  ? Padding(
-                      padding: const EdgeInsets.only(right: 12),
-                      child: const NetworkWidget(),
-                    )
-                  : const SizedBox.shrink(),
+                    ? Padding(
+                        padding: const EdgeInsets.only(right: 12),
+                        child: const NetworkWidget(),
+                      )
+                    : const SizedBox.shrink(),
               ),
               // WiFi usage widget
               Selector<SettingsService, bool>(
                 selector: (_, settings) => settings.showWifiWidgetInStatusBar,
                 builder: (context, showWifi, _) => showWifi
-                  ? const DailyWifiUsageWidget()
-                  : const SizedBox.shrink(),
+                    ? const DailyWifiUsageWidget()
+                    : const SizedBox.shrink(),
               ),
             ],
           ),
@@ -104,17 +102,20 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar>
           actions: [
             Padding(
               padding: const EdgeInsets.only(left: 16, right: 32),
-              child: Selector<SettingsService,
+              child: Selector<
+                  SettingsService,
                   ({
                     bool showDateInStatusBar,
                     bool showTimeInStatusBar,
                     String dateFormat,
-                    String timeFormat })>(
+                    String timeFormat
+                  })>(
                 selector: (context, service) => (
-                showDateInStatusBar: service.showDateInStatusBar,
-                showTimeInStatusBar: service.showTimeInStatusBar,
-                dateFormat: service.dateFormat,
-                timeFormat: service.timeFormat),
+                  showDateInStatusBar: service.showDateInStatusBar,
+                  showTimeInStatusBar: service.showTimeInStatusBar,
+                  dateFormat: service.dateFormat,
+                  timeFormat: service.timeFormat
+                ),
                 builder: (context, dateTimeSettings, _) {
                   // Define standard text style
                   const textStyle = TextStyle(
@@ -122,35 +123,37 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar>
                     fontWeight: FontWeight.w400,
                     color: Colors.white,
                     shadows: [
-                      Shadow(color: Colors.black54, offset: Offset(0, 2), blurRadius: 4)
+                      Shadow(
+                          color: Colors.black54,
+                          offset: Offset(0, 2),
+                          blurRadius: 4)
                     ],
                   );
 
-                  return Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      // Date
-                      if (dateTimeSettings.showDateInStatusBar)
-                        DateTimeWidget(
-                          dateTimeSettings.dateFormat,
-                          key: const Key("statusbar_date"),
-                          updateInterval: const Duration(minutes: 1),
-                          textStyle: textStyle,
-                        ),
-                      
-                      if (dateTimeSettings.showDateInStatusBar && dateTimeSettings.showTimeInStatusBar)
-                          const SizedBox(width: 16),
+                  return Row(mainAxisSize: MainAxisSize.min, children: [
+                    // Date
+                    if (dateTimeSettings.showDateInStatusBar)
+                      DateTimeWidget(
+                        dateTimeSettings.dateFormat,
+                        key: const Key("statusbar_date"),
+                        updateInterval: const Duration(minutes: 1),
+                        textStyle: textStyle,
+                      ),
 
-                      // Clock
-                      if (dateTimeSettings.showTimeInStatusBar)
-                        DateTimeWidget(
-                          dateTimeSettings.timeFormat,
-                          key: const Key("statusbar_clock"),
-                          updateInterval: const Duration(minutes: 1),
-                          textStyle: textStyle.copyWith(fontWeight: FontWeight.bold),
-                        ),
-                    ]
-                  );
+                    if (dateTimeSettings.showDateInStatusBar &&
+                        dateTimeSettings.showTimeInStatusBar)
+                      const SizedBox(width: 16),
+
+                    // Clock
+                    if (dateTimeSettings.showTimeInStatusBar)
+                      DateTimeWidget(
+                        dateTimeSettings.timeFormat,
+                        key: const Key("statusbar_clock"),
+                        updateInterval: const Duration(minutes: 1),
+                        textStyle:
+                            textStyle.copyWith(fontWeight: FontWeight.bold),
+                      ),
+                  ]);
                 },
               ),
             ),
@@ -167,7 +170,8 @@ class _FocusableIconButton extends StatefulWidget {
   final VoidCallback onPressed;
   final FocusNode? focusNode;
 
-  const _FocusableIconButton({required this.icon, required this.onPressed, this.focusNode});
+  const _FocusableIconButton(
+      {required this.icon, required this.onPressed, this.focusNode});
 
   @override
   State<_FocusableIconButton> createState() => _FocusableIconButtonState();
@@ -179,10 +183,12 @@ class _FocusableIconButtonState extends State<_FocusableIconButton> {
   @override
   Widget build(BuildContext context) {
     return RepaintBoundary(
-      child: Actions(
+        child: Actions(
       actions: <Type, Action<Intent>>{
-        ActivateIntent: CallbackAction<ActivateIntent>(onInvoke: (_) => widget.onPressed()),
-        ButtonActivateIntent: CallbackAction<ButtonActivateIntent>(onInvoke: (_) => widget.onPressed()),
+        ActivateIntent:
+            CallbackAction<ActivateIntent>(onInvoke: (_) => widget.onPressed()),
+        ButtonActivateIntent: CallbackAction<ButtonActivateIntent>(
+            onInvoke: (_) => widget.onPressed()),
       },
       child: Focus(
         focusNode: widget.focusNode,
@@ -191,19 +197,25 @@ class _FocusableIconButtonState extends State<_FocusableIconButton> {
           onTap: widget.onPressed,
           borderRadius: BorderRadius.circular(8),
           child: Container(
-            padding: const EdgeInsets.all(4),  // Match network indicator padding
+            padding: const EdgeInsets.all(4), // Match network indicator padding
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
               border: _focused
-                ? Border.all(color: Theme.of(context).colorScheme.primary, width: 2)
-                : null,
+                  ? Border.all(
+                      color: Theme.of(context).colorScheme.primary, width: 2)
+                  : null,
               boxShadow: _focused
-                ? const [BoxShadow(color: Colors.black54, blurRadius: 8, spreadRadius: 1)]
-                : null,
+                  ? const [
+                      BoxShadow(
+                          color: Colors.black54, blurRadius: 8, spreadRadius: 1)
+                    ]
+                  : null,
             ),
-            child: Icon(widget.icon,
+            child: Icon(
+              widget.icon,
               shadows: const [
-                Shadow(color: Colors.black54, blurRadius: 8, offset: Offset(0, 2))
+                Shadow(
+                    color: Colors.black54, blurRadius: 8, offset: Offset(0, 2))
               ],
             ),
           ),
@@ -212,4 +224,3 @@ class _FocusableIconButtonState extends State<_FocusableIconButton> {
     ));
   }
 }
-

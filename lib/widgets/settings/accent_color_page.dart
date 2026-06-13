@@ -43,7 +43,8 @@ class AccentColorPage extends StatelessWidget {
     (ACCENT_COLOR_ICE_BLUE, 'Ice Blue'),
   ];
 
-  static final List<(String hex, String name, Color color)> _parsedPresets = colorPresets.map((preset) {
+  static final List<(String hex, String name, Color color)> _parsedPresets =
+      colorPresets.map((preset) {
     final (hex, name) = preset;
     return (hex, name, Color(int.parse('FF$hex', radix: 16)));
   }).toList();
@@ -80,13 +81,14 @@ class AccentColorPage extends StatelessWidget {
                 itemBuilder: (context, index) {
                   final (hex, name, color) = _parsedPresets[index];
                   final isSelected = currentColor == hex;
-                  
+
                   return _ColorTile(
                     color: color,
                     name: name,
                     isSelected: isSelected,
                     autofocus: index == 0,
-                    onTap: () => context.read<SettingsService>().setAccentColor(hex),
+                    onTap: () =>
+                        context.read<SettingsService>().setAccentColor(hex),
                   );
                 },
               ),
@@ -161,8 +163,10 @@ class _ColorTileState extends State<_ColorTile> {
     return RepaintBoundary(
       child: Actions(
         actions: <Type, Action<Intent>>{
-          ActivateIntent: CallbackAction<ActivateIntent>(onInvoke: (_) => widget.onTap()),
-          ButtonActivateIntent: CallbackAction<ButtonActivateIntent>(onInvoke: (_) => widget.onTap()),
+          ActivateIntent:
+              CallbackAction<ActivateIntent>(onInvoke: (_) => widget.onTap()),
+          ButtonActivateIntent: CallbackAction<ButtonActivateIntent>(
+              onInvoke: (_) => widget.onTap()),
         },
         child: Focus(
           autofocus: widget.autofocus,
@@ -175,13 +179,24 @@ class _ColorTileState extends State<_ColorTile> {
                 color: widget.color,
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
-                  color: _focused ? Colors.white : (widget.isSelected ? Colors.white : Colors.transparent),
+                  color: _focused
+                      ? Colors.white
+                      : (widget.isSelected ? Colors.white : Colors.transparent),
                   width: _focused ? 3 : (widget.isSelected ? 2 : 0),
                 ),
                 boxShadow: _focused
-                    ? [BoxShadow(color: widget.color.withOpacity(0.6), blurRadius: 12, spreadRadius: 2)]
+                    ? [
+                        BoxShadow(
+                            color: widget.color.withOpacity(0.6),
+                            blurRadius: 12,
+                            spreadRadius: 2)
+                      ]
                     : widget.isSelected
-                        ? [BoxShadow(color: widget.color.withOpacity(0.4), blurRadius: 8)]
+                        ? [
+                            BoxShadow(
+                                color: widget.color.withOpacity(0.4),
+                                blurRadius: 8)
+                          ]
                         : null,
               ),
               child: Center(
@@ -191,8 +206,7 @@ class _ColorTileState extends State<_ColorTile> {
                   children: [
                     if (widget.isSelected)
                       const Icon(Icons.check, color: Colors.white, size: 24),
-                    if (widget.isSelected)
-                      const SizedBox(height: 2),
+                    if (widget.isSelected) const SizedBox(height: 2),
                     FittedBox(
                       fit: BoxFit.scaleDown,
                       child: Text(
@@ -201,7 +215,9 @@ class _ColorTileState extends State<_ColorTile> {
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
                           fontSize: 14,
-                          shadows: [Shadow(color: Colors.black54, blurRadius: 4)],
+                          shadows: [
+                            Shadow(color: Colors.black54, blurRadius: 4)
+                          ],
                         ),
                       ),
                     ),

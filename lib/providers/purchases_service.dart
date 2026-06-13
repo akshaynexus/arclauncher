@@ -2,7 +2,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
+
+enum PurchaseResult { success, cancelled, error }
 
 /// Simple data class representing a purchase option for the UI.
 class PurchaseOption {
@@ -120,11 +123,11 @@ class PurchasesService extends ChangeNotifier {
     }
   }
 
-  Future<bool> purchase(String identifier) async {
+  Future<PurchaseResult> purchase(String identifier) async {
     try {
       final offerings = await Purchases.getOfferings();
       final current = offerings.current;
-      if (current == null) return false;
+      if (current == null) return PurchaseResult.error;
 
       final package = current.availablePackages.firstWhere(
         (p) => p.identifier == identifier,
@@ -135,10 +138,18 @@ class PurchasesService extends ChangeNotifier {
       _customerInfo = result.customerInfo;
       _isPro = _hasProEntitlement(result.customerInfo);
       notifyListeners();
-      return true;
+      return PurchaseResult.success;
+    } on PlatformException catch (e) {
+      final code = PurchasesErrorHelper.getErrorCode(e);
+      if (code == PurchasesErrorCode.purchaseCancelledError) {
+        debugPrint('Purchase cancelled by user');
+        return PurchaseResult.cancelled;
+      }
+      debugPrint('Error purchasing: $e');
+      return PurchaseResult.error;
     } catch (e) {
       debugPrint('Error purchasing: $e');
-      return false;
+      return PurchaseResult.error;
     }
   }
 }

@@ -37,7 +37,8 @@ class FLauncherApp extends StatefulWidget {
 const _backIntents =
     PrioritizedIntents(orderedIntents: [DismissIntent(), BackIntent()]);
 
-class _FLauncherAppState extends State<FLauncherApp> with WidgetsBindingObserver {
+class _FLauncherAppState extends State<FLauncherApp>
+    with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
@@ -66,7 +67,6 @@ class _FLauncherAppState extends State<FLauncherApp> with WidgetsBindingObserver
 
   @override
   Widget build(BuildContext context) {
-
     return Selector<SettingsService, Color>(
         selector: (_, settings) => settings.accentColor,
         builder: (context, accentColor, _) {

@@ -64,36 +64,26 @@ Future<void> main() async {
   await purchasesService.initialize(null);
 
   runApp(EasyLocalization(
-    supportedLocales: const [Locale('en'), Locale('es')],
-    path: 'assets/translations',
-    fallbackLocale: const Locale('en'),
-    child: MultiProvider(
-        providers: [
-          ChangeNotifierProvider(
-              create: (_) => SettingsService(sharedPreferences),
-              lazy: false),
-          ChangeNotifierProvider(create: (_) => AppsService(fLauncherChannel, fLauncherDatabase)),
-          ChangeNotifierProvider(create: (_) => LauncherState()),
-          ChangeNotifierProvider(create: (_) => NetworkService(fLauncherChannel)),
-          ChangeNotifierProvider(
-              create: (context) {
-                SettingsService settingsService = Provider.of(context, listen: false);
-                return WallpaperService(settingsService);
-              }
-          ),
-          ChangeNotifierProvider(
-              create: (context) {
-                SettingsService settingsService = Provider.of(context, listen: false);
-                return AerialWallpaperService(settingsService);
-              }),
-          ChangeNotifierProvider(
-              create: (_) => BrightnessService(sharedPreferences),
-              lazy: false),
-          ChangeNotifierProvider.value(
-              value: purchasesService),
-        ],
-        child: FLauncherApp()
-      )
-    )
-  );
+      supportedLocales: const [Locale('en'), Locale('es')],
+      path: 'assets/translations',
+      fallbackLocale: const Locale('en'),
+      child: MultiProvider(providers: [
+        ChangeNotifierProvider(
+            create: (_) => SettingsService(sharedPreferences), lazy: false),
+        ChangeNotifierProvider(
+            create: (_) => AppsService(fLauncherChannel, fLauncherDatabase)),
+        ChangeNotifierProvider(create: (_) => LauncherState()),
+        ChangeNotifierProvider(create: (_) => NetworkService(fLauncherChannel)),
+        ChangeNotifierProvider(create: (context) {
+          SettingsService settingsService = Provider.of(context, listen: false);
+          return WallpaperService(settingsService);
+        }),
+        ChangeNotifierProvider(create: (context) {
+          SettingsService settingsService = Provider.of(context, listen: false);
+          return AerialWallpaperService(settingsService);
+        }),
+        ChangeNotifierProvider(
+            create: (_) => BrightnessService(sharedPreferences), lazy: false),
+        ChangeNotifierProvider.value(value: purchasesService),
+      ], child: FLauncherApp())));
 }

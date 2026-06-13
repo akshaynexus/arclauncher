@@ -57,8 +57,7 @@ class BackAction extends Action<BackIntent> {
 
     if (navigator != null) {
       navigator.maybePop();
-    }
-    else {
+    } else {
       LauncherState state = context.read<LauncherState>();
       state.handleBackNavigation(context);
     }
@@ -73,4 +72,5 @@ class BackIntent extends Intent {
   const BackIntent();
 }
 
-Future<bool> isDefaultLauncher(BuildContext context) async => await context.read<AppsService>().isDefaultLauncher();
+Future<bool> isDefaultLauncher(BuildContext context) async =>
+    await context.read<AppsService>().isDefaultLauncher();

@@ -25,8 +25,7 @@ import 'package:provider/provider.dart';
 import '../models/app.dart';
 import '../models/category.dart';
 
-class CategoryCleanRow extends StatelessWidget
-{
+class CategoryCleanRow extends StatelessWidget {
   final Category category;
   final List<App> applications;
 
@@ -46,8 +45,7 @@ class CategoryCleanRow extends StatelessWidget
     Widget categoryContent;
     if (applications.isEmpty) {
       categoryContent = categoryContainerEmptyState(context);
-    }
-    else {
+    } else {
       categoryContent = Row(
         children: List.generate(6, (index) {
           if (index < applications.length) {
@@ -75,9 +73,7 @@ class CategoryCleanRow extends StatelessWidget
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        categoryContent
-      ],
+      children: [categoryContent],
     );
   }
 

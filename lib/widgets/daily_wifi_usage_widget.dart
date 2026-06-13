@@ -25,16 +25,18 @@ class _DailyWifiUsageWidgetState extends State<DailyWifiUsageWidget> {
           _lastPeriod = null;
           _lastPermission = false;
           return TextButton.icon(
-             icon: const Icon(Icons.data_usage, size: 20),
-             label: const Text("Grant Usage Permission"),
-             onPressed: () => networkService.requestPermission(),
+            icon: const Icon(Icons.data_usage, size: 20),
+            label: const Text("Grant Usage Permission"),
+            onPressed: () => networkService.requestPermission(),
           );
         }
 
         final period = settingsService.wifiUsagePeriod;
 
         // Recreate Future only if period changed, permission state changed, or future is null
-        if (_usageFuture == null || _lastPeriod != period || _lastPermission != hasPermission) {
+        if (_usageFuture == null ||
+            _lastPeriod != period ||
+            _lastPermission != hasPermission) {
           _lastPeriod = period;
           _lastPermission = hasPermission;
           _usageFuture = networkService.getWifiUsageForPeriod(period);
@@ -67,7 +69,10 @@ class _DailyWifiUsageWidgetState extends State<DailyWifiUsageWidget> {
                   fontWeight: FontWeight.w400,
                   color: Colors.white,
                   shadows: [
-                    Shadow(color: Colors.black54, offset: Offset(0, 2), blurRadius: 4)
+                    Shadow(
+                        color: Colors.black54,
+                        offset: Offset(0, 2),
+                        blurRadius: 4)
                   ],
                 ),
                 children: [

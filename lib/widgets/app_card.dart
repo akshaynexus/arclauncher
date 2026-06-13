@@ -296,8 +296,8 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
   }
 
   Future<void> _loadAppImage(AppsService service) async {
-    final transparentMode = Provider.of<SettingsService>(context, listen: false)
-        .appCardTransparent;
+    final transparentMode =
+        Provider.of<SettingsService>(context, listen: false).appCardTransparent;
     _loadedForTransparentMode = transparentMode;
     try {
       Uint8List bytes = Uint8List(0);
@@ -317,10 +317,10 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
       }
       if (mounted) {
         setState(() {
-          final targetWidth = type == AppImageType.Banner
-              ? 480
-              : (transparentMode ? 192 : 120);
-          _loadedImage = (type, ResizeImage(MemoryImage(bytes), width: targetWidth));
+          final targetWidth =
+              type == AppImageType.Banner ? 480 : (transparentMode ? 192 : 120);
+          _loadedImage =
+              (type, ResizeImage(MemoryImage(bytes), width: targetWidth));
         });
       }
     } catch (_) {

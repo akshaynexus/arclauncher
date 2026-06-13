@@ -8,14 +8,13 @@ class RoundedSwitchListTile extends StatelessWidget {
   final Widget title;
   final Widget secondary;
 
-  const RoundedSwitchListTile({
-    super.key,
-    required this.value,
-    required this.onChanged,
-    required this.title,
-    required this.secondary,
-    this.autofocus = false
-  });
+  const RoundedSwitchListTile(
+      {super.key,
+      required this.value,
+      required this.onChanged,
+      required this.title,
+      required this.secondary,
+      this.autofocus = false});
 
   @override
   Widget build(BuildContext context) {
@@ -25,12 +24,11 @@ class RoundedSwitchListTile extends StatelessWidget {
       leading: secondary,
       title: title,
       trailing: Container(
-        constraints: const BoxConstraints(maxHeight: 16),
-        child: Switch(
-          value: value,
-          onChanged: onChanged,
-        )
-      ),
+          constraints: const BoxConstraints(maxHeight: 16),
+          child: Switch(
+            value: value,
+            onChanged: onChanged,
+          )),
     );
   }
 }

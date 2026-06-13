@@ -28,8 +28,7 @@ import '../models/category.dart';
 import '../providers/settings_service.dart';
 import 'category_container_common.dart';
 
-class AppsGrid extends StatelessWidget
-{
+class AppsGrid extends StatelessWidget {
   final Category category;
   final List<App> applications;
 
@@ -47,69 +46,70 @@ class AppsGrid extends StatelessWidget
     Widget categoryContent;
     if (applications.isEmpty) {
       categoryContent = categoryContainerEmptyState(context);
-    }
-    else {
+    } else {
       categoryContent = GridView.custom(
-        primary: false,
-        shrinkWrap: true,
-        gridDelegate: _buildSliverGridDelegate(),
-        //padding: EdgeInsets.all(16),
-        childrenDelegate: SliverChildBuilderDelegate(
-          childCount: applications.length,
-          findChildIndexCallback: _findChildIndex,
-          (context, index) => Padding(
-            key: Key(applications[index].packageName),
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
-            child: AppCard(
-                category: category,
-                application: applications[index],
-                autofocus: index == 0,
-                handleUpNavigationToSettings: isFirstSection && index < category.columnsCount,
-                onMove: (direction) => _onMove(context, direction, index),
-                onMoveEnd: () => _saveOrder(context)
-            ),
-          )
-        )
-      );
+          primary: false,
+          shrinkWrap: true,
+          gridDelegate: _buildSliverGridDelegate(),
+          //padding: EdgeInsets.all(16),
+          childrenDelegate: SliverChildBuilderDelegate(
+              childCount: applications.length,
+              findChildIndexCallback: _findChildIndex,
+              (context, index) => Padding(
+                    key: Key(applications[index].packageName),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
+                    child: AppCard(
+                        category: category,
+                        application: applications[index],
+                        autofocus: index == 0,
+                        handleUpNavigationToSettings:
+                            isFirstSection && index < category.columnsCount,
+                        onMove: (direction) =>
+                            _onMove(context, direction, index),
+                        onMoveEnd: () => _saveOrder(context)),
+                  )));
     }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Selector<SettingsService, bool>(
-          selector: (context, service) => service.showCategoryTitles,
-          builder: (context, showCategoriesTitle, _) {
-            if (showCategoriesTitle) {
-              return Padding(
-                padding: const EdgeInsets.only(left: 16, bottom: 8),
-                child: Text(category.name,
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleLarge!
-                      .copyWith(shadows: [const Shadow(color: Colors.black54, offset: Offset(1, 1), blurRadius: 8)])
-                ),
-              );
-            }
+            selector: (context, service) => service.showCategoryTitles,
+            builder: (context, showCategoriesTitle, _) {
+              if (showCategoriesTitle) {
+                return Padding(
+                  padding: const EdgeInsets.only(left: 16, bottom: 8),
+                  child: Text(category.name,
+                      style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                          shadows: [
+                            const Shadow(
+                                color: Colors.black54,
+                                offset: Offset(1, 1),
+                                blurRadius: 8)
+                          ])),
+                );
+              }
 
-            return SizedBox.shrink();
-          }
-        ),
+              return SizedBox.shrink();
+            }),
         categoryContent
       ],
     );
   }
 
-
   int? _findChildIndex(Key key) {
     final valueKey = key as ValueKey<String>;
-    final index = applications.indexWhere((app) => app.packageName == valueKey.value);
+    final index =
+        applications.indexWhere((app) => app.packageName == valueKey.value);
     return index >= 0 ? index : null;
   }
 
   // TO DO : refractor duplicate _onMove code
   void _onMove(BuildContext context, AxisDirection direction, int index) {
     final currentRow = (index / category.columnsCount).floor();
-    final totalRows = ((applications.length - 1) / category.columnsCount).floor();
+    final totalRows =
+        ((applications.length - 1) / category.columnsCount).floor();
 
     int? newIndex;
     switch (direction) {
@@ -126,7 +126,8 @@ class AppsGrid extends StatelessWidget
         break;
       case AxisDirection.down:
         if (currentRow < totalRows) {
-          newIndex = min(index + category.columnsCount, applications.length - 1);
+          newIndex =
+              min(index + category.columnsCount, applications.length - 1);
         }
         // At bottom boundary - do nothing
         break;
@@ -140,7 +141,8 @@ class AppsGrid extends StatelessWidget
       final appsService = context.read<AppsService>();
       final movingApp = applications[index];
       final realOldIndex = category.applications.indexOf(movingApp);
-      final realNewIndex = category.applications.indexOf(applications[newIndex]);
+      final realNewIndex =
+          category.applications.indexOf(applications[newIndex]);
       if (realOldIndex >= 0 && realNewIndex >= 0) {
         appsService.reorderApplication(category, realOldIndex, realNewIndex);
         // Set pending focus so the app at the new position will request focus
@@ -154,11 +156,11 @@ class AppsGrid extends StatelessWidget
     appsService.saveApplicationOrderInCategory(category);
   }
 
-  SliverGridDelegate _buildSliverGridDelegate() => SliverGridDelegateWithFixedCrossAxisCount(
+  SliverGridDelegate _buildSliverGridDelegate() =>
+      SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: category.columnsCount,
         childAspectRatio: 16 / 9,
         mainAxisSpacing: 12,
         crossAxisSpacing: 0,
       );
-
 }

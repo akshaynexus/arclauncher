@@ -11,7 +11,8 @@ class TvMediaPicker extends StatefulWidget {
 
   const TvMediaPicker({super.key, required this.mode});
 
-  static Future<String?> show(BuildContext context, {required TvMediaPickerMode mode}) async {
+  static Future<String?> show(BuildContext context,
+      {required TvMediaPickerMode mode}) async {
     final result = await showDialog<String>(
       context: context,
       barrierDismissible: false,
@@ -24,7 +25,8 @@ class TvMediaPicker extends StatefulWidget {
   State<TvMediaPicker> createState() => _TvMediaPickerState();
 }
 
-class _TvMediaPickerState extends State<TvMediaPicker> with WidgetsBindingObserver {
+class _TvMediaPickerState extends State<TvMediaPicker>
+    with WidgetsBindingObserver {
   final FLauncherChannel _channel = FLauncherChannel();
   List<_MediaItem> _items = [];
   bool _loading = true;
@@ -63,7 +65,10 @@ class _TvMediaPickerState extends State<TvMediaPicker> with WidgetsBindingObserv
   }
 
   Future<void> _requestPermissionAndLoad() async {
-    setState(() { _loading = true; _permissionDenied = false; });
+    setState(() {
+      _loading = true;
+      _permissionDenied = false;
+    });
 
     bool granted = await _channel.checkMediaPermissions();
 
@@ -75,7 +80,10 @@ class _TvMediaPickerState extends State<TvMediaPicker> with WidgetsBindingObserv
 
     if (!granted) {
       if (mounted) {
-        setState(() { _loading = false; _permissionDenied = true; });
+        setState(() {
+          _loading = false;
+          _permissionDenied = true;
+        });
       }
       return;
     }
@@ -84,7 +92,10 @@ class _TvMediaPickerState extends State<TvMediaPicker> with WidgetsBindingObserv
   }
 
   Future<void> _loadMedia() async {
-    setState(() { _loading = true; _permissionDenied = false; });
+    setState(() {
+      _loading = true;
+      _permissionDenied = false;
+    });
     try {
       final data = isImage
           ? await _channel.getMediaStoreImages()
@@ -138,14 +149,17 @@ class _TvMediaPickerState extends State<TvMediaPicker> with WidgetsBindingObserv
     final currentScroll = _scrollController.offset;
 
     if (offset < currentScroll) {
-      _scrollController.animateTo(offset, duration: const Duration(milliseconds: 200), curve: Curves.easeOut);
+      _scrollController.animateTo(offset,
+          duration: const Duration(milliseconds: 200), curve: Curves.easeOut);
     } else if (offset + itemHeight > currentScroll + viewportHeight) {
-      _scrollController.animateTo(offset + itemHeight - viewportHeight, duration: const Duration(milliseconds: 200), curve: Curves.easeOut);
+      _scrollController.animateTo(offset + itemHeight - viewportHeight,
+          duration: const Duration(milliseconds: 200), curve: Curves.easeOut);
     }
   }
 
   KeyEventResult _handleKeyEvent(FocusNode node, KeyEvent event) {
-    if (event is! KeyDownEvent && event is! KeyRepeatEvent) return KeyEventResult.ignored;
+    if (event is! KeyDownEvent && event is! KeyRepeatEvent)
+      return KeyEventResult.ignored;
 
     if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
       _moveFocus(1);
@@ -160,8 +174,8 @@ class _TvMediaPickerState extends State<TvMediaPicker> with WidgetsBindingObserv
       _moveFocus(-5);
       return KeyEventResult.handled;
     } else if (event.logicalKey == LogicalKeyboardKey.select ||
-               event.logicalKey == LogicalKeyboardKey.enter ||
-               event.logicalKey == LogicalKeyboardKey.gameButtonA) {
+        event.logicalKey == LogicalKeyboardKey.enter ||
+        event.logicalKey == LogicalKeyboardKey.gameButtonA) {
       _select();
       return KeyEventResult.handled;
     } else if (event.logicalKey == LogicalKeyboardKey.escape) {
@@ -190,12 +204,21 @@ class _TvMediaPickerState extends State<TvMediaPicker> with WidgetsBindingObserv
               padding: const EdgeInsets.fromLTRB(32, 24, 32, 16),
               child: Row(
                 children: [
-                  Icon(isImage ? Icons.image : Icons.videocam, color: accentColor, size: 28),
+                  Icon(isImage ? Icons.image : Icons.videocam,
+                      color: accentColor, size: 28),
                   const SizedBox(width: 12),
-                  Text(title, style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: Colors.white)),
+                  Text(title,
+                      style: Theme.of(context)
+                          .textTheme
+                          .headlineSmall
+                          ?.copyWith(color: Colors.white)),
                   const Spacer(),
                   if (!_permissionDenied && !_loading)
-                    Text('${_items.length} items', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.white54)),
+                    Text('${_items.length} items',
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyMedium
+                            ?.copyWith(color: Colors.white54)),
                 ],
               ),
             ),
@@ -208,8 +231,11 @@ class _TvMediaPickerState extends State<TvMediaPicker> with WidgetsBindingObserv
                       : _items.isEmpty
                           ? Center(
                               child: Text(
-                                isImage ? 'No images found on device' : 'No videos found on device',
-                                style: const TextStyle(color: Colors.white54, fontSize: 16),
+                                isImage
+                                    ? 'No images found on device'
+                                    : 'No videos found on device',
+                                style: const TextStyle(
+                                    color: Colors.white54, fontSize: 16),
                               ),
                             )
                           : _buildGrid(),
@@ -321,7 +347,12 @@ class _MediaTile extends StatelessWidget {
           width: isSelected ? 3 : 1,
         ),
         boxShadow: isSelected
-            ? [BoxShadow(color: accentColor.withValues(alpha: 0.4), blurRadius: 12, spreadRadius: 2)]
+            ? [
+                BoxShadow(
+                    color: accentColor.withValues(alpha: 0.4),
+                    blurRadius: 12,
+                    spreadRadius: 2)
+              ]
             : null,
       ),
       transform: Matrix4.diagonal3Values(s, s, 1.0),
@@ -332,22 +363,28 @@ class _MediaTile extends StatelessWidget {
         children: [
           Expanded(
             child: isImage
-                ? Image.file(File(item.path), fit: BoxFit.cover, gaplessPlayback: true)
+                ? Image.file(File(item.path),
+                    fit: BoxFit.cover, gaplessPlayback: true)
                 : Stack(
                     alignment: Alignment.center,
                     children: [
-                      Image.file(File(item.path), fit: BoxFit.cover, gaplessPlayback: true),
+                      Image.file(File(item.path),
+                          fit: BoxFit.cover, gaplessPlayback: true),
                       Container(
-                        decoration: const BoxDecoration(color: Colors.black54, shape: BoxShape.circle),
+                        decoration: const BoxDecoration(
+                            color: Colors.black54, shape: BoxShape.circle),
                         padding: const EdgeInsets.all(8),
-                        child: const Icon(Icons.play_arrow, color: Colors.white, size: 24),
+                        child: const Icon(Icons.play_arrow,
+                            color: Colors.white, size: 24),
                       ),
                     ],
                   ),
           ),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            color: isSelected ? accentColor.withValues(alpha: 0.2) : Colors.black45,
+            color: isSelected
+                ? accentColor.withValues(alpha: 0.2)
+                : Colors.black45,
             child: Text(
               item.name,
               maxLines: 1,

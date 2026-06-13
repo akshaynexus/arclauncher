@@ -7,19 +7,24 @@ import 'package:flutter/material.dart';
 /// Going up or down will always go to the next or previous row. All other
 /// traversal policy try to be smart, and in some cases can skip rows when
 /// going up or down.
-class RowByRowTraversalPolicy extends FocusTraversalPolicy with DirectionalFocusTraversalPolicyMixin {
+class RowByRowTraversalPolicy extends FocusTraversalPolicy
+    with DirectionalFocusTraversalPolicyMixin {
   @override
-  Iterable<FocusNode> sortDescendants(Iterable<FocusNode> descendants, FocusNode currentNode) => descendants;
+  Iterable<FocusNode> sortDescendants(
+          Iterable<FocusNode> descendants, FocusNode currentNode) =>
+      descendants;
 
   @override
   bool inDirection(FocusNode currentNode, TraversalDirection direction) {
-    List<FocusNode>? nodes = currentNode.nearestScope?.traversalDescendants.toList();
+    List<FocusNode>? nodes =
+        currentNode.nearestScope?.traversalDescendants.toList();
     if (nodes == null) {
       return super.inDirection(currentNode, direction);
     }
 
     NodeSearcher searcher = NodeSearcher(direction);
-    List<CandidateNode> candidates = searcher.findCandidates(nodes, currentNode);
+    List<CandidateNode> candidates =
+        searcher.findCandidates(nodes, currentNode);
     if (candidates.isEmpty) {
       return super.inDirection(currentNode, direction);
     }
@@ -35,13 +40,14 @@ class NodeSearcher {
   NodeSearcher(this.directionToSearch);
 
   /// should be called first
-  List<CandidateNode> findCandidates(List<FocusNode> nodes, FocusNode fromNode) {
+  List<CandidateNode> findCandidates(
+      List<FocusNode> nodes, FocusNode fromNode) {
     final from = CandidateNode(fromNode);
     final List<CandidateNode> candidates = [];
 
     for (final node in nodes) {
       if (node == fromNode) continue;
-      
+
       final candidate = CandidateNode(node);
       bool keep = false;
       switch (directionToSearch) {
@@ -52,10 +58,12 @@ class NodeSearcher {
           keep = !candidate.isAboveOrEquals(from);
           break;
         case TraversalDirection.right:
-          keep = !candidate.isLeftToOrEquals(from) && candidate.isOnTheSameRow(from);
+          keep = !candidate.isLeftToOrEquals(from) &&
+              candidate.isOnTheSameRow(from);
           break;
         case TraversalDirection.left:
-          keep = !candidate.isRightToOrEquals(from) && candidate.isOnTheSameRow(from);
+          keep = !candidate.isRightToOrEquals(from) &&
+              candidate.isOnTheSameRow(from);
           break;
       }
       if (keep) {
@@ -65,7 +73,8 @@ class NodeSearcher {
     return candidates;
   }
 
-  FocusNode findBestFocusNode(List<CandidateNode> candidates, FocusNode fromNode) {
+  FocusNode findBestFocusNode(
+      List<CandidateNode> candidates, FocusNode fromNode) {
     final from = CandidateNode(fromNode);
     CandidateNode best = candidates.first;
 
@@ -73,15 +82,20 @@ class NodeSearcher {
       final challenger = candidates[i];
       bool useChallenger = false;
 
-      if (directionToSearch == TraversalDirection.down && challenger.isAbove(best)) {
+      if (directionToSearch == TraversalDirection.down &&
+          challenger.isAbove(best)) {
         useChallenger = true;
-      } else if (directionToSearch == TraversalDirection.up && challenger.isBelow(best)) {
+      } else if (directionToSearch == TraversalDirection.up &&
+          challenger.isBelow(best)) {
         useChallenger = true;
-      } else if (directionToSearch == TraversalDirection.left && challenger.isRightTo(best)) {
+      } else if (directionToSearch == TraversalDirection.left &&
+          challenger.isRightTo(best)) {
         useChallenger = true;
-      } else if (directionToSearch == TraversalDirection.right && challenger.isLeftTo(best)) {
+      } else if (directionToSearch == TraversalDirection.right &&
+          challenger.isLeftTo(best)) {
         useChallenger = true;
-      } else if (challenger.isOnTheSameRow(best) && challenger.distance(from) < best.distance(from)) {
+      } else if (challenger.isOnTheSameRow(best) &&
+          challenger.distance(from) < best.distance(from)) {
         useChallenger = true;
       }
 

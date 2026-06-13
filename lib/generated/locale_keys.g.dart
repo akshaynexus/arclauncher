@@ -2,7 +2,7 @@
 
 // ignore_for_file: constant_identifier_names
 
-abstract class  LocaleKeys {
+abstract class LocaleKeys {
   static const aboutFlauncher = 'aboutFlauncher';
   static const addCategory = 'addCategory';
   static const addSection = 'addSection';
@@ -20,9 +20,12 @@ abstract class  LocaleKeys {
   static const date = 'date';
   static const dateAndTimeFormat = 'dateAndTimeFormat';
   static const delete = 'delete';
-  static const dialogOptionBackButtonActionDoNothing = 'dialogOptionBackButtonActionDoNothing';
-  static const dialogOptionBackButtonActionShowScreensaver = 'dialogOptionBackButtonActionShowScreensaver';
-  static const dialogOptionBackButtonActionShowClock = 'dialogOptionBackButtonActionShowClock';
+  static const dialogOptionBackButtonActionDoNothing =
+      'dialogOptionBackButtonActionDoNothing';
+  static const dialogOptionBackButtonActionShowScreensaver =
+      'dialogOptionBackButtonActionShowScreensaver';
+  static const dialogOptionBackButtonActionShowClock =
+      'dialogOptionBackButtonActionShowClock';
   static const dialogTextNoFileExplorer = 'dialogTextNoFileExplorer';
   static const dialogTitleBackButtonAction = 'dialogTitleBackButtonAction';
   static const disambiguateCategoryTitle = 'disambiguateCategoryTitle';
@@ -74,7 +77,8 @@ abstract class  LocaleKeys {
   static const updateInstallButton = 'updateInstallButton';
   static const updateInstallPermissionTitle = 'updateInstallPermissionTitle';
   static const updateInstallPermissionBody = 'updateInstallPermissionBody';
-  static const updateOpenPermissionSettingsButton = 'updateOpenPermissionSettingsButton';
+  static const updateOpenPermissionSettingsButton =
+      'updateOpenPermissionSettingsButton';
   static const updateErrorGeneric = 'updateErrorGeneric';
   static const textAboutDialog = 'textAboutDialog';
   static const textEmptyCategory = 'textEmptyCategory';
@@ -93,5 +97,4 @@ abstract class  LocaleKeys {
   static const video = 'video';
   static const pickDayVideoWallpaper = 'pickDayVideoWallpaper';
   static const pickNightVideoWallpaper = 'pickNightVideoWallpaper';
-
 }

@@ -53,8 +53,8 @@ Future<bool> showUpdateAvailableDialog(
         context: context,
         builder: (dialogContext) => AlertDialog(
           title: Text(LocaleKeys.updateAvailableTitle.tr()),
-          content: Text(
-              LocaleKeys.updateAvailableBody.tr(args: [latestVersion, currentVersion])),
+          content: Text(LocaleKeys.updateAvailableBody
+              .tr(args: [latestVersion, currentVersion])),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(false),
@@ -79,7 +79,8 @@ Future<bool> showReadyToInstallDialog(
         context: context,
         builder: (dialogContext) => AlertDialog(
           title: Text(LocaleKeys.updateReadyToInstallTitle.tr()),
-          content: Text(LocaleKeys.updateReadyToInstallBody.tr(args: [latestVersion])),
+          content: Text(
+              LocaleKeys.updateReadyToInstallBody.tr(args: [latestVersion])),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(false),

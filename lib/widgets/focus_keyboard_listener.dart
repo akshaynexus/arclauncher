@@ -19,7 +19,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-const longPressableKeys = [LogicalKeyboardKey.select, LogicalKeyboardKey.enter, LogicalKeyboardKey.gameButtonA];
+const longPressableKeys = [
+  LogicalKeyboardKey.select,
+  LogicalKeyboardKey.enter,
+  LogicalKeyboardKey.gameButtonA
+];
 
 class FocusKeyboardListener extends StatefulWidget {
   final Widget child;
@@ -81,5 +85,7 @@ class _FocusKeyboardListenerState extends State<FocusKeyboardListener> {
     return KeyEventResult.ignored;
   }
 
-  bool _longPress() => _keyDownAt != null && DateTime.now().millisecondsSinceEpoch - _keyDownAt! >= 500;
+  bool _longPress() =>
+      _keyDownAt != null &&
+      DateTime.now().millisecondsSinceEpoch - _keyDownAt! >= 500;
 }
