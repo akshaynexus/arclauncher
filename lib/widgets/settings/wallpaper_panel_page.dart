@@ -31,6 +31,7 @@ import 'package:provider/provider.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flauncher/generated/locale_keys.g.dart';
 
+import 'package:flutter/scheduler.dart';
 import 'package:flauncher/widgets/rounded_switch_list_tile.dart';
 
 class WallpaperPanelPage extends StatelessWidget {
@@ -40,6 +41,17 @@ class WallpaperPanelPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView(
       children: [
+        // Disable aerial views when pro status is lost
+        Consumer2<PurchasesService, SettingsService>(
+          builder: (_, purchases, settings, __) {
+            if (!purchases.isPro && settings.aerialEnabled) {
+              SchedulerBinding.instance.addPostFrameCallback((_) {
+                settings.setAerialEnabled(false);
+              });
+            }
+            return const SizedBox.shrink();
+          },
+        ),
         Text(LocaleKeys.wallpaper.tr(),
             style: Theme.of(context).textTheme.titleLarge),
         Divider(),
@@ -807,13 +819,13 @@ class _PremiumDialog extends StatelessWidget {
             children: [
               _buildHeader(context),
               Padding(
-                padding: const EdgeInsets.fromLTRB(24, 20, 24, 20),
+                padding: const EdgeInsets.fromLTRB(24, 16, 24, 20),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
                         color: Colors.white.withValues(alpha: 0.04),
                         borderRadius: BorderRadius.circular(12),
                       ),
@@ -826,7 +838,7 @@ class _PremiumDialog extends StatelessWidget {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 16),
                     Row(
                       children: [
                         Container(height: 1, color: Colors.white12, width: 24),
@@ -843,7 +855,7 @@ class _PremiumDialog extends StatelessWidget {
                         Expanded(child: Container(height: 1, color: Colors.white12)),
                       ],
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 12),
                     ...options.asMap().entries.map((e) => _DialogOptionTile(
                           option: e.value,
                           accentColor: accentColor,
@@ -880,7 +892,7 @@ class _PremiumDialog extends StatelessWidget {
   Widget _buildHeader(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(24, 32, 24, 24),
+      padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
@@ -896,8 +908,8 @@ class _PremiumDialog extends StatelessWidget {
       child: Column(
         children: [
           Container(
-            width: 56,
-            height: 56,
+            width: 44,
+            height: 44,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               gradient: LinearGradient(
@@ -914,9 +926,9 @@ class _PremiumDialog extends StatelessWidget {
                 ),
               ],
             ),
-            child: const Icon(Icons.auto_awesome, color: Colors.white, size: 28),
+            child: const Icon(Icons.auto_awesome, color: Colors.white, size: 24),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 10),
           Text(
             _anyHasTrial ? 'Try Pro Free' : 'Upgrade to Pro',
             style: TextStyle(
@@ -926,7 +938,7 @@ class _PremiumDialog extends StatelessWidget {
               letterSpacing: -0.3,
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 4),
           Text(
             _anyHasTrial
                 ? 'Enjoy full access for $_trialDuration.\nCancel anytime.'
@@ -1059,7 +1071,7 @@ class _DialogOptionTileState extends State<_DialogOptionTile> {
     final accent = widget.accentColor;
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.only(bottom: 8),
       child: Actions(
         actions: {
           ActivateIntent:
@@ -1074,26 +1086,26 @@ class _DialogOptionTileState extends State<_DialogOptionTile> {
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 150),
               curve: Curves.easeOut,
-              padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
-                  color: _isBestValue
-                      ? (_focused ? accent : accent)
-                      : (_focused ? accent : Colors.white.withValues(alpha: 0.08)),
-                  width: _isBestValue ? 2.0 : (_focused ? 2.5 : 1.0),
+                  color: _focused
+                      ? accent
+                      : Colors.white.withValues(alpha: 0.08),
+                  width: _focused ? 2.5 : 1.0,
                 ),
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
-                  colors: _isBestValue
+                  colors: _focused
                       ? [
-                          accent.withValues(alpha: _focused ? 0.25 : 0.15),
-                          accent.withValues(alpha: _focused ? 0.12 : 0.06),
+                          accent.withValues(alpha: 0.15),
+                          accent.withValues(alpha: 0.08),
                         ]
                       : [
-                          accent.withValues(alpha: _focused ? 0.15 : 0.06),
-                          accent.withValues(alpha: _focused ? 0.08 : 0.03),
+                          accent.withValues(alpha: 0.06),
+                          accent.withValues(alpha: 0.03),
                         ],
                 ),
                 boxShadow: _focused
@@ -1104,15 +1116,7 @@ class _DialogOptionTileState extends State<_DialogOptionTile> {
                           spreadRadius: 0,
                         ),
                       ]
-                    : (_isBestValue
-                        ? [
-                            BoxShadow(
-                              color: accent.withValues(alpha: 0.15),
-                              blurRadius: 8,
-                              spreadRadius: 0,
-                            ),
-                          ]
-                        : null),
+                    : null,
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

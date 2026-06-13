@@ -474,11 +474,11 @@ class _SubscriptionDialog extends StatelessWidget {
             children: [
               _buildHeader(context),
               Padding(
-                padding: const EdgeInsets.fromLTRB(24, 20, 24, 20),
+                padding: const EdgeInsets.fromLTRB(24, 16, 24, 20),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _infoRow('Plan', plan),
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _infoRow('Plan', plan),
                     const SizedBox(height: 12),
                     if (isTrial) ...[
                       _infoRow('Status',
@@ -620,7 +620,7 @@ class _SubscriptionDialog extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(24, 32, 24, 24),
+      padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
@@ -636,8 +636,8 @@ class _SubscriptionDialog extends StatelessWidget {
       child: Column(
         children: [
           Container(
-            width: 56,
-            height: 56,
+            width: 44,
+            height: 44,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               gradient: LinearGradient(
@@ -655,9 +655,9 @@ class _SubscriptionDialog extends StatelessWidget {
               ],
             ),
             child: Icon(isTrial ? Icons.free_breakfast : Icons.workspace_premium,
-                color: Colors.white, size: 28),
+                color: Colors.white, size: 20),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 10),
           Text(
             isTrial ? 'Free Trial' : 'Pro Subscription',
             style: TextStyle(
@@ -667,7 +667,7 @@ class _SubscriptionDialog extends StatelessWidget {
               letterSpacing: -0.3,
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 4),
           Text(
             isTrial
                 ? '$trialDays day${trialDays == 1 ? '' : 's'} remaining.\n${trialEndFormatted != null ? "Ends $trialEndFormatted" : ''}'
@@ -794,13 +794,13 @@ class _SettingsPremiumDialog extends StatelessWidget {
             children: [
               _buildHeader(context),
               Padding(
-                padding: const EdgeInsets.fromLTRB(24, 20, 24, 20),
+                padding: const EdgeInsets.fromLTRB(24, 16, 24, 20),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
                         color: Colors.white.withValues(alpha: 0.04),
                         borderRadius: BorderRadius.circular(12),
                       ),
@@ -813,7 +813,7 @@ class _SettingsPremiumDialog extends StatelessWidget {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 16),
                     Row(
                       children: [
                         Container(height: 1, color: Colors.white12, width: 24),
@@ -830,7 +830,7 @@ class _SettingsPremiumDialog extends StatelessWidget {
                         Expanded(child: Container(height: 1, color: Colors.white12)),
                       ],
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 12),
                     ...options.asMap().entries.map((e) => _SettingsOptionTile(
                           option: e.value,
                           accentColor: accentColor,
@@ -881,7 +881,7 @@ class _SettingsPremiumDialog extends StatelessWidget {
   Widget _buildHeader(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(24, 32, 24, 24),
+      padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
@@ -897,8 +897,8 @@ class _SettingsPremiumDialog extends StatelessWidget {
       child: Column(
         children: [
           Container(
-            width: 56,
-            height: 56,
+            width: 44,
+            height: 44,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               gradient: LinearGradient(
@@ -915,9 +915,9 @@ class _SettingsPremiumDialog extends StatelessWidget {
                 ),
               ],
             ),
-            child: const Icon(Icons.auto_awesome, color: Colors.white, size: 28),
+            child: const Icon(Icons.auto_awesome, color: Colors.white, size: 24),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 10),
           Text(
             _anyHasTrial ? 'Try Pro Free' : 'Upgrade to Pro',
             style: TextStyle(
@@ -927,7 +927,7 @@ class _SettingsPremiumDialog extends StatelessWidget {
               letterSpacing: -0.3,
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 4),
           Text(
             _anyHasTrial
                 ? 'Enjoy full access for $_trialDuration.\nCancel anytime.'
@@ -1037,7 +1037,7 @@ class _SettingsOptionTileState extends State<_SettingsOptionTile> {
 
     return Padding(
       padding: EdgeInsets.only(
-        bottom: widget.index < widget.total - 1 ? 12 : 0,
+        bottom: widget.index < widget.total - 1 ? 8 : 0,
       ),
       child: Actions(
         actions: {
@@ -1053,7 +1053,7 @@ class _SettingsOptionTileState extends State<_SettingsOptionTile> {
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 150),
               curve: Curves.easeOut,
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
@@ -1073,127 +1073,121 @@ class _SettingsOptionTileState extends State<_SettingsOptionTile> {
                       ]
                     : null,
               ),
-              child: Stack(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   if (_isBestValue)
-                    Positioned(
-                      right: 0,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 4),
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              const Color(0xFFFFD700),
-                              const Color(0xFFFFA500),
-                            ],
-                          ),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(Icons.auto_awesome,
-                                size: 12, color: Colors.black87),
-                            const SizedBox(width: 4),
-                            const Text('Best value',
-                                style: TextStyle(
-                                    fontSize: 11,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black87)),
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 10),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 4),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            const Color(0xFFFFD700),
+                            const Color(0xFFFFA500),
                           ],
+                        ),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.auto_awesome,
+                              size: 12, color: Colors.black87),
+                          const SizedBox(width: 4),
+                          const Text('Best value',
+                              style: TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black87)),
+                        ],
+                      ),
+                    ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              option.title,
+                              style: TextStyle(
+                                fontSize: 17,
+                                fontWeight: FontWeight.bold,
+                                color: _focused ? Colors.white : null,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              option.description.contains('/')
+                                  ? option.description.split('/').first.trim()
+                                  : option.description,
+                              style: const TextStyle(
+                                  color: Colors.white54, fontSize: 13),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            option.priceString,
+                            style: TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                              color: _focused ? accent : Colors.white70,
+                            ),
+                          ),
+                          if (option.period.isNotEmpty)
+                            Text(
+                              '/${option.period}',
+                              style: const TextStyle(
+                                  color: Colors.white38, fontSize: 12),
+                            ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  if (widget.savingsLabel != null) ...[
+                    const SizedBox(height: 8),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(6),
+                        color: accent.withValues(alpha: 0.15),
+                      ),
+                      child: Text(
+                        widget.savingsLabel!,
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: accent,
                         ),
                       ),
                     ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  option.title,
-                                  style: TextStyle(
-                                    fontSize: 17,
-                                    fontWeight: FontWeight.bold,
-                                    color: _focused ? Colors.white : null,
-                                  ),
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  option.description.contains('/')
-                                      ? option.description.split('/').first.trim()
-                                      : option.description,
-                                  style: const TextStyle(
-                                      color: Colors.white54, fontSize: 13),
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(width: 16),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Text(
-                                option.priceString,
-                                style: TextStyle(
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.bold,
-                                  color: _focused ? accent : Colors.white70,
-                                ),
-                              ),
-                              if (option.period.isNotEmpty)
-                                Text(
-                                  '/${option.period}',
-                                  style: const TextStyle(
-                                      color: Colors.white38, fontSize: 12),
-                                ),
-                            ],
-                          ),
-                        ],
-                      ),
-                      if (widget.savingsLabel != null) ...[
-                        const SizedBox(height: 8),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 4),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(6),
-                            color: accent.withValues(alpha: 0.15),
-                          ),
-                          child: Text(
-                            widget.savingsLabel!,
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w600,
-                              color: accent,
-                            ),
+                  ],
+                  if (option.hasFreeTrial) ...[
+                    const SizedBox(height: 6),
+                    Row(
+                      children: [
+                        Icon(Icons.card_giftcard,
+                            size: 12,
+                            color: Colors.white.withValues(alpha: 0.4)),
+                        const SizedBox(width: 4),
+                        Text(
+                          'Free trial available',
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: Colors.white.withValues(alpha: 0.4),
                           ),
                         ),
                       ],
-                      if (option.hasFreeTrial) ...[
-                        const SizedBox(height: 6),
-                        Row(
-                          children: [
-                            Icon(Icons.card_giftcard,
-                                size: 12,
-                                color: Colors.white.withValues(alpha: 0.4)),
-                            const SizedBox(width: 4),
-                            Text(
-                              'Free trial available',
-                              style: TextStyle(
-                                fontSize: 11,
-                                color: Colors.white.withValues(alpha: 0.4),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ],
-                  ),
+                    ),
+                  ],
                 ],
               ),
             ),
@@ -1203,3 +1197,4 @@ class _SettingsOptionTileState extends State<_SettingsOptionTile> {
     );
   }
 }
+
