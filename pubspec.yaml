@@ -26,6 +26,7 @@ dependencies:
   aerial_views: ^0.1.1
   easy_localization: ^3.0.8
   flutter_displaymode: any
+  purchases_flutter: ^10.2.3
 
 dev_dependencies:
   flutter_test:
