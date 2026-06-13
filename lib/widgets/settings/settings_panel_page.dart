@@ -17,6 +17,7 @@
  */
 
 import 'package:flauncher/providers/apps_service.dart';
+import 'package:flauncher/providers/purchases_service.dart';
 import 'package:flauncher/providers/update_service.dart';
 import 'package:flauncher/widgets/settings/applications_panel_page.dart';
 import 'package:flauncher/widgets/settings/flauncher_about_dialog.dart';
@@ -77,6 +78,19 @@ class SettingsPanelPage extends StatelessWidget {
               style: Theme.of(context).textTheme.bodyMedium),
           onPressed: () => _checkForUpdates(context),
         ),
+        Consumer<PurchasesService>(
+          builder: (context, purchasesService, _) {
+            if (purchasesService.isPro) {
+              return const SizedBox.shrink();
+            }
+            return FocusableSettingsTile(
+              leading: const Icon(Icons.workspace_premium),
+              title: Text('Restore Purchases',
+                  style: Theme.of(context).textTheme.bodyMedium),
+              onPressed: () => _restorePurchases(context),
+            );
+          },
+        ),
         FocusableSettingsTile(
             leading: const Icon(Icons.info_outline),
             title: Text(LocaleKeys.aboutFlauncher.tr(),
@@ -94,6 +108,32 @@ class SettingsPanelPage extends StatelessWidget {
                     )))
       ])))
     ]);
+  }
+}
+
+Future<void> _restorePurchases(BuildContext context) async {
+  final purchasesService = context.read<PurchasesService>();
+  final scaffoldMessenger = ScaffoldMessenger.of(context);
+
+  try {
+    await purchasesService.restorePurchases();
+    if (context.mounted) {
+      scaffoldMessenger.showSnackBar(
+        SnackBar(
+          content: Text('Purchases restored successfully'),
+          backgroundColor: Colors.green,
+        ),
+      );
+    }
+  } catch (e) {
+    if (context.mounted) {
+      scaffoldMessenger.showSnackBar(
+        SnackBar(
+          content: Text('Failed to restore purchases'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 }
 

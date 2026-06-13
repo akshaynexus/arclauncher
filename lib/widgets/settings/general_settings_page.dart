@@ -93,7 +93,7 @@ class GeneralSettingsPage extends StatelessWidget {
   }
 
   Future<void> _openScreensaverSettings() async {
-    const platform = MethodChannel('me.efesser.flauncher/method');
+    const platform = MethodChannel('com.hseuniversal.tidytv/method');
     platform.invokeMethod('openScreensaverSettings');
   }
 }

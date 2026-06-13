@@ -32,13 +32,13 @@ void main() {
       final database = MockFLauncherDatabase();
       when(channel.getApplications()).thenAnswer((_) => Future.value([
             {
-              'packageName': 'me.efesser.flauncher',
+              'packageName': 'com.hseuniversal.tidytv',
               'name': 'FLauncher',
               'version': null,
               'sideloaded': false
             },
             {
-              'packageName': 'me.efesser.flauncher.2',
+              'packageName': 'com.hseuniversal.tidytv.2',
               'name': 'FLauncher 2',
               'version': '2.0.0',
               'sideloaded': true
@@ -46,13 +46,13 @@ void main() {
           ]));
       when(database.listApplications()).thenAnswer((_) => Future.value([
             fakeApp(
-              packageName: "me.efesser.flauncher",
+              packageName: "com.hseuniversal.tidytv",
               name: "FLauncher",
               version: "1.0.0",
               sideloaded: false,
             ),
             fakeApp(
-              packageName: "me.efesser.flauncher.2",
+              packageName: "com.hseuniversal.tidytv.2",
               name: "FLauncher 2",
               version: "2.0.0",
               sideloaded: true,
@@ -74,13 +74,13 @@ void main() {
         database.listApplications(),
         database.persistApps([
           AppsCompanion.insert(
-            packageName: "me.efesser.flauncher",
+            packageName: "com.hseuniversal.tidytv",
             name: "FLauncher",
             version: "(unknown)",
             sideloaded: Value(false),
           ),
           AppsCompanion.insert(
-            packageName: "me.efesser.flauncher.2",
+            packageName: "com.hseuniversal.tidytv.2",
             name: "FLauncher 2",
             version: "2.0.0",
             sideloaded: Value(true),
@@ -99,7 +99,7 @@ void main() {
         database.insertAppsCategories([
           AppsCategoriesCompanion.insert(
             categoryId: tvApplicationsCategory.id,
-            appPackageName: "me.efesser.flauncher",
+            appPackageName: "com.hseuniversal.tidytv",
             order: 0,
           )
         ]),
@@ -109,7 +109,7 @@ void main() {
         database.insertAppsCategories([
           AppsCategoriesCompanion.insert(
             categoryId: nonTvApplicationsCategory.id,
-            appPackageName: "me.efesser.flauncher.2",
+            appPackageName: "com.hseuniversal.tidytv.2",
             order: 0,
           )
         ]),
@@ -122,13 +122,13 @@ void main() {
       final database = MockFLauncherDatabase();
       when(channel.getApplications()).thenAnswer((_) => Future.value([
             {
-              'packageName': 'me.efesser.flauncher',
+              'packageName': 'com.hseuniversal.tidytv',
               'name': 'FLauncher',
               'version': '2.0.0',
               'sideloaded': false,
             },
             {
-              'packageName': 'me.efesser.flauncher.2',
+              'packageName': 'com.hseuniversal.tidytv.2',
               'name': 'FLauncher 2',
               'version': '1.0.0',
               'sideloaded': false,
@@ -137,7 +137,7 @@ void main() {
       when(channel.applicationExists("uninstalled.app")).thenAnswer((_) => Future.value(false));
       when(channel.applicationExists("not.uninstalled.app")).thenAnswer((_) => Future.value(true));
       when(database.listApplications()).thenAnswer((_) => Future.value([
-            fakeApp(packageName: "me.efesser.flauncher", name: "FLauncher", version: "1.0.0"),
+            fakeApp(packageName: "com.hseuniversal.tidytv", name: "FLauncher", version: "1.0.0"),
             fakeApp(packageName: "uninstalled.app", name: "Uninstalled Application", version: "1.0.0"),
             fakeApp(packageName: "not.uninstalled.app", name: "Not Uninstalled Application", version: "1.0.0")
           ]));
@@ -151,13 +151,13 @@ void main() {
         database.listApplications(),
         database.persistApps([
           AppsCompanion.insert(
-            packageName: "me.efesser.flauncher",
+            packageName: "com.hseuniversal.tidytv",
             name: "FLauncher",
             version: "2.0.0",
             sideloaded: Value(false),
           ),
           AppsCompanion.insert(
-            packageName: "me.efesser.flauncher.2",
+            packageName: "com.hseuniversal.tidytv.2",
             name: "FLauncher 2",
             version: "1.0.0",
             sideloaded: Value(false),

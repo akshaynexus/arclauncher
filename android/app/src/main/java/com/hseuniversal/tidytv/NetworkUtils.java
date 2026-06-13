@@ -1,4 +1,4 @@
-package com.omeda.arc;
+package com.hseuniversal.tidytv;
 
 import android.content.Context;
 import android.net.ConnectivityManager;

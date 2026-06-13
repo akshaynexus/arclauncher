@@ -54,7 +54,7 @@ void main() {
     final favoritesCategory = fakeCategory(name: "Favorites", order: 0, type: CategoryType.row);
     favoritesCategory.applications.addAll([
       fakeApp(
-        packageName: "me.efesser.flauncher.1",
+        packageName: "com.hseuniversal.tidytv.1",
         name: "FLauncher 1",
         version: "1.0.0",
       ),
@@ -62,7 +62,7 @@ void main() {
     final applicationsCategory = fakeCategory(name: "Applications", order: 1);
     applicationsCategory.applications.addAll([
       fakeApp(
-        packageName: "me.efesser.flauncher.2",
+        packageName: "com.hseuniversal.tidytv.2",
         name: "FLauncher 2",
         version: "2.0.0",
       ),
@@ -77,9 +77,9 @@ void main() {
     expect(find.text("Applications"), findsOneWidget);
     expect(find.text("Favorites"), findsOneWidget);
     expect(find.byType(AppsGrid), findsOneWidget);
-    expect(find.byKey(Key("${applicationsCategory.id}-me.efesser.flauncher.2")), findsOneWidget);
+    expect(find.byKey(Key("${applicationsCategory.id}-com.hseuniversal.tidytv.2")), findsOneWidget);
     expect(find.byType(CategoryRow), findsOneWidget);
-    expect(find.byKey(Key("${favoritesCategory.id}-me.efesser.flauncher.1")), findsOneWidget);
+    expect(find.byKey(Key("${favoritesCategory.id}-com.hseuniversal.tidytv.1")), findsOneWidget);
 
     // This was changed by how the the image is made, I don't know what it now should be
     //expect(tester.widget(find.byKey(Key("background"))), isA<Container>());
@@ -144,7 +144,7 @@ void main() {
   testWidgets("Pressing select on app opens ApplicationInfoPanel", (tester) async {
     final appsService = mkAppService();
     final app = fakeApp(
-      packageName: "me.efesser.flauncher",
+      packageName: "com.hseuniversal.tidytv",
       name: "FLauncher",
       version: "1.0.0",
     );
@@ -168,7 +168,7 @@ void main() {
     final applicationsCategory = fakeCategory(name: "Applications", order: 1);
     applicationsCategory.applications.addAll([
       fakeApp(
-        packageName: "me.efesser.flauncher",
+        packageName: "com.hseuniversal.tidytv",
         name: "FLauncher",
         version: "1.0.0",
       ),
@@ -180,7 +180,7 @@ void main() {
     ]);
     await _pumpWidgetWith(tester, appsService);
 
-    await tester.longPress(find.byKey(Key("${applicationsCategory.id}-me.efesser.flauncher")));
+    await tester.longPress(find.byKey(Key("${applicationsCategory.id}-com.hseuniversal.tidytv")));
     await tester.pump();
 
     expect(find.byType(ApplicationInfoPanel), findsOneWidget);
@@ -191,12 +191,12 @@ void main() {
     final applicationsCategory = fakeCategory(name: "Applications", order: 1, type: CategoryType.grid);
     applicationsCategory.applications.addAll([
       fakeApp(
-        packageName: "me.efesser.flauncher",
+        packageName: "com.hseuniversal.tidytv",
         name: "FLauncher",
         version: "1.0.0",
       ),
       fakeApp(
-        packageName: "me.efesser.flauncher.2",
+        packageName: "com.hseuniversal.tidytv.2",
         name: "FLauncher 2",
         version: "1.0.0",
       ),
@@ -208,7 +208,7 @@ void main() {
     ]);
     await _pumpWidgetWith(tester, appsService);
 
-    await tester.longPress(find.byKey(Key("${applicationsCategory.id}-me.efesser.flauncher")));
+    await tester.longPress(find.byKey(Key("${applicationsCategory.id}-com.hseuniversal.tidytv")));
     await tester.pump();
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
@@ -227,12 +227,12 @@ void main() {
     final applicationsCategory = fakeCategory(name: "Applications", order: 1, type: CategoryType.row);
     applicationsCategory.applications.addAll([
       fakeApp(
-        packageName: "me.efesser.flauncher",
+        packageName: "com.hseuniversal.tidytv",
         name: "FLauncher",
         version: "1.0.0",
       ),
       fakeApp(
-        packageName: "me.efesser.flauncher.2",
+        packageName: "com.hseuniversal.tidytv.2",
         name: "FLauncher 2",
         version: "1.0.0",
       ),
@@ -244,7 +244,7 @@ void main() {
     ]);
     await _pumpWidgetWith(tester, appsService);
 
-    await tester.longPress(find.byKey(Key("${applicationsCategory.id}-me.efesser.flauncher")));
+    await tester.longPress(find.byKey(Key("${applicationsCategory.id}-com.hseuniversal.tidytv")));
     await tester.pump();
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);

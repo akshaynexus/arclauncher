@@ -222,7 +222,7 @@ class _MockPackageInfoPlatform with MockPlatformInterfaceMixin implements Packag
   @override
   Future<PackageInfoData> getAll({String? baseUrl}) async => PackageInfoData(
         appName: "FLauncher",
-        packageName: "me.efesser.flauncher",
+        packageName: "com.hseuniversal.tidytv",
         version: "1.0.0",
         buildNumber: "1",
         buildSignature: "",

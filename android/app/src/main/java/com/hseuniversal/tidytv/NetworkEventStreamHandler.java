@@ -1,4 +1,4 @@
-package me.efesser.flauncher;
+package com.hseuniversal.tidytv;
 
 import android.content.Context;
 import android.content.IntentFilter;

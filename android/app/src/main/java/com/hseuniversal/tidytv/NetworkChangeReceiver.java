@@ -1,4 +1,4 @@
-package com.omeda.arc;
+package com.hseuniversal.tidytv;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

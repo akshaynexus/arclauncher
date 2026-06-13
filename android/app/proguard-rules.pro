@@ -63,5 +63,9 @@
 
 ## App's native platform channel handlers — R8 strips configureFlutterEngine
 ## and MethodChannel handlers if not explicitly kept
--keep class me.efesser.flauncher.** { *; }
--keep class com.leanbitlab.ltvL.** { *; }
+-keep class com.hseuniversal.tidytv.** { *; }
+
+## RevenueCat Purchases SDK
+-keep class com.revenuecat.purchases.** { *; }
+-keep class com.revenuecat.purchases.models.** { *; }
+-dontwarn com.revenuecat.purchases.**

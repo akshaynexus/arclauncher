@@ -43,7 +43,7 @@ void main() {
     final appsService = MockAppsService();
     when(appsService.applications).thenReturn([
       fakeApp(
-        packageName: "me.efesser.flauncher",
+        packageName: "com.hseuniversal.tidytv",
         name: "FLauncher",
         sideloaded: false,
         hidden: false,
@@ -60,7 +60,7 @@ void main() {
     final appsService = MockAppsService();
     when(appsService.applications).thenReturn([
       fakeApp(
-        packageName: "me.efesser.flauncher",
+        packageName: "com.hseuniversal.tidytv",
         name: "FLauncher",
         sideloaded: true,
         hidden: false,
@@ -82,7 +82,7 @@ void main() {
     final appsService = MockAppsService();
     when(appsService.applications).thenReturn([
       fakeApp(
-        packageName: "me.efesser.flauncher",
+        packageName: "com.hseuniversal.tidytv",
         name: "FLauncher",
         sideloaded: false,
         hidden: true,
@@ -104,7 +104,7 @@ void main() {
   testWidgets("'Add' opens AddToCategoryDialog", (tester) async {
     final appsService = MockAppsService();
     final application = fakeApp(
-      packageName: "me.efesser.flauncher",
+      packageName: "com.hseuniversal.tidytv",
       name: "FLauncher",
       version: "1.0.0",
     );
@@ -123,7 +123,7 @@ void main() {
   testWidgets("'Info' opens ApplicationInfoPanel", (tester) async {
     final appsService = MockAppsService();
     final application = fakeApp(
-      packageName: "me.efesser.flauncher",
+      packageName: "com.hseuniversal.tidytv",
       name: "FLauncher",
       version: "1.0.0",
     );

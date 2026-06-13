@@ -20,6 +20,7 @@ import 'dart:io';
 
 import 'package:aerial_views/aerial_views.dart';
 import 'package:flauncher/providers/aerial_wallpaper_service.dart';
+import 'package:flauncher/providers/purchases_service.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/wallpaper_service.dart';
 import 'package:flauncher/widgets/settings/focusable_settings_tile.dart';
@@ -42,14 +43,23 @@ class WallpaperPanelPage extends StatelessWidget {
         Text(LocaleKeys.wallpaper.tr(),
             style: Theme.of(context).textTheme.titleLarge),
         Divider(),
-        // Aerial Views toggle
+        // Aerial Views toggle (gated behind premium)
         Consumer<AerialWallpaperService>(builder: (_, aerialService, __) {
-          return RoundedSwitchListTile(
-            title: Text(LocaleKeys.aerialViews.tr()),
-            secondary: Icon(Icons.flight),
-            value: aerialService.enabled,
-            onChanged: (value) => _toggleAerial(context, value),
-          );
+          return Consumer<PurchasesService>(builder: (_, purchasesService, __) {
+            final isPro = purchasesService.isPro;
+            return RoundedSwitchListTile(
+              title: Text(LocaleKeys.aerialViews.tr()),
+              secondary: Icon(Icons.flight),
+              value: aerialService.enabled,
+              onChanged: (value) {
+                if (value && !isPro) {
+                  _showPremiumDialog(context);
+                  return;
+                }
+                _toggleAerial(context, value);
+              },
+            );
+          });
         }),
         // Aerial Views settings (shown when enabled)
         Consumer<AerialWallpaperService>(builder: (_, aerialService, __) {
@@ -156,6 +166,223 @@ class WallpaperPanelPage extends StatelessWidget {
           }
         }),
       ],
+    );
+  }
+
+  void _showPremiumDialog(BuildContext context) {
+    final purchasesService = context.read<PurchasesService>();
+    final accentColor = Theme.of(context).colorScheme.primary;
+
+    showDialog(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        backgroundColor: const Color(0xFF1E1E1E),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: Row(
+          children: [
+            Icon(Icons.workspace_premium, color: accentColor, size: 28),
+            const SizedBox(width: 12),
+            Text('Aerial Views is a Pro feature',
+                style: TextStyle(fontSize: 18)),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Unlock stunning aerial video wallpapers from around the world with Arc Launcher Pro.',
+              style: TextStyle(color: Colors.white70),
+            ),
+            const SizedBox(height: 16),
+            _buildProFeatureItem(Icons.flight, 'Apple TV aerial videos'),
+            _buildProFeatureItem(Icons.hd, 'Multiple quality options'),
+            _buildProFeatureItem(Icons.shuffle, 'Smart shuffle & filters'),
+            _buildProFeatureItem(Icons.filter_list, 'Time, scene & city filters'),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(),
+            child: Text('Maybe Later', style: TextStyle(color: Colors.white54)),
+          ),
+          FilledButton.icon(
+            onPressed: () async {
+              Navigator.of(dialogContext).pop();
+              await _showOfferings(context);
+            },
+            icon: Icon(Icons.workspace_premium),
+            label: Text('Upgrade to Pro'),
+            style: FilledButton.styleFrom(
+              backgroundColor: accentColor,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildProFeatureItem(IconData icon, String text) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        children: [
+          Icon(icon, size: 16, color: Colors.white54),
+          const SizedBox(width: 12),
+          Text(text, style: TextStyle(color: Colors.white70, fontSize: 14)),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _showOfferings(BuildContext context) async {
+    final purchasesService = context.read<PurchasesService>();
+    final accentColor = Theme.of(context).colorScheme.primary;
+
+    await purchasesService.loadOfferings();
+    if (!context.mounted) return;
+
+    final options = purchasesService.purchaseOptions;
+    if (options.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('No offerings available')),
+      );
+      return;
+    }
+
+    if (!context.mounted) return;
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: const Color(0xFF1E1E1E),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.workspace_premium, color: accentColor, size: 28),
+                const SizedBox(width: 12),
+                Text('Upgrade to Pro',
+                    style: Theme.of(context).textTheme.titleLarge),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Unlock all premium features',
+              style: TextStyle(color: Colors.white54),
+            ),
+            const SizedBox(height: 24),
+            ...options.map((option) => _buildOptionTile(
+                  context,
+                  option,
+                  accentColor,
+                )),
+            const SizedBox(height: 16),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildOptionTile(
+      BuildContext context, PurchaseOption option, Color accentColor) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: InkWell(
+        onTap: () async {
+          Navigator.of(context).pop();
+          final purchasesService = context.read<PurchasesService>();
+          final success = await purchasesService.purchase(option.identifier);
+          if (context.mounted) {
+            if (success && purchasesService.isPro) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Welcome to Pro!'),
+                  backgroundColor: Colors.green,
+                ),
+              );
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Purchase cancelled or failed'),
+                  backgroundColor: Colors.orange,
+                ),
+              );
+            }
+          }
+        },
+        borderRadius: BorderRadius.circular(16),
+        child: Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: accentColor.withValues(alpha: 0.3),
+              width: 2,
+            ),
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                accentColor.withValues(alpha: 0.1),
+                accentColor.withValues(alpha: 0.05),
+              ],
+            ),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    option.title,
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 12, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: accentColor,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(
+                      option.description,
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Text(
+                option.description,
+                style: TextStyle(color: Colors.white54),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                '${option.priceString} / ${option.period}',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: accentColor,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 

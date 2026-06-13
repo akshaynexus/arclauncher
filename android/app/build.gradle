@@ -54,7 +54,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.omeda.arc"
+        applicationId "com.hseuniversal.tidytv"
         compileSdk 36
         minSdkVersion flutter.minSdkVersion
         targetSdk 36
@@ -117,7 +117,7 @@ android {
         targetCompatibility JavaVersion.VERSION_17
     }
 
-    namespace 'com.omeda.arc'
+    namespace 'com.hseuniversal.tidytv'
 
     applicationVariants.all { variant ->
         variant.outputs.all { output ->

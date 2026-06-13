@@ -21,9 +21,9 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 
 class FLauncherChannel {
-  static const _methodChannel = MethodChannel('me.efesser.flauncher/method');
-  static const _appsEventChannel = EventChannel('me.efesser.flauncher/event_apps');
-  static const _networkEventChannel = EventChannel('me.efesser.flauncher/event_network');
+  static const _methodChannel = MethodChannel('com.hseuniversal.tidytv/method');
+  static const _appsEventChannel = EventChannel('com.hseuniversal.tidytv/event_apps');
+  static const _networkEventChannel = EventChannel('com.hseuniversal.tidytv/event_network');
 
   Future<List<Map<dynamic, dynamic>>> getApplications() async {
     List<Map<dynamic, dynamic>>? applications = await _methodChannel.invokeListMethod("getApplications");

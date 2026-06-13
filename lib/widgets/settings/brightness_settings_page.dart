@@ -17,6 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/brightness_service.dart';
@@ -77,9 +78,15 @@ class BrightnessSettingsPage extends StatelessWidget {
                                 color: Colors.black26,
                                 borderRadius: BorderRadius.circular(4),
                               ),
-                              child: SelectableText(
-                                'adb shell appops set com.omeda.arc WRITE_SETTINGS allow', // Command for Manual Grant
-                                style: const TextStyle(fontFamily: 'monospace', fontSize: 12),
+                              child: FutureBuilder<PackageInfo>(
+                                future: PackageInfo.fromPlatform(),
+                                builder: (context, snapshot) {
+                                  final packageName = snapshot.data?.packageName ?? '<package>';
+                                  return SelectableText(
+                                    'adb shell appops set $packageName WRITE_SETTINGS allow',
+                                    style: const TextStyle(fontFamily: 'monospace', fontSize: 12),
+                                  );
+                                },
                               ),
                             ),
                             const SizedBox(height: 16),

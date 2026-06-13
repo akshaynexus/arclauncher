@@ -16,7 +16,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.omeda.arc;
+package com.hseuniversal.tidytv;
 
 import android.app.Activity;
 import android.os.Build;
@@ -82,7 +82,7 @@ public class AerialVideoPlayer {
 
     public AerialVideoPlayer(@NonNull Activity activity, @NonNull BinaryMessenger messenger) {
         this.activity = activity;
-        channel = new MethodChannel(messenger, "me.efesser.flauncher/aerial_video");
+        channel = new MethodChannel(messenger, "com.hseuniversal.tidytv/aerial_video");
         channel.setMethodCallHandler((call, result) -> {
             switch (call.method) {
                 case "setPlaylist" -> {

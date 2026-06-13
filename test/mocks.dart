@@ -41,7 +41,7 @@ import 'package:flauncher/models/category.dart';
 void main() {}
 
 App fakeApp({
-  String packageName = "me.efesser.flauncher",
+  String packageName = "com.hseuniversal.tidytv",
   String name = "FLauncher",
   String version = "1.0.0",
   bool hidden = false,

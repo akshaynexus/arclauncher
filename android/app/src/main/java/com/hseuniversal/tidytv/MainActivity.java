@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package me.efesser.flauncher;
+package com.hseuniversal.tidytv;
 
 import android.content.Context;
 import android.content.Intent;
@@ -29,10 +29,14 @@ import android.net.ConnectivityManager;
 import android.net.NetworkCapabilities;
 import android.net.Uri;
 import android.os.Build;
+import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Pair;
+import android.Manifest;
+import android.content.pm.PackageManager;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
 
 import java.util.ArrayList;
@@ -45,8 +49,6 @@ import android.app.usage.NetworkStats;
 import android.app.usage.NetworkStatsManager;
 import android.app.AppOpsManager;
 import android.os.RemoteException;
-
-import com.omeda.arc.AerialVideoPlayer;
 
 import io.flutter.embedding.android.FlutterActivity;
 import io.flutter.embedding.android.FlutterActivityLaunchConfigs;
@@ -69,9 +71,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 public class MainActivity extends FlutterActivity {
-    private final String METHOD_CHANNEL = "me.efesser.flauncher/method";
-    private final String APPS_EVENT_CHANNEL = "me.efesser.flauncher/event_apps";
-    private final String NETWORK_EVENT_CHANNEL = "me.efesser.flauncher/event_network";
+    private final String METHOD_CHANNEL = "com.hseuniversal.tidytv/method";
+    private final String APPS_EVENT_CHANNEL = "com.hseuniversal.tidytv/event_apps";
+    private final String NETWORK_EVENT_CHANNEL = "com.hseuniversal.tidytv/event_network";
 
     private AerialVideoPlayer aerialVideoPlayer;
 
@@ -162,7 +164,23 @@ public class MainActivity extends FlutterActivity {
                     requestUsageStatsPermission();
                     result.success(null);
                 }
+                case "checkWriteSettingsPermission" -> result.success(checkWriteSettingsPermission());
+                case "requestWriteSettingsPermission" -> {
+                    requestWriteSettingsPermission();
+                    result.success(null);
+                }
+                case "setSystemBrightness" -> {
+                    int brightness = call.argument("brightness");
+                    result.success(setSystemBrightness(brightness));
+                }
                 case "openWifiSettings" -> result.success(openWifiSettings());
+                case "getMediaStoreImages" -> result.success(getMediaStoreImages());
+                case "getMediaStoreVideos" -> result.success(getMediaStoreVideos());
+                case "checkMediaPermissions" -> result.success(checkMediaPermissions());
+                case "requestMediaPermissions" -> {
+                    requestMediaPermissions();
+                    result.success(null);
+                }
                 default -> throw new IllegalArgumentException();
             }
         });
@@ -625,6 +643,42 @@ public class MainActivity extends FlutterActivity {
         tryStartActivity(intent);
     }
 
+    private boolean checkWriteSettingsPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return Settings.System.canWrite(this);
+        }
+        return true;
+    }
+
+    private void requestWriteSettingsPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS);
+            intent.setData(Uri.parse("package:" + getPackageName()));
+            tryStartActivity(intent);
+        }
+    }
+
+    private boolean setSystemBrightness(int brightness) {
+        if (checkWriteSettingsPermission()) {
+            try {
+                android.content.ContentResolver resolver = getContentResolver();
+                // 1. Standard Android brightness
+                Settings.System.putInt(resolver, Settings.System.SCREEN_BRIGHTNESS_MODE, Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL);
+                Settings.System.putInt(resolver, Settings.System.SCREEN_BRIGHTNESS, brightness);
+                
+                // 2. Try common TV "Backlight" keys (Vendor specific)
+                Settings.System.putInt(resolver, "backlight", brightness);
+                Settings.System.putInt(resolver, "backlight_level", brightness);
+                
+                return true;
+            } catch (Exception e) {
+                // Ignore errors on specific keys as they may not exist
+                return true; 
+            }
+        }
+        return false;
+    }
+
     private boolean openWifiSettings() {
         // 1. Try Android Q+ WiFi panel
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -675,6 +729,104 @@ public class MainActivity extends FlutterActivity {
 
         // 4. Final fallback - open main settings
         return launchActivityFromAction(Settings.ACTION_SETTINGS);
+    }
+
+    // --- Media permissions ---
+
+    private static final int MEDIA_PERMISSION_REQUEST_CODE = 9001;
+
+    private boolean checkMediaPermissions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            // Android 13+ needs granular media permissions
+            return checkSelfPermission(Manifest.permission.READ_MEDIA_IMAGES) == PackageManager.PERMISSION_GRANTED
+                && checkSelfPermission(Manifest.permission.READ_MEDIA_VIDEO) == PackageManager.PERMISSION_GRANTED;
+        } else {
+            // Android 12 and below need READ_EXTERNAL_STORAGE
+            return checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+        }
+    }
+
+    private void requestMediaPermissions() {
+        String[] permissions;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            permissions = new String[]{
+                Manifest.permission.READ_MEDIA_IMAGES,
+                Manifest.permission.READ_MEDIA_VIDEO
+            };
+        } else {
+            permissions = new String[]{Manifest.permission.READ_EXTERNAL_STORAGE};
+        }
+        ActivityCompat.requestPermissions(this, permissions, MEDIA_PERMISSION_REQUEST_CODE);
+    }
+
+    // --- MediaStore queries for custom TV picker ---
+
+    private List<Map<String, Object>> getMediaStoreImages() {
+        List<Map<String, Object>> images = new ArrayList<>();
+        String[] projection = {
+            MediaStore.Images.Media._ID,
+            MediaStore.Images.Media.DISPLAY_NAME,
+            MediaStore.Images.Media.DATA,
+            MediaStore.Images.Media.DATE_ADDED
+        };
+        String sortOrder = MediaStore.Images.Media.DATE_ADDED + " DESC";
+
+        try (android.database.Cursor cursor = getContentResolver().query(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                projection, null, null, sortOrder)) {
+            if (cursor != null) {
+                int idCol = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID);
+                int nameCol = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME);
+                int dataCol = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                while (cursor.moveToNext()) {
+                    long id = cursor.getLong(idCol);
+                    Uri contentUri = Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, String.valueOf(id));
+                    Map<String, Object> item = new HashMap<>();
+                    item.put("id", id);
+                    item.put("name", cursor.getString(nameCol));
+                    item.put("path", cursor.getString(dataCol));
+                    item.put("uri", contentUri.toString());
+                    images.add(item);
+                }
+            }
+        } catch (Exception e) {
+            // Ignore permission errors
+        }
+        return images;
+    }
+
+    private List<Map<String, Object>> getMediaStoreVideos() {
+        List<Map<String, Object>> videos = new ArrayList<>();
+        String[] projection = {
+            MediaStore.Video.Media._ID,
+            MediaStore.Video.Media.DISPLAY_NAME,
+            MediaStore.Video.Media.DATA,
+            MediaStore.Video.Media.DATE_ADDED
+        };
+        String sortOrder = MediaStore.Video.Media.DATE_ADDED + " DESC";
+
+        try (android.database.Cursor cursor = getContentResolver().query(
+                MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
+                projection, null, null, sortOrder)) {
+            if (cursor != null) {
+                int idCol = cursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID);
+                int nameCol = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DISPLAY_NAME);
+                int dataCol = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
+                while (cursor.moveToNext()) {
+                    long id = cursor.getLong(idCol);
+                    Uri contentUri = Uri.withAppendedPath(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, String.valueOf(id));
+                    Map<String, Object> item = new HashMap<>();
+                    item.put("id", id);
+                    item.put("name", cursor.getString(nameCol));
+                    item.put("path", cursor.getString(dataCol));
+                    item.put("uri", contentUri.toString());
+                    videos.add(item);
+                }
+            }
+        } catch (Exception e) {
+            // Ignore permission errors
+        }
+        return videos;
     }
 
 }

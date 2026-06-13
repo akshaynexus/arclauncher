@@ -25,6 +25,7 @@ import 'package:flauncher/providers/aerial_wallpaper_service.dart';
 import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/providers/launcher_state.dart';
 import 'package:flauncher/providers/network_service.dart';
+import 'package:flauncher/providers/purchases_service.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/brightness_service.dart';
 import 'package:flauncher/providers/wallpaper_service.dart';
@@ -54,9 +55,13 @@ Future<void> main() async {
 
   final fLauncherChannel = FLauncherChannel();
   final fLauncherDatabase = FLauncherDatabase(connect());
+  final purchasesService = PurchasesService();
 
   // Run SharedPreferences disk I/O concurrently with DB open
   final sharedPreferences = await SharedPreferences.getInstance();
+
+  // Initialize RevenueCat
+  await purchasesService.initialize(null);
 
   runApp(EasyLocalization(
     supportedLocales: const [Locale('en'), Locale('es')],
@@ -84,6 +89,8 @@ Future<void> main() async {
           ChangeNotifierProvider(
               create: (_) => BrightnessService(sharedPreferences),
               lazy: false),
+          ChangeNotifierProvider.value(
+              value: purchasesService),
         ],
         child: FLauncherApp()
       )
