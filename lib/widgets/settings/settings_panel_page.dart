@@ -24,6 +24,7 @@ import 'package:flauncher/widgets/settings/flauncher_about_dialog.dart';
 import 'package:flauncher/widgets/settings/interface_settings_page.dart';
 import 'package:flauncher/widgets/settings/update_dialogs.dart';
 import 'package:flauncher/widgets/settings/general_settings_page.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
@@ -346,6 +347,32 @@ class _SubscriptionDialog extends StatelessWidget {
               ),
             ),
           ),
+          if (kDebugMode) ...[
+            const SizedBox(height: 16),
+            const Divider(color: Colors.white12),
+            const SizedBox(height: 8),
+            SizedBox(
+              width: double.infinity,
+              child: Actions(
+                actions: {
+                  ActivateIntent: CallbackAction<ActivateIntent>(
+                      onInvoke: (_) => _previewUpgrade(context)),
+                  ButtonActivateIntent: CallbackAction<ButtonActivateIntent>(
+                      onInvoke: (_) => _previewUpgrade(context)),
+                },
+                child: Focus(
+                  child: TextButton.icon(
+                    onPressed: () => _previewUpgrade(context),
+                    icon: const Icon(Icons.bug_report, size: 18),
+                    label: const Text('Preview Upgrade Flow (Debug)'),
+                    style: TextButton.styleFrom(
+                      foregroundColor: Colors.orange,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
           if (mgmtUrl != null) ...[
             const SizedBox(height: 12),
             Text(
@@ -399,6 +426,11 @@ class _SubscriptionDialog extends StatelessWidget {
         ),
       );
     }
+  }
+
+  void _previewUpgrade(BuildContext context) {
+    Navigator.of(context).pop();
+    _showUpgradeDialog(context);
   }
 }
 
