@@ -8,13 +8,14 @@ import 'package:url_launcher/url_launcher.dart';
 
 enum PurchaseResult { success, cancelled, error }
 
-/// Simple data class representing a purchase option for the UI.
 class PurchaseOption {
   final String identifier;
   final String title;
   final String description;
   final String priceString;
   final String period;
+  final bool hasFreeTrial;
+  final String? trialDuration;
 
   const PurchaseOption({
     required this.identifier,
@@ -22,6 +23,8 @@ class PurchaseOption {
     required this.description,
     required this.priceString,
     required this.period,
+    this.hasFreeTrial = false,
+    this.trialDuration,
   });
 }
 
@@ -108,12 +111,17 @@ class PurchasesService extends ChangeNotifier {
           default:
             period = '';
         }
+        final intro = product.introductoryPrice;
         return PurchaseOption(
           identifier: package.identifier,
           title: product.title,
           description: product.description,
           priceString: product.priceString,
           period: period,
+          hasFreeTrial: intro != null && intro.price == '0.00',
+          trialDuration: intro != null && intro.price == '0.00'
+              ? '${intro.periodNumberOfUnits} ${intro.periodUnit.name}'
+              : null,
         );
       }).toList();
       notifyListeners();
@@ -129,6 +137,40 @@ class PurchasesService extends ChangeNotifier {
     return _customerInfo!.entitlements.active.values.isNotEmpty
         ? _customerInfo!.entitlements.active.values.first
         : null;
+  }
+
+  bool get isTrialActive {
+    final entitlement = activeEntitlement;
+    if (entitlement == null) return false;
+    return entitlement.periodType == PeriodType.trial;
+  }
+
+  int get trialDaysRemaining {
+    final entitlement = activeEntitlement;
+    if (entitlement == null || !isTrialActive) return 0;
+    final expStr = entitlement.expirationDate;
+    if (expStr == null) return 0;
+    final exp = DateTime.tryParse(expStr);
+    if (exp == null) return 0;
+    return exp.difference(DateTime.now()).inDays.clamp(0, 365);
+  }
+
+  DateTime? get trialEndDate {
+    final entitlement = activeEntitlement;
+    if (entitlement == null || !isTrialActive) return null;
+    final expStr = entitlement.expirationDate;
+    if (expStr == null) return null;
+    return DateTime.tryParse(expStr);
+  }
+
+  String? get trialEndDateFormatted {
+    final date = trialEndDate;
+    if (date == null) return null;
+    final months = [
+      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+    ];
+    return '${months[date.month - 1]} ${date.day}, ${date.year}';
   }
 
   String? get activePlanTitle {
@@ -151,6 +193,12 @@ class PurchasesService extends ChangeNotifier {
     if (entitlement == null) return false;
     return entitlement.expirationDate == null;
   }
+
+  PurchaseOption? get trialOption =>
+      _purchaseOptions.cast<PurchaseOption?>().firstWhere(
+            (o) => o!.hasFreeTrial,
+            orElse: () => null,
+          );
 
   String? get managementUrl => _customerInfo?.managementURL;
 
@@ -181,7 +229,7 @@ class PurchasesService extends ChangeNotifier {
         orElse: () => throw Exception('Package not found'),
       );
 
-      final result = await Purchases.purchasePackage(package);
+      final result = await Purchases.purchase(PurchaseParams.package(package));
       _customerInfo = result.customerInfo;
       _isPro = _hasProEntitlement(result.customerInfo);
       notifyListeners();

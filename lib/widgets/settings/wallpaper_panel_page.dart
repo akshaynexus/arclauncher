@@ -189,6 +189,179 @@ class WallpaperPanelPage extends StatelessWidget {
     );
   }
 
+  Future<void> _showReverseTrialOffer(BuildContext context,
+      PurchasesService purchasesService, Color accentColor) async {
+    final trialOption = purchasesService.trialOption;
+    if (trialOption == null) return;
+    final accepted = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: const Color(0xFF1E1E1E),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        contentPadding: EdgeInsets.zero,
+        content: ClipRRect(
+          borderRadius: BorderRadius.circular(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.fromLTRB(24, 32, 24, 24),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      accentColor.withValues(alpha: 0.4),
+                      accentColor.withValues(alpha: 0.08),
+                      const Color(0xFF1E1E1E),
+                    ],
+                    stops: const [0.0, 0.5, 1.0],
+                  ),
+                ),
+                child: Column(
+                  children: [
+                    Container(
+                      width: 56,
+                      height: 56,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        gradient: LinearGradient(
+                          colors: [
+                            accentColor,
+                            accentColor.withValues(alpha: 0.6),
+                          ],
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: accentColor.withValues(alpha: 0.4),
+                            blurRadius: 20,
+                            spreadRadius: 2,
+                          ),
+                        ],
+                      ),
+                      child: const Icon(Icons.card_giftcard,
+                          color: Colors.white, size: 28),
+                    ),
+                    const SizedBox(height: 16),
+                    const Text(
+                      'Enjoy Pro Free',
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        letterSpacing: -0.3,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Try all premium features free for\n${trialOption.trialDuration ?? 'a limited time'}.\nNo commitment, cancel anytime.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.white.withValues(alpha: 0.6),
+                        height: 1.4,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(24, 20, 24, 24),
+                child: Column(
+                  children: [
+                    Actions(
+                      actions: {
+                        ActivateIntent: CallbackAction<ActivateIntent>(
+                            onInvoke: (_) => Navigator.of(ctx).pop(true)),
+                        ButtonActivateIntent:
+                            CallbackAction<ButtonActivateIntent>(
+                                onInvoke: (_) => Navigator.of(ctx).pop(true)),
+                      },
+                      child: Focus(
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: FilledButton(
+                            onPressed: () => Navigator.of(ctx).pop(true),
+                            style: FilledButton.styleFrom(
+                              backgroundColor: accentColor,
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 14),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(14)),
+                            ),
+                            child: Text(
+                              'Start ${trialOption.trialDuration ?? 'Free Trial'}',
+                              style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Actions(
+                      actions: {
+                        ActivateIntent: CallbackAction<ActivateIntent>(
+                            onInvoke: (_) => Navigator.of(ctx).pop(false)),
+                        ButtonActivateIntent:
+                            CallbackAction<ButtonActivateIntent>(
+                                onInvoke: (_) => Navigator.of(ctx).pop(false)),
+                      },
+                      child: Focus(
+                        child: TextButton(
+                          onPressed: () => Navigator.of(ctx).pop(false),
+                          child: const Text('No thanks'),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+    if (accepted == true && context.mounted) {
+      final result =
+          await purchasesService.purchase(trialOption.identifier);
+      if (!context.mounted) return;
+      switch (result) {
+        case PurchaseResult.success:
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Welcome to Pro! Enjoy your free trial.'),
+              backgroundColor: Colors.green,
+            ),
+          );
+        case PurchaseResult.cancelled:
+          break;
+        case PurchaseResult.error:
+          if (context.mounted) {
+            showDialog(
+              context: context,
+              builder: (ctx) => AlertDialog(
+                backgroundColor: const Color(0xFF1E1E1E),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20)),
+                title: const Text('Purchase Failed'),
+                content: const Text(
+                    'There was an error processing your purchase.'),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.of(ctx).pop(),
+                    child: const Text('OK'),
+                  ),
+                ],
+              ),
+            );
+          }
+      }
+    }
+  }
+
   Future<void> _showPremiumDialog(BuildContext context) async {
     final purchasesService = context.read<PurchasesService>();
     final accentColor = Theme.of(context).colorScheme.primary;
@@ -204,6 +377,12 @@ class WallpaperPanelPage extends StatelessWidget {
       builder: (dialogContext) => _PremiumDialog(
         accentColor: accentColor,
         options: options,
+        onReverseTrial: purchasesService.trialOption != null
+            ? () {
+                Navigator.of(dialogContext).pop();
+                _showReverseTrialOffer(context, purchasesService, accentColor);
+              }
+            : null,
         onPurchase: (option) async {
           Navigator.of(dialogContext).pop();
           final result = await purchasesService.purchase(option.identifier);
@@ -212,7 +391,9 @@ class WallpaperPanelPage extends StatelessWidget {
             case PurchaseResult.success:
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: const Text('Welcome to Pro!'),
+                  content: Text(option.hasFreeTrial
+                      ? 'Welcome to Pro! Enjoy your free trial.'
+                      : 'Welcome to Pro!'),
                   backgroundColor: Colors.green,
                 ),
               );
@@ -582,73 +763,182 @@ class _TvFilterChipState extends State<_TvFilterChip> {
   }
 }
 
-/// Leanback-optimized premium dialog with inline purchase options.
-class _PremiumDialog extends StatefulWidget {
+class _PremiumDialog extends StatelessWidget {
   final Color accentColor;
   final List<PurchaseOption> options;
   final void Function(PurchaseOption) onPurchase;
+  final void Function()? onReverseTrial;
 
   const _PremiumDialog({
     required this.accentColor,
     required this.options,
     required this.onPurchase,
+    this.onReverseTrial,
   });
 
-  @override
-  State<_PremiumDialog> createState() => _PremiumDialogState();
-}
+  String _savingsPercent(PurchaseOption annual) {
+    if (options.length < 2) return '';
+    final monthly = options.where((o) => o.period == 'month').firstOrNull;
+    if (monthly == null) return '';
+    final annualPrice = double.tryParse(annual.priceString.replaceAll(RegExp(r'[^0-9.]'), ''));
+    final monthlyPrice = double.tryParse(monthly.priceString.replaceAll(RegExp(r'[^0-9.]'), ''));
+    if (annualPrice == null || monthlyPrice == null || monthlyPrice == 0) return '';
+    final yearlyCost = monthlyPrice * 12;
+    final savings = ((yearlyCost - annualPrice) / yearlyCost * 100).round();
+    if (savings <= 0) return '';
+    return 'Save $savings%';
+  }
 
-class _PremiumDialogState extends State<_PremiumDialog> {
+  bool get _anyHasTrial => options.any((o) => o.hasFreeTrial);
+  String? get _trialDuration => options.firstWhere((o) => o.hasFreeTrial, orElse: () => options.first).trialDuration;
+  bool get _hasMonthly => options.any((o) => o.period == 'month');
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
       backgroundColor: const Color(0xFF1E1E1E),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      title: const Row(
-        children: [
-          Icon(Icons.lock, size: 28),
-          SizedBox(width: 12),
-          Text('Aerial Views is a Pro feature', style: TextStyle(fontSize: 18)),
-        ],
-      ),
-      content: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Unlock stunning aerial video wallpapers from around the world with Arc Launcher Pro.',
-              style: TextStyle(color: Colors.white70),
-            ),
-            const SizedBox(height: 16),
-            const _ProFeatureRow(Icons.flight, 'Apple TV aerial videos'),
-            const _ProFeatureRow(Icons.hd, 'Multiple quality options'),
-            const _ProFeatureRow(Icons.shuffle, 'Smart shuffle & filters'),
-            const _ProFeatureRow(
-                Icons.filter_list, 'Time, scene & city filters'),
-            const SizedBox(height: 16),
-            const Divider(color: Colors.white12),
-            const SizedBox(height: 12),
-            const Text('Choose your plan',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                )),
-            const SizedBox(height: 12),
-            ...widget.options.map((option) => _DialogOptionTile(
-                  option: option,
-                  accentColor: widget.accentColor,
-                  onTap: () => widget.onPurchase(option),
-                )),
-            const SizedBox(height: 8),
-            Center(
-              child: _DialogTextButton(
-                label: 'Maybe Later',
-                onTap: () => Navigator.of(context).pop(),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+      contentPadding: EdgeInsets.zero,
+      content: ClipRRect(
+        borderRadius: BorderRadius.circular(24),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _buildHeader(context),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(24, 20, 24, 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.04),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Column(
+                        children: [
+                          const _ProFeatureRow('Apple TV aerial videos'),
+                          const _ProFeatureRow('Multiple quality options'),
+                          const _ProFeatureRow('Smart shuffle & filters'),
+                          const _ProFeatureRow('Time, scene & city filters'),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Row(
+                      children: [
+                        Container(height: 1, color: Colors.white12, width: 24),
+                        const SizedBox(width: 8),
+                        Text(
+                          _anyHasTrial ? 'Start your ${_trialDuration ?? ''} free trial' : 'Choose your plan',
+                          style: const TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white38,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(child: Container(height: 1, color: Colors.white12)),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    ...options.asMap().entries.map((e) => _DialogOptionTile(
+                          option: e.value,
+                          accentColor: accentColor,
+                          onTap: () => onPurchase(e.value),
+                          index: e.key,
+                          total: options.length,
+                          savingsLabel: e.value.period == 'year' && _hasMonthly
+                              ? _savingsPercent(e.value)
+                              : null,
+                        )),
+                    const SizedBox(height: 12),
+                    Center(
+                      child: _DialogTextButton(
+                        label: _anyHasTrial ? 'Maybe later' : 'Not now',
+                        onTap: () {
+                          if (onReverseTrial != null) {
+                            onReverseTrial!();
+                          } else {
+                            Navigator.of(context).pop();
+                          }
+                        },
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildHeader(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(24, 32, 24, 24),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            accentColor.withValues(alpha: 0.4),
+            accentColor.withValues(alpha: 0.08),
+            const Color(0xFF1E1E1E),
+          ],
+          stops: const [0.0, 0.5, 1.0],
+        ),
+      ),
+      child: Column(
+        children: [
+          Container(
+            width: 56,
+            height: 56,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: LinearGradient(
+                colors: [
+                  accentColor,
+                  accentColor.withValues(alpha: 0.6),
+                ],
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: accentColor.withValues(alpha: 0.4),
+                  blurRadius: 20,
+                  spreadRadius: 2,
+                ),
+              ],
+            ),
+            child: const Icon(Icons.auto_awesome, color: Colors.white, size: 28),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            _anyHasTrial ? 'Try Pro Free' : 'Upgrade to Pro',
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+              letterSpacing: -0.3,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            _anyHasTrial
+                ? 'Enjoy full access for $_trialDuration.\nCancel anytime.'
+                : 'Unlock stunning aerial video wallpapers\nfrom around the world.',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.white.withValues(alpha: 0.6),
+              height: 1.4,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -713,23 +1003,22 @@ class _DialogTextButtonState extends State<_DialogTextButton> {
   }
 }
 
-/// A single pro feature row item.
 class _ProFeatureRow extends StatelessWidget {
-  final IconData icon;
   final String text;
 
-  const _ProFeatureRow(this.icon, this.text);
+  const _ProFeatureRow(this.text);
 
   @override
   Widget build(BuildContext context) {
+    final accent = Theme.of(context).colorScheme.primary;
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
+      padding: const EdgeInsets.symmetric(vertical: 5),
       child: Row(
         children: [
-          Icon(icon, size: 16, color: Colors.white54),
+          Icon(Icons.check_circle, size: 18, color: accent),
           const SizedBox(width: 12),
           Text(text,
-              style: const TextStyle(color: Colors.white70, fontSize: 14)),
+              style: const TextStyle(color: Colors.white, fontSize: 14)),
         ],
       ),
     );
@@ -742,11 +1031,17 @@ class _DialogOptionTile extends StatefulWidget {
   final PurchaseOption option;
   final Color accentColor;
   final VoidCallback onTap;
+  final int index;
+  final int total;
+  final String? savingsLabel;
 
   const _DialogOptionTile({
     required this.option,
     required this.accentColor,
     required this.onTap,
+    this.index = 0,
+    this.total = 1,
+    this.savingsLabel,
   });
 
   @override
@@ -756,6 +1051,8 @@ class _DialogOptionTile extends StatefulWidget {
 class _DialogOptionTileState extends State<_DialogOptionTile> {
   bool _focused = false;
 
+  bool get _isBestValue => widget.option.period == 'year';
+
   @override
   Widget build(BuildContext context) {
     final option = widget.option;
@@ -764,7 +1061,7 @@ class _DialogOptionTileState extends State<_DialogOptionTile> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: Actions(
-        actions: <Type, Action<Intent>>{
+        actions: {
           ActivateIntent:
               CallbackAction<ActivateIntent>(onInvoke: (_) => widget.onTap()),
           ButtonActivateIntent: CallbackAction<ButtonActivateIntent>(
@@ -777,24 +1074,26 @@ class _DialogOptionTileState extends State<_DialogOptionTile> {
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 150),
               curve: Curves.easeOut,
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
-                  color: _focused ? accent : accent.withValues(alpha: 0.3),
-                  width: _focused ? 2.5 : 2.0,
+                  color: _isBestValue
+                      ? (_focused ? accent : accent)
+                      : (_focused ? accent : Colors.white.withValues(alpha: 0.08)),
+                  width: _isBestValue ? 2.0 : (_focused ? 2.5 : 1.0),
                 ),
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
-                  colors: _focused
+                  colors: _isBestValue
                       ? [
-                          accent.withValues(alpha: 0.2),
-                          accent.withValues(alpha: 0.1),
+                          accent.withValues(alpha: _focused ? 0.25 : 0.15),
+                          accent.withValues(alpha: _focused ? 0.12 : 0.06),
                         ]
                       : [
-                          accent.withValues(alpha: 0.1),
-                          accent.withValues(alpha: 0.05),
+                          accent.withValues(alpha: _focused ? 0.15 : 0.06),
+                          accent.withValues(alpha: _focused ? 0.08 : 0.03),
                         ],
                 ),
                 boxShadow: _focused
@@ -805,55 +1104,138 @@ class _DialogOptionTileState extends State<_DialogOptionTile> {
                           spreadRadius: 0,
                         ),
                       ]
-                    : null,
+                    : (_isBestValue
+                        ? [
+                            BoxShadow(
+                              color: accent.withValues(alpha: 0.15),
+                              blurRadius: 8,
+                              spreadRadius: 0,
+                            ),
+                          ]
+                        : null),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  if (_isBestValue)
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 10),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: accent,
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.star, size: 12, color: Colors.white),
+                          const SizedBox(width: 4),
+                          const Text('Best value',
+                              style: TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white)),
+                        ],
+                      ),
+                    ),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        option.title,
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: _focused ? Colors.white : null,
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              option.title,
+                              style: TextStyle(
+                                fontSize: 17,
+                                fontWeight: FontWeight.bold,
+                                color: _focused ? Colors.white : Colors.white,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              option.description,
+                              style: TextStyle(
+                                fontSize: 13,
+                                color: Colors.white.withValues(alpha: 0.5),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 6),
-                        decoration: BoxDecoration(
-                          color: accent,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Text(
-                          option.description.contains('/')
-                              ? option.description.split('/').last.trim()
-                              : option.description,
-                          style: const TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            option.priceString,
+                            style: TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                              color: accent,
+                            ),
                           ),
-                        ),
+                          if (option.period.isNotEmpty && !_isBestValue)
+                            Text(
+                              '/ ${option.period}',
+                              style: TextStyle(
+                                fontSize: 13,
+                                color: Colors.white.withValues(alpha: 0.4),
+                              ),
+                            ),
+                          if (_isBestValue)
+                            Padding(
+                              padding: const EdgeInsets.only(top: 2),
+                              child: Text(
+                                '/ ${option.period}',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: accent.withValues(alpha: 0.7),
+                                ),
+                              ),
+                            ),
+                        ],
                       ),
                     ],
                   ),
-                  const SizedBox(height: 8),
-                  Text(
-                    option.description,
-                    style: const TextStyle(color: Colors.white54),
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    '${option.priceString}${option.period.isNotEmpty ? ' / ${option.period}' : ''}',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: accent,
+                  if (widget.savingsLabel != null) ...[
+                    const SizedBox(height: 8),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(6),
+                        color: accent.withValues(alpha: 0.15),
+                      ),
+                      child: Text(
+                        widget.savingsLabel!,
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: accent,
+                        ),
+                      ),
                     ),
-                  ),
+                  ],
+                  if (option.hasFreeTrial) ...[
+                    const SizedBox(height: 6),
+                    Row(
+                      children: [
+                        Icon(Icons.card_giftcard,
+                            size: 12,
+                            color: Colors.white.withValues(alpha: 0.4)),
+                        const SizedBox(width: 4),
+                        Text(
+                          'Free trial available',
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: Colors.white.withValues(alpha: 0.4),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ],
               ),
             ),
