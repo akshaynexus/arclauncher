@@ -78,6 +78,7 @@ public class AerialVideoPlayer {
     private SurfaceView surfaceView;
     private long droppedFrames = 0;
     private int consecutiveErrors = 0;
+    private boolean requestedShuffle = false;
 
     public AerialVideoPlayer(@NonNull Activity activity, @NonNull BinaryMessenger messenger) {
         this.activity = activity;
@@ -116,14 +117,18 @@ public class AerialVideoPlayer {
     @SuppressWarnings("unchecked")
     private void setPlaylist(Map<String, Object> args) {
         List<String> urls = (List<String>) args.get("urls");
-        boolean shuffle = Boolean.TRUE.equals(args.get("shuffle"));
+        requestedShuffle = Boolean.TRUE.equals(args.get("shuffle"));
+        boolean nativeShuffle = Boolean.TRUE.equals(args.get("nativeShuffle"));
+        int startIndex = intArg(args.get("startIndex"), 0);
         if (urls == null || urls.isEmpty()) {
             addLog("setPlaylist empty; releasing player");
             release();
             return;
         }
 
-        addLog("setPlaylist count=" + urls.size() + " shuffle=" + shuffle + " first=" + urls.get(0));
+        addLog("setPlaylist count=" + urls.size() + " shuffle=" + requestedShuffle
+                + " nativeShuffle=" + nativeShuffle + " startIndex=" + startIndex
+                + " first=" + urls.get(0));
         ensurePlayer();
 
         List<MediaItem> items = new ArrayList<>(urls.size());
@@ -131,7 +136,10 @@ public class AerialVideoPlayer {
             items.add(MediaItem.fromUri(url));
         }
         player.setMediaItems(items);
-        player.setShuffleModeEnabled(shuffle);
+        player.setShuffleModeEnabled(nativeShuffle);
+        if (startIndex > 0 && startIndex < items.size()) {
+            player.seekToDefaultPosition(startIndex);
+        }
         consecutiveErrors = 0;
         player.prepare();
         player.play();
@@ -268,7 +276,7 @@ public class AerialVideoPlayer {
         stats.put("isPlaying", player.isPlaying());
         stats.put("itemCount", player.getMediaItemCount());
         stats.put("consecutiveErrors", consecutiveErrors);
-        stats.put("shuffle", player.getShuffleModeEnabled());
+        stats.put("shuffle", requestedShuffle);
         String uri = currentUri();
         stats.put("video", uri.isEmpty() ? "" : uri.substring(uri.lastIndexOf('/') + 1));
         return stats;
@@ -353,6 +361,13 @@ public class AerialVideoPlayer {
         return cause.getClass().getSimpleName() + (message == null ? "" : ": " + message);
     }
 
+    private int intArg(Object value, int fallback) {
+        if (value instanceof Number) {
+            return ((Number) value).intValue();
+        }
+        return fallback;
+    }
+
     public void onResume() {
         addLog("onResume");
         if (player != null) player.play();
@@ -378,5 +393,6 @@ public class AerialVideoPlayer {
         }
         droppedFrames = 0;
         consecutiveErrors = 0;
+        requestedShuffle = false;
     }
 }

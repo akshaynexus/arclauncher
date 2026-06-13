@@ -16,6 +16,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import 'dart:async';
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:aerial_views/aerial_views.dart';
@@ -57,6 +59,7 @@ class AerialWallpaperService extends ChangeNotifier {
   Set<String> get cityFilter => Set.unmodifiable(_cityFilter);
   bool get showFps => _showFps;
   int get totalCount => _feed.length;
+  int get playbackResumeIndex => _settingsService.aerialPlaylistPlaybackIndex;
 
   /// Apple's CDN (sylvan.apple.com) serves these videos over plain http
   /// reliably, while its https endpoint fails certificate validation on
@@ -190,6 +193,15 @@ class AerialWallpaperService extends ChangeNotifier {
     notifyListeners();
 
     try {
+      final cacheKey = _playlistCacheKey();
+      final cachedFeed = _restoreCachedFeed(cacheKey);
+      if (cachedFeed != null) {
+        _feed = cachedFeed;
+        _isLoading = false;
+        notifyListeners();
+        return;
+      }
+
       final List<AerialMedia> allVideos = [];
 
       for (final sourceIndex in _selectedSources) {
@@ -220,6 +232,7 @@ class AerialWallpaperService extends ChangeNotifier {
       }
 
       _feed = allVideos;
+      await _cacheFeed(cacheKey, allVideos);
     } catch (e) {
       _error = e.toString();
     } finally {
@@ -307,6 +320,7 @@ class AerialWallpaperService extends ChangeNotifier {
     if (_shuffle) {
       _feed.shuffle(Random());
     }
+    _cacheFeed(_playlistCacheKey(), _feed);
     notifyListeners();
   }
 
@@ -384,6 +398,117 @@ class AerialWallpaperService extends ChangeNotifier {
   void clearFeed() {
     _feed = [];
     notifyListeners();
+  }
+
+  Future<void> savePlaybackIndex(int index) async {
+    if (_feed.isEmpty) return;
+    final clamped = index.clamp(0, _feed.length - 1);
+    await _settingsService.setAerialPlaylistPlaybackIndex(clamped);
+  }
+
+  String _playlistCacheKey() {
+    final sources = _selectedSources.toList()..sort();
+    final timeOfDays = _timeOfDayFilter.map((t) => t.name).toList()..sort();
+    final scenes = _sceneFilter.map((s) => s.name).toList()..sort();
+    final cities = _cityFilter.map((city) => city.toLowerCase()).toList()
+      ..sort();
+    return [
+      'v1',
+      'quality:${_selectedQuality.name}',
+      'shuffle:$_shuffle',
+      'sources:${sources.join(",")}',
+      'time:${timeOfDays.join(",")}',
+      'scenes:${scenes.join(",")}',
+      'cities:${cities.join(",")}',
+    ].join('|');
+  }
+
+  List<AerialMedia>? _restoreCachedFeed(String cacheKey) {
+    if (_settingsService.aerialPlaylistCacheKey != cacheKey) return null;
+    final json = _settingsService.aerialPlaylistCacheJson;
+    if (json == null || json.isEmpty) return null;
+
+    try {
+      final decoded = jsonDecode(json);
+      if (decoded is! List) return null;
+      final items = decoded
+          .whereType<Map<String, Object?>>()
+          .map(_mediaFromJson)
+          .whereType<AerialMedia>()
+          .toList(growable: false);
+      return items.isEmpty ? null : items;
+    } catch (_) {
+      unawaited(_settingsService.clearAerialPlaylistCache());
+      return null;
+    }
+  }
+
+  Future<void> _cacheFeed(String cacheKey, List<AerialMedia> feed) async {
+    if (feed.isEmpty) {
+      await _settingsService.clearAerialPlaylistCache();
+      return;
+    }
+    final cacheMatches = _settingsService.aerialPlaylistCacheKey == cacheKey;
+    final playbackIndex = cacheMatches
+        ? _settingsService.aerialPlaylistPlaybackIndex.clamp(0, feed.length - 1)
+        : 0;
+    final json = jsonEncode(feed.map(_mediaToJson).toList(growable: false));
+    await _settingsService.setAerialPlaylistCache(
+      cacheKey: cacheKey,
+      json: json,
+      playbackIndex: playbackIndex,
+    );
+  }
+
+  Map<String, Object?> _mediaToJson(AerialMedia media) => {
+        'url': media.url,
+        'type': media.type.name,
+        'source': media.source.name,
+        'metadata': {
+          'shortDescription': media.metadata.shortDescription,
+          'pointsOfInterest': media.metadata.pointsOfInterest
+              .map((key, value) => MapEntry(key.toString(), value)),
+          'timeOfDay': media.metadata.timeOfDay.name,
+          'scene': media.metadata.scene.name,
+        },
+      };
+
+  AerialMedia? _mediaFromJson(Map<String, Object?> json) {
+    final url = json['url'];
+    if (url is! String || url.isEmpty) return null;
+
+    final metadataJson = json['metadata'];
+    final metadataMap =
+        metadataJson is Map ? Map<String, Object?>.from(metadataJson) : null;
+    final poiJson = metadataMap?['pointsOfInterest'];
+    final pointsOfInterest = poiJson is Map
+        ? poiJson.map((key, value) =>
+            MapEntry(int.tryParse(key.toString()) ?? 0, value.toString()))
+        : const <int, String>{};
+
+    return AerialMedia(
+      url: url,
+      type: AerialMediaType.values.firstWhere(
+        (type) => type.name == json['type'],
+        orElse: () => AerialMediaType.video,
+      ),
+      source: AerialMediaSource.values.firstWhere(
+        (source) => source.name == json['source'],
+        orElse: () => AerialMediaSource.unknown,
+      ),
+      metadata: AerialMediaMetadata(
+        shortDescription: metadataMap?['shortDescription']?.toString() ?? '',
+        pointsOfInterest: pointsOfInterest,
+        timeOfDay: TimeOfDay.values.firstWhere(
+          (time) => time.name == metadataMap?['timeOfDay'],
+          orElse: () => TimeOfDay.unknown,
+        ),
+        scene: SceneType.values.firstWhere(
+          (scene) => scene.name == metadataMap?['scene'],
+          orElse: () => SceneType.unknown,
+        ),
+      ),
+    );
   }
 }
 
