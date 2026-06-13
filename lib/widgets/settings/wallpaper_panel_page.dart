@@ -47,17 +47,29 @@ class WallpaperPanelPage extends StatelessWidget {
         Consumer<AerialWallpaperService>(builder: (_, aerialService, __) {
           return Consumer<PurchasesService>(builder: (_, purchasesService, __) {
             final isPro = purchasesService.isPro;
-            return RoundedSwitchListTile(
+            return FocusableSettingsTile(
               title: Text(LocaleKeys.aerialViews.tr()),
-              secondary: Icon(Icons.flight),
-              value: aerialService.enabled,
-              onChanged: (value) {
-                if (value && !isPro) {
-                  _showPremiumDialog(context);
-                  return;
-                }
-                _toggleAerial(context, value);
-              },
+              leading: Icon(Icons.flight),
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (!isPro)
+                    Padding(
+                      padding: const EdgeInsets.only(right: 8),
+                      child: Icon(Icons.lock, size: 16, color: Colors.white38),
+                    ),
+                  Switch(
+                    value: aerialService.enabled,
+                    onChanged: (value) {
+                      if (value && !isPro) {
+                        _showPremiumDialog(context);
+                        return;
+                      }
+                      _toggleAerial(context, value);
+                    },
+                  ),
+                ],
+              ),
             );
           });
         }),
@@ -169,73 +181,7 @@ class WallpaperPanelPage extends StatelessWidget {
     );
   }
 
-  void _showPremiumDialog(BuildContext context) {
-    final purchasesService = context.read<PurchasesService>();
-    final accentColor = Theme.of(context).colorScheme.primary;
-
-    showDialog(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        backgroundColor: const Color(0xFF1E1E1E),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: Row(
-          children: [
-            Icon(Icons.workspace_premium, color: accentColor, size: 28),
-            const SizedBox(width: 12),
-            Text('Aerial Views is a Pro feature',
-                style: TextStyle(fontSize: 18)),
-          ],
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Unlock stunning aerial video wallpapers from around the world with Arc Launcher Pro.',
-              style: TextStyle(color: Colors.white70),
-            ),
-            const SizedBox(height: 16),
-            _buildProFeatureItem(Icons.flight, 'Apple TV aerial videos'),
-            _buildProFeatureItem(Icons.hd, 'Multiple quality options'),
-            _buildProFeatureItem(Icons.shuffle, 'Smart shuffle & filters'),
-            _buildProFeatureItem(Icons.filter_list, 'Time, scene & city filters'),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(),
-            child: Text('Maybe Later', style: TextStyle(color: Colors.white54)),
-          ),
-          FilledButton.icon(
-            onPressed: () async {
-              Navigator.of(dialogContext).pop();
-              await _showOfferings(context);
-            },
-            icon: Icon(Icons.workspace_premium),
-            label: Text('Upgrade to Pro'),
-            style: FilledButton.styleFrom(
-              backgroundColor: accentColor,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildProFeatureItem(IconData icon, String text) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Row(
-        children: [
-          Icon(icon, size: 16, color: Colors.white54),
-          const SizedBox(width: 12),
-          Text(text, style: TextStyle(color: Colors.white70, fontSize: 14)),
-        ],
-      ),
-    );
-  }
-
-  Future<void> _showOfferings(BuildContext context) async {
+  Future<void> _showPremiumDialog(BuildContext context) async {
     final purchasesService = context.read<PurchasesService>();
     final accentColor = Theme.of(context).colorScheme.primary;
 
@@ -243,145 +189,29 @@ class WallpaperPanelPage extends StatelessWidget {
     if (!context.mounted) return;
 
     final options = purchasesService.purchaseOptions;
-    if (options.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('No offerings available')),
-      );
-      return;
-    }
 
     if (!context.mounted) return;
-
-    showModalBottomSheet(
+    showDialog(
       context: context,
-      backgroundColor: const Color(0xFF1E1E1E),
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (context) => Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Row(
-              children: [
-                Icon(Icons.workspace_premium, color: accentColor, size: 28),
-                const SizedBox(width: 12),
-                Text('Upgrade to Pro',
-                    style: Theme.of(context).textTheme.titleLarge),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Unlock all premium features',
-              style: TextStyle(color: Colors.white54),
-            ),
-            const SizedBox(height: 24),
-            ...options.map((option) => _buildOptionTile(
-                  context,
-                  option,
-                  accentColor,
-                )),
-            const SizedBox(height: 16),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildOptionTile(
-      BuildContext context, PurchaseOption option, Color accentColor) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: InkWell(
-        onTap: () async {
-          Navigator.of(context).pop();
-          final purchasesService = context.read<PurchasesService>();
+      builder: (dialogContext) => _PremiumDialog(
+        accentColor: accentColor,
+        options: options,
+        onPurchase: (option) async {
+          Navigator.of(dialogContext).pop();
           final success = await purchasesService.purchase(option.identifier);
           if (context.mounted) {
-            if (success && purchasesService.isPro) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('Welcome to Pro!'),
-                  backgroundColor: Colors.green,
-                ),
-              );
-            } else {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('Purchase cancelled or failed'),
-                  backgroundColor: Colors.orange,
-                ),
-              );
-            }
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(success && purchasesService.isPro
+                    ? 'Welcome to Pro!'
+                    : 'Purchase cancelled or failed'),
+                backgroundColor: success && purchasesService.isPro
+                    ? Colors.green
+                    : Colors.orange,
+              ),
+            );
           }
         },
-        borderRadius: BorderRadius.circular(16),
-        child: Container(
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: accentColor.withValues(alpha: 0.3),
-              width: 2,
-            ),
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                accentColor.withValues(alpha: 0.1),
-                accentColor.withValues(alpha: 0.05),
-              ],
-            ),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    option.title,
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 12, vertical: 6),
-                    decoration: BoxDecoration(
-                      color: accentColor,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Text(
-                      option.description,
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 8),
-              Text(
-                option.description,
-                style: TextStyle(color: Colors.white54),
-              ),
-              const SizedBox(height: 12),
-              Text(
-                '${option.priceString} / ${option.period}',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: accentColor,
-                ),
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }
@@ -397,7 +227,8 @@ class WallpaperPanelPage extends StatelessWidget {
     }
   }
 
-  Widget _buildSourceTiles(BuildContext context, AerialWallpaperService service) {
+  Widget _buildSourceTiles(
+      BuildContext context, AerialWallpaperService service) {
     final accentColor = Theme.of(context).colorScheme.primary;
     return Column(
       children: List.generate(AerialWallpaperService.sources.length, (i) {
@@ -421,7 +252,8 @@ class WallpaperPanelPage extends StatelessWidget {
     );
   }
 
-  Widget _buildQualityTiles(BuildContext context, AerialWallpaperService service) {
+  Widget _buildQualityTiles(
+      BuildContext context, AerialWallpaperService service) {
     final accentColor = Theme.of(context).colorScheme.primary;
     return Column(
       children: AerialWallpaperService.qualities.map((q) {
@@ -441,7 +273,8 @@ class WallpaperPanelPage extends StatelessWidget {
     );
   }
 
-  Widget _buildShuffleToggle(BuildContext context, AerialWallpaperService service) {
+  Widget _buildShuffleToggle(
+      BuildContext context, AerialWallpaperService service) {
     return FocusableSettingsTile(
       leading: Icon(Icons.shuffle),
       title: Text(
@@ -456,7 +289,8 @@ class WallpaperPanelPage extends StatelessWidget {
     );
   }
 
-  Widget _buildShowFpsToggle(BuildContext context, AerialWallpaperService service) {
+  Widget _buildShowFpsToggle(
+      BuildContext context, AerialWallpaperService service) {
     return FocusableSettingsTile(
       leading: Icon(Icons.speed),
       title: Text(
@@ -471,7 +305,8 @@ class WallpaperPanelPage extends StatelessWidget {
     );
   }
 
-  Widget _buildFilterSection(BuildContext context, AerialWallpaperService service) {
+  Widget _buildFilterSection(
+      BuildContext context, AerialWallpaperService service) {
     final accentColor = Theme.of(context).colorScheme.primary;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -491,7 +326,8 @@ class WallpaperPanelPage extends StatelessWidget {
           Wrap(
             spacing: 8,
             runSpacing: 8,
-            children: TimeOfDay.values.where((t) => t != TimeOfDay.unknown).map((t) {
+            children:
+                TimeOfDay.values.where((t) => t != TimeOfDay.unknown).map((t) {
               final isSelected = service.timeOfDayFilter.contains(t);
               return _TvFilterChip(
                 label: timeOfDayToString(t),
@@ -513,7 +349,8 @@ class WallpaperPanelPage extends StatelessWidget {
           Wrap(
             spacing: 8,
             runSpacing: 8,
-            children: SceneType.values.where((s) => s != SceneType.unknown).map((s) {
+            children:
+                SceneType.values.where((s) => s != SceneType.unknown).map((s) {
               final isSelected = service.sceneFilter.contains(s);
               return _TvFilterChip(
                 label: sceneTypeToString(s),
@@ -553,7 +390,9 @@ class WallpaperPanelPage extends StatelessWidget {
               }).toList(),
             ),
           ],
-          if (service.timeOfDayFilter.isNotEmpty || service.sceneFilter.isNotEmpty || service.cityFilter.isNotEmpty)
+          if (service.timeOfDayFilter.isNotEmpty ||
+              service.sceneFilter.isNotEmpty ||
+              service.cityFilter.isNotEmpty)
             Padding(
               padding: const EdgeInsets.only(top: 12),
               child: _TvFilterChip(
@@ -564,16 +403,13 @@ class WallpaperPanelPage extends StatelessWidget {
                 onPressed: () => service.clearFilters(),
               ),
             ),
-
         ],
       ),
     );
   }
 
-  Future<void> _pickWallpaper(
-      BuildContext context,
-      Future<void> Function(File) action,
-      bool isVideo) async {
+  Future<void> _pickWallpaper(BuildContext context,
+      Future<void> Function(File) action, bool isVideo) async {
     try {
       final path = await TvMediaPicker.show(
         context,
@@ -663,8 +499,8 @@ class _TvFilterChipState extends State<_TvFilterChip> {
 
     return Actions(
       actions: <Type, Action<Intent>>{
-        ActivateIntent: CallbackAction<ActivateIntent>(
-            onInvoke: (_) => widget.onPressed()),
+        ActivateIntent:
+            CallbackAction<ActivateIntent>(onInvoke: (_) => widget.onPressed()),
         ButtonActivateIntent: CallbackAction<ButtonActivateIntent>(
             onInvoke: (_) => widget.onPressed()),
       },
@@ -712,6 +548,288 @@ class _TvFilterChipState extends State<_TvFilterChip> {
                   ),
                 ),
               ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Leanback-optimized premium dialog with inline purchase options.
+class _PremiumDialog extends StatefulWidget {
+  final Color accentColor;
+  final List<PurchaseOption> options;
+  final void Function(PurchaseOption) onPurchase;
+
+  const _PremiumDialog({
+    required this.accentColor,
+    required this.options,
+    required this.onPurchase,
+  });
+
+  @override
+  State<_PremiumDialog> createState() => _PremiumDialogState();
+}
+
+class _PremiumDialogState extends State<_PremiumDialog> {
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      backgroundColor: const Color(0xFF1E1E1E),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      title: const Row(
+        children: [
+          Icon(Icons.lock, size: 28),
+          SizedBox(width: 12),
+          Text('Aerial Views is a Pro feature', style: TextStyle(fontSize: 18)),
+        ],
+      ),
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Unlock stunning aerial video wallpapers from around the world with Arc Launcher Pro.',
+              style: TextStyle(color: Colors.white70),
+            ),
+            const SizedBox(height: 16),
+            const _ProFeatureRow(Icons.flight, 'Apple TV aerial videos'),
+            const _ProFeatureRow(Icons.hd, 'Multiple quality options'),
+            const _ProFeatureRow(Icons.shuffle, 'Smart shuffle & filters'),
+            const _ProFeatureRow(
+                Icons.filter_list, 'Time, scene & city filters'),
+            const SizedBox(height: 16),
+            const Divider(color: Colors.white12),
+            const SizedBox(height: 12),
+            const Text('Choose your plan',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                )),
+            const SizedBox(height: 12),
+            ...widget.options.map((option) => _DialogOptionTile(
+                  option: option,
+                  accentColor: widget.accentColor,
+                  onTap: () => widget.onPurchase(option),
+                )),
+            const SizedBox(height: 8),
+            Center(
+              child: _DialogTextButton(
+                label: 'Maybe Later',
+                onTap: () => Navigator.of(context).pop(),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// A focusable text button for TV remote navigation.
+class _DialogTextButton extends StatefulWidget {
+  final String label;
+  final VoidCallback onTap;
+
+  const _DialogTextButton({
+    required this.label,
+    required this.onTap,
+  });
+
+  @override
+  State<_DialogTextButton> createState() => _DialogTextButtonState();
+}
+
+class _DialogTextButtonState extends State<_DialogTextButton> {
+  bool _focused = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final accent = Theme.of(context).colorScheme.primary;
+    return Actions(
+      actions: <Type, Action<Intent>>{
+        ActivateIntent:
+            CallbackAction<ActivateIntent>(onInvoke: (_) => widget.onTap()),
+        ButtonActivateIntent: CallbackAction<ButtonActivateIntent>(
+            onInvoke: (_) => widget.onTap()),
+      },
+      child: Focus(
+        onFocusChange: (hasFocus) => setState(() => _focused = hasFocus),
+        child: GestureDetector(
+          onTap: widget.onTap,
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 150),
+            curve: Curves.easeOut,
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: _focused ? accent : Colors.white12,
+                width: _focused ? 2.0 : 1.0,
+              ),
+              color:
+                  _focused ? accent.withValues(alpha: 0.1) : Colors.transparent,
+            ),
+            child: Text(
+              widget.label,
+              style: TextStyle(
+                color: _focused ? Colors.white : Colors.white54,
+                fontSize: 15,
+                fontWeight: _focused ? FontWeight.w600 : FontWeight.normal,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// A single pro feature row item.
+class _ProFeatureRow extends StatelessWidget {
+  final IconData icon;
+  final String text;
+
+  const _ProFeatureRow(this.icon, this.text);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        children: [
+          Icon(icon, size: 16, color: Colors.white54),
+          const SizedBox(width: 12),
+          Text(text,
+              style: const TextStyle(color: Colors.white70, fontSize: 14)),
+        ],
+      ),
+    );
+  }
+}
+
+/// Leanback-optimized purchase option tile for dialogs.
+/// Uses Focus with visible border/glow for TV remote navigation.
+class _DialogOptionTile extends StatefulWidget {
+  final PurchaseOption option;
+  final Color accentColor;
+  final VoidCallback onTap;
+
+  const _DialogOptionTile({
+    required this.option,
+    required this.accentColor,
+    required this.onTap,
+  });
+
+  @override
+  State<_DialogOptionTile> createState() => _DialogOptionTileState();
+}
+
+class _DialogOptionTileState extends State<_DialogOptionTile> {
+  bool _focused = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final option = widget.option;
+    final accent = widget.accentColor;
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Actions(
+        actions: <Type, Action<Intent>>{
+          ActivateIntent:
+              CallbackAction<ActivateIntent>(onInvoke: (_) => widget.onTap()),
+          ButtonActivateIntent: CallbackAction<ButtonActivateIntent>(
+              onInvoke: (_) => widget.onTap()),
+        },
+        child: Focus(
+          onFocusChange: (hasFocus) => setState(() => _focused = hasFocus),
+          child: GestureDetector(
+            onTap: widget.onTap,
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 150),
+              curve: Curves.easeOut,
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: _focused ? accent : accent.withValues(alpha: 0.3),
+                  width: _focused ? 2.5 : 2.0,
+                ),
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: _focused
+                      ? [
+                          accent.withValues(alpha: 0.2),
+                          accent.withValues(alpha: 0.1),
+                        ]
+                      : [
+                          accent.withValues(alpha: 0.1),
+                          accent.withValues(alpha: 0.05),
+                        ],
+                ),
+                boxShadow: _focused
+                    ? [
+                        BoxShadow(
+                          color: accent.withValues(alpha: 0.3),
+                          blurRadius: 12,
+                          spreadRadius: 0,
+                        ),
+                      ]
+                    : null,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        option.title,
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: _focused ? Colors.white : null,
+                        ),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 6),
+                        decoration: BoxDecoration(
+                          color: accent,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Text(
+                          option.description.contains('/')
+                              ? option.description.split('/').last.trim()
+                              : option.description,
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    option.description,
+                    style: const TextStyle(color: Colors.white54),
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    '${option.priceString}${option.period.isNotEmpty ? ' / ${option.period}' : ''}',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: accent,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
