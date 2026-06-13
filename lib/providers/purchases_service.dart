@@ -4,6 +4,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 enum PurchaseResult { success, cancelled, error }
 
@@ -120,6 +121,52 @@ class PurchasesService extends ChangeNotifier {
       debugPrint('Error loading offerings: $e');
       _purchaseOptions = [];
       notifyListeners();
+    }
+  }
+
+  EntitlementInfo? get activeEntitlement {
+    if (_customerInfo == null) return null;
+    return _customerInfo!.entitlements.active.values.isNotEmpty
+        ? _customerInfo!.entitlements.active.values.first
+        : null;
+  }
+
+  String? get activePlanTitle {
+    final entitlement = activeEntitlement;
+    if (entitlement == null) return null;
+    final productId = entitlement.productIdentifier;
+    final matches = _purchaseOptions.where((o) => o.identifier == productId);
+    return matches.isNotEmpty ? matches.first.title : productId;
+  }
+
+  String? get activePeriod {
+    final id = activeEntitlement?.productIdentifier;
+    if (id == null) return null;
+    final matches = _purchaseOptions.where((o) => o.identifier == id);
+    return matches.isNotEmpty ? matches.first.period : null;
+  }
+
+  bool get isLifetime {
+    final entitlement = activeEntitlement;
+    if (entitlement == null) return false;
+    return entitlement.expirationDate == null;
+  }
+
+  String? get managementUrl => _customerInfo?.managementURL;
+
+  Future<bool> manageSubscription() async {
+    final url = _customerInfo?.managementURL;
+    if (url == null) return false;
+    try {
+      final uri = Uri.parse(url);
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(uri, mode: LaunchMode.externalApplication);
+        return true;
+      }
+      return false;
+    } catch (e) {
+      debugPrint('Error opening management URL: $e');
+      return false;
     }
   }
 
