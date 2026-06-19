@@ -350,16 +350,18 @@ class _FLauncherState extends State<FLauncher> {
     );
 
     return Center(
-      //child: RepaintBoundary(
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(32),
-        child: backdropDisabled
-            ? content
-            : BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-                child: content,
-              ),
-        //),
+      // Isolate the dock from sibling repaints in the CustomScrollView and
+      // from layoutVersion-driven parent rebuilds (pure compositing hint).
+      child: RepaintBoundary(
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(32),
+          child: backdropDisabled
+              ? content
+              : BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+                  child: content,
+                ),
+        ),
       ),
     );
   }

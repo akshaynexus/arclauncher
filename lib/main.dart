@@ -40,28 +40,31 @@ import 'flauncher_app.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Kick off SharedPreferences disk I/O up front so it overlaps
+  // EasyLocalization's own plugin/locale setup instead of running serially.
+  final sharedPreferencesFuture = SharedPreferences.getInstance();
+
   await EasyLocalization.ensureInitialized();
   initializeDateFormatting();
-
-  if (Platform.isAndroid) {
-    try {
-      await FlutterDisplayMode.setHighRefreshRate();
-      // HDR mode is engaged automatically by the platform when the
-      // MediaCodec HDR decode session starts (vo=mediacodec_embed).
-    } catch (e) {
-      debugPrint('Error setting high refresh rate display mode: $e');
-    }
-  }
 
   final fLauncherChannel = FLauncherChannel();
   final fLauncherDatabase = FLauncherDatabase(connect());
   final purchasesService = PurchasesService();
 
-  // Run SharedPreferences disk I/O concurrently with DB open
-  final sharedPreferences = await SharedPreferences.getInstance();
+  // Prime the lazily-opened Drift connection now (resolve docs dir + open
+  // db.sqlite + run migrations) so that work overlaps the rest of startup
+  // instead of running serially on AppsService's first query. Keep UNAWAITED;
+  // awaiting would re-serialize it.
+  unawaited(fLauncherDatabase.getCategories().then((_) {}, onError: (_) {}));
 
-  // Initialize RevenueCat
-  await purchasesService.initialize(null);
+  // Initialize RevenueCat OFF the cold-start critical path: Pro state is not
+  // needed to render the home grid, and configure()/getCustomerInfo() make a
+  // network round-trip that would otherwise block the first frame. The UI
+  // reacts via notifyListeners() once entitlements resolve.
+  unawaited(purchasesService.initialize(null));
+
+  final sharedPreferences = await sharedPreferencesFuture;
 
   runApp(EasyLocalization(
       supportedLocales: const [Locale('en'), Locale('es')],
@@ -86,4 +89,19 @@ Future<void> main() async {
             create: (_) => BrightnessService(sharedPreferences), lazy: false),
         ChangeNotifierProvider.value(value: purchasesService),
       ], child: FLauncherApp())));
+
+  if (Platform.isAndroid) {
+    // Presentation-only: apply the high refresh rate after the first frame so
+    // its platform-channel round-trip never blocks cold start. Worst case the
+    // first frame or two present at the default rate (imperceptible on a TV).
+    // HDR is engaged automatically by the platform when the MediaCodec HDR
+    // decode session starts (vo=mediacodec_embed).
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      try {
+        await FlutterDisplayMode.setHighRefreshRate();
+      } catch (e) {
+        debugPrint('Error setting high refresh rate display mode: $e');
+      }
+    });
+  }
 }

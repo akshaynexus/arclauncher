@@ -18,7 +18,6 @@ dependencies:
   package_info_plus: ^10.1.0
   provider: ^6.0.5
   shared_preferences: ^2.3.3
-  google_fonts: ^8.1.0
   screen_brightness: ^2.1.9
   sqlite3_flutter_libs: ^0.6.0+eol
   flutter_localizations:

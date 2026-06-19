@@ -13,6 +13,11 @@ class PurchaseOption {
   final String title;
   final String description;
   final String priceString;
+
+  /// Numeric price in the store currency, used for locale-safe savings math.
+  /// Parsing the localized [priceString] is unreliable across currencies, so
+  /// we carry the raw amount from the store product instead.
+  final double priceAmount;
   final String period;
   final bool hasFreeTrial;
   final String? trialDuration;
@@ -22,6 +27,7 @@ class PurchaseOption {
     required this.title,
     required this.description,
     required this.priceString,
+    required this.priceAmount,
     required this.period,
     this.hasFreeTrial = false,
     this.trialDuration,
@@ -44,7 +50,9 @@ class PurchasesService extends ChangeNotifier {
 
   Future<void> initialize(String? appUserId) async {
     try {
-      await Purchases.setLogLevel(LogLevel.debug);
+      if (kDebugMode) {
+        await Purchases.setLogLevel(LogLevel.debug);
+      }
 
       PurchasesConfiguration config;
       config = PurchasesConfiguration(_apiKeyAndroid);
@@ -106,7 +114,9 @@ class PurchasesService extends ChangeNotifier {
             period = 'week';
             break;
           case PackageType.lifetime:
-            period = 'forever';
+            // Lifetime has no recurring cadence; leave the period empty so the
+            // UI doesn't render a nonsensical "/ forever" suffix.
+            period = '';
             break;
           default:
             period = '';
@@ -117,6 +127,7 @@ class PurchasesService extends ChangeNotifier {
           title: product.title,
           description: product.description,
           priceString: product.priceString,
+          priceAmount: product.price,
           period: period,
           hasFreeTrial: intro != null && intro.price == '0.00',
           trialDuration: intro != null && intro.price == '0.00'
@@ -152,7 +163,10 @@ class PurchasesService extends ChangeNotifier {
     if (expStr == null) return 0;
     final exp = DateTime.tryParse(expStr);
     if (exp == null) return 0;
-    return exp.difference(DateTime.now()).inDays.clamp(0, 365);
+    // Round UP remaining time: inDays truncates, so a trial with <24h left
+    // would otherwise read "0 days remaining" (looks expired) on its last day.
+    final secs = exp.difference(DateTime.now()).inSeconds;
+    return secs <= 0 ? 0 : (secs / 86400).ceil().clamp(0, 365);
   }
 
   DateTime? get trialEndDate {

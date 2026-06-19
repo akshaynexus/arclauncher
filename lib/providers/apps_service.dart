@@ -108,27 +108,17 @@ class AppsService extends ChangeNotifier {
       debugPrint(
           'AppsService loaded from DB: ${_applications.length} apps, ${_categoriesById.length} categories');
 
-      // Phase 2: Sync with system before marking initialized so UI
-      // never sees an empty app list on fresh install.
-      // Timeout prevents hanging if platform channel is unresponsive.
-      try {
-        await _syncWithSystem().timeout(const Duration(seconds: 10));
-      } catch (e) {
-        debugPrint('AppsService sync timed out or failed: $e');
+      // Warm boot (cached apps present): paint the grid immediately and
+      // reconcile with the system in the background, so the first usable frame
+      // is not gated on the platform getApplications() enumeration (which can
+      // take hundreds of ms, up to the 10s timeout, on weak TV hardware).
+      final bool warmBoot = _applications.isNotEmpty;
+      if (warmBoot) {
+        _initialized = true;
+        notifyListeners();
       }
 
-      // After sync, check if apps exist but aren't placed into any
-      // category.  This happens on fresh install: _initDefaultCategories()
-      // ran before sync when there were 0 apps, so only Favorites was
-      // created.  After sync populates apps, they have no category.
-      final bool hasUncategorizedApps = _applications.values.any(
-        (app) => !app.hidden && app.categoryOrders.isEmpty,
-      );
-      if (hasUncategorizedApps && _applications.isNotEmpty) {
-        // Wipe the skeleton categories and rebuild with actual apps
-        await _initDefaultCategories();
-      }
-
+      // Register the system app-change listener exactly once (both paths).
       _appsSubscription =
           _fLauncherChannel.addAppsChangedListener((event) async {
         try {
@@ -237,24 +227,68 @@ class AppsService extends ChangeNotifier {
         }
       });
 
+      if (warmBoot) {
+        // Reconcile with the live system list without blocking first paint.
+        unawaited(_syncInBackground());
+      } else {
+        // Fresh install / empty cache: block on sync so the user never sees an
+        // empty grid; _initialized is flipped in the finally below.
+        await _syncWithSystemGuarded();
+        await _reconcileUncategorizedApps();
+      }
+
       debugPrint(
           'AppsService initialized: ${_applications.length} apps, ${_categoriesById.length} categories');
     } catch (e) {
       debugPrint('Error initializing AppsService: $e');
     } finally {
-      // Always mark initialized so the UI never gets permanently stuck
-      // on the loading spinner, even if sync failed.
-      _initialized = true;
-      notifyListeners();
+      // Cold path only: a warm boot already flipped _initialized above. This
+      // also guarantees the UI never gets permanently stuck on the spinner.
+      if (!_initialized) {
+        _initialized = true;
+        notifyListeners();
 
-      // If apps are still empty after init (e.g. sync timed out on fresh
-      // install), schedule a retry so we don't leave the user stranded.
-      if (_applications.isEmpty) {
-        _scheduleRetrySync();
-      } else {
-        // Pre-cache icons for visible apps (throttled)
-        _preCacheIcons();
+        if (_applications.isEmpty) {
+          // Sync timed out on fresh install — retry so we don't strand the user.
+          _scheduleRetrySync();
+        } else {
+          _preCacheIcons();
+        }
       }
+    }
+  }
+
+  /// Reconciles the cached app list with the live system list in the
+  /// background after a warm-boot first paint, then warms the icon cache.
+  Future<void> _syncInBackground() async {
+    await _syncWithSystemGuarded();
+    await _reconcileUncategorizedApps();
+    notifyListeners();
+    if (_applications.isNotEmpty) {
+      _preCacheIcons();
+    } else {
+      _scheduleRetrySync();
+    }
+  }
+
+  Future<void> _syncWithSystemGuarded() async {
+    // Timeout prevents hanging if the platform channel is unresponsive.
+    try {
+      await _syncWithSystem().timeout(const Duration(seconds: 10));
+    } catch (e) {
+      debugPrint('AppsService sync timed out or failed: $e');
+    }
+  }
+
+  /// On fresh install, _initDefaultCategories() runs before sync (with 0
+  /// apps), so apps populated by sync land with no category. Rebuild the
+  /// default categories once apps actually exist.
+  Future<void> _reconcileUncategorizedApps() async {
+    final bool hasUncategorizedApps = _applications.values.any(
+      (app) => !app.hidden && app.categoryOrders.isEmpty,
+    );
+    if (hasUncategorizedApps && _applications.isNotEmpty) {
+      await _initDefaultCategories();
     }
   }
 
@@ -650,7 +684,10 @@ class AppsService extends ChangeNotifier {
     app.lastLaunchedAt = DateTime.now();
     await _database.updateApp(app.packageName,
         AppsCompanion(lastLaunchedAt: Value(app.lastLaunchedAt)));
-    notifyListeners();
+    // No notifyListeners(): launchApp doesn't re-sort in memory, so notifying
+    // here only forces a full _tvOSLayout rebuild at the instant of launch.
+    // lastLaunchedAt ordering is applied by sortCategory() on the next
+    // DB reload/sync (e.g. when returning to the launcher).
 
     Future<void> future;
     if (app.action == null) {
