@@ -82,6 +82,9 @@ class SettingsPanelPage extends StatelessWidget {
         ),
         Consumer<PurchasesService>(
           builder: (context, purchasesService, _) {
+            // Everything is free for now, so there's nothing to upsell — hide
+            // the "Unlock Pro" entry until premium-only features ship. Existing
+            // subscribers keep "Manage Subscription" so they can restore/cancel.
             if (purchasesService.isPro) {
               return FocusableSettingsTile(
                 leading: const Icon(Icons.workspace_premium),
@@ -90,12 +93,7 @@ class SettingsPanelPage extends StatelessWidget {
                 onPressed: () => _showSubscriptionDialog(context),
               );
             }
-            return FocusableSettingsTile(
-              leading: const Icon(Icons.workspace_premium),
-              title: Text('Unlock Pro',
-                  style: Theme.of(context).textTheme.bodyMedium),
-              onPressed: () => _showUpgradeDialog(context),
-            );
+            return const SizedBox.shrink();
           },
         ),
         FocusableSettingsTile(
