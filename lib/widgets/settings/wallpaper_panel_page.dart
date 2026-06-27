@@ -20,19 +20,16 @@ import 'dart:io';
 
 import 'package:aerial_views/aerial_views.dart';
 import 'package:flauncher/providers/aerial_wallpaper_service.dart';
-import 'package:flauncher/providers/purchases_service.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/wallpaper_service.dart';
 import 'package:flauncher/widgets/settings/focusable_settings_tile.dart';
 import 'package:flauncher/widgets/settings/gradient_panel_page.dart';
-import 'package:flauncher/widgets/settings/premium_dialog.dart';
 import 'package:flauncher/widgets/tv_media_picker.dart';
 import 'package:flutter/material.dart' hide TimeOfDay;
 import 'package:provider/provider.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flauncher/generated/locale_keys.g.dart';
 
-import 'package:flutter/scheduler.dart';
 import 'package:flauncher/widgets/rounded_switch_list_tile.dart';
 
 class WallpaperPanelPage extends StatelessWidget {
@@ -42,66 +39,25 @@ class WallpaperPanelPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView(
       children: [
-        // Disable aerial views when pro status is lost. Gate on `initialized`
-        // so we don't disable during the brief window before RevenueCat has
-        // reported entitlements (init now runs off the startup critical path).
-        Consumer2<PurchasesService, SettingsService>(
-          builder: (_, purchases, settings, __) {
-            if (purchases.initialized &&
-                !purchases.isPro &&
-                settings.aerialEnabled) {
-              SchedulerBinding.instance.addPostFrameCallback((_) {
-                settings.setAerialEnabled(false);
-              });
-            }
-            return const SizedBox.shrink();
-          },
-        ),
         Text(LocaleKeys.wallpaper.tr(),
             style: Theme.of(context).textTheme.titleLarge),
         Divider(),
-        // Aerial Views toggle (gated behind premium)
+        // Aerial Views toggle (free for everyone)
         Consumer<AerialWallpaperService>(builder: (_, aerialService, __) {
-          return Consumer<PurchasesService>(builder: (_, purchasesService, __) {
-            final isPro = purchasesService.isPro;
-            return FocusableSettingsTile(
-              title: Text(LocaleKeys.aerialViews.tr()),
-              leading: Icon(Icons.flight),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (!isPro)
-                    Padding(
-                      padding: const EdgeInsets.only(right: 8),
-                      child: Icon(Icons.lock, size: 16, color: Colors.white38),
-                    ),
-                  // The whole tile is the focus target (FocusableSettingsTile);
-                  // exclude the raw Switch so the D-pad doesn't land on its
-                  // faint default highlight as a redundant focus stop.
-                  ExcludeFocus(
-                    child: Switch(
-                      value: aerialService.enabled,
-                      onChanged: (value) {
-                        if (value && !isPro) {
-                          showPremiumPaywall(context);
-                          return;
-                        }
-                        _toggleAerial(context, value);
-                      },
-                    ),
-                  ),
-                ],
+          return FocusableSettingsTile(
+            title: Text(LocaleKeys.aerialViews.tr()),
+            leading: Icon(Icons.flight),
+            // The whole tile is the focus target (FocusableSettingsTile);
+            // exclude the raw Switch so the D-pad doesn't land on its faint
+            // default highlight as a redundant focus stop.
+            trailing: ExcludeFocus(
+              child: Switch(
+                value: aerialService.enabled,
+                onChanged: (value) => _toggleAerial(context, value),
               ),
-              onPressed: () {
-                final newValue = !aerialService.enabled;
-                if (newValue && !isPro) {
-                  showPremiumPaywall(context);
-                  return;
-                }
-                _toggleAerial(context, newValue);
-              },
-            );
-          });
+            ),
+            onPressed: () => _toggleAerial(context, !aerialService.enabled),
+          );
         }),
         // Aerial Views settings (shown when enabled)
         Consumer<AerialWallpaperService>(builder: (_, aerialService, __) {
