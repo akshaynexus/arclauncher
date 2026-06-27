@@ -283,7 +283,6 @@ class PremiumDialog extends StatelessWidget {
                         ),
                         child: const Column(
                           children: [
-                            _ProFeatureRow('Apple TV aerial videos'),
                             _ProFeatureRow('Multiple quality options'),
                             _ProFeatureRow('Smart shuffle & filters'),
                             _ProFeatureRow('Time, scene & city filters'),
