@@ -58,6 +58,24 @@ coverage/
 keystore.properties
 key.properties
 
+# Fastlane / Google Play service-account keys — NEVER commit
+android/fastlane/google_play_api_key.json
+**/google_play_api_key.json
+**/play-store*.json
+*service-account*.json
+fastlane/.env
+fastlane/.env.*
+android/fastlane/.env
+android/fastlane/.env.*
+
+# Fastlane run artifacts
+**/fastlane/report.xml
+**/fastlane/Preview.html
+**/fastlane/test_output/
+
+# Generated TV screenshots (output of tool/tv_screenshots.sh)
+/screenshots/
+
 # Logs
 build_log.txt
 release_build_log.txt

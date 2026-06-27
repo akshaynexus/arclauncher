@@ -1,2 +1,6 @@
-json_key_file("fastlane/google_play_api_key.json")
-package_name("com.hseuniversal.tidytv")
+# Package name (override via SUPPLY_PACKAGE_NAME for a flavor/debug build).
+package_name(ENV["SUPPLY_PACKAGE_NAME"] || "com.hseuniversal.tidytv")
+
+# NOTE: Google Play credentials are intentionally NOT hardcoded here. They are
+# resolved per-lane by `play_store_auth` in the Fastfile so the service-account
+# key never has to live in git. See android/fastlane/README.md.

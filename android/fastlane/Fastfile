@@ -1,19 +1,133 @@
-desc "Submit a new internal build to Play Store"
+# Fastlane lanes for Arc Launcher (Android TV) — Google Play distribution.
+#
+# Run from the android/ directory:   cd android && fastlane <lane>
+#
+# SECRETS ARE NEVER COMMITTED. Provide the Google Play service-account key via
+# ONE of (resolved in this order by `play_store_auth`):
+#   1. file  android/fastlane/google_play_api_key.json   (gitignored)
+#   2. env   SUPPLY_JSON_KEY        = path to a JSON key file
+#   3. env   GOOGLE_PLAY_API_KEY    = the raw JSON *contents* (used by CI)
+#
+# App signing for `build_aab` is read by Gradle from android/local.properties
+# or the SIGNING_KEYSTORE_PASSWORD / SIGNING_KEY_ALIAS / SIGNING_KEY_PASSWORD
+# env vars (see android/app/build.gradle). The keystore is never committed.
+#
+# See android/fastlane/README.md for full setup.
+
+default_platform(:android)
+
+# Paths are relative to the android/ working directory (where fastlane runs).
+AAB_PATH = "../build/app/outputs/bundle/release/app-release.aab"
+# Canonical store metadata lives at the repo-root fastlane/ folder.
+METADATA_PATH = "../fastlane/metadata"
+
+# Resolve Play Store credentials without ever needing a secret in git.
+# Returns a hash to splat (**) into upload_to_play_store.
+def play_store_auth
+  key_file = ENV["SUPPLY_JSON_KEY"] || "fastlane/google_play_api_key.json"
+  if File.exist?(key_file)
+    { json_key: key_file }
+  elsif (raw = ENV["GOOGLE_PLAY_API_KEY"]) && !raw.strip.empty?
+    { json_key_data: raw }
+  else
+    UI.user_error!(
+      "No Google Play credentials found. Provide ONE of:\n" \
+      "  • android/fastlane/google_play_api_key.json (gitignored), or\n" \
+      "  • env SUPPLY_JSON_KEY = path to the JSON key, or\n" \
+      "  • env GOOGLE_PLAY_API_KEY = the raw JSON contents."
+    )
+  end
+end
+
+desc "Build the release Android App Bundle (.aab) with Flutter"
+lane :build_aab do
+  # Run from the repo root so pubspec version (x.y.z+build) drives versionName/Code.
+  sh("cd .. && flutter build appbundle --release")
+  UI.success("Built #{AAB_PATH}")
+end
+
+# --- Internal-only binary upload (kept for backward compatibility with CI which
+#     calls `fastlane deploy`). Uploads the AAB only, no metadata/screenshots. ---
+desc "Upload the AAB to the internal track (binary only — used by CI)"
 lane :deploy do
   upload_to_play_store(
-      track: "internal",
-      skip_upload_metadata: true,
-      skip_upload_apk: true,
-      skip_upload_screenshots: true,
-      skip_upload_images: true,
-      aab: "../build/app/outputs/bundle/release/app-release.aab"
+    **play_store_auth,
+    track: "internal",
+    skip_upload_metadata: true,
+    skip_upload_apk: true,
+    skip_upload_screenshots: true,
+    skip_upload_images: true,
+    aab: AAB_PATH
   )
 end
 
-desc "Promote previous internal version to production"
+desc "Promote the latest internal build to production (used by CI)"
 lane :promote do
   upload_to_play_store(
-      track: "internal",
-      track_promote_to: "production"
+    **play_store_auth,
+    track: "internal",
+    track_promote_to: "production"
   )
+end
+
+# --- Full releases: build + upload binary WITH metadata, changelogs & TV screenshots. ---
+desc "Build + upload to a track with metadata. Options: track:, draft:true, skip_build:true"
+lane :release do |options|
+  track = options[:track] || "internal"
+  build_aab unless options[:skip_build]
+  upload_to_play_store(
+    **play_store_auth,
+    track: track,
+    aab: AAB_PATH,
+    skip_upload_apk: true,
+    metadata_path: METADATA_PATH,
+    release_status: options[:draft] ? "draft" : "completed"
+  )
+  UI.success("Uploaded to '#{track}'.")
+end
+
+desc "Build + upload to the internal testing track (with metadata + TV screenshots)"
+lane :internal do
+  release(track: "internal")
+end
+
+desc "Build + upload to the closed beta track"
+lane :beta do
+  release(track: "beta")
+end
+
+desc "Build + upload to production"
+lane :production do
+  release(track: "production")
+end
+
+desc "Upload ONLY store metadata, descriptions and TV screenshots (no binary)"
+lane :metadata do
+  upload_to_play_store(
+    **play_store_auth,
+    skip_upload_aab: true,
+    skip_upload_apk: true,
+    skip_upload_changelogs: true, # changelogs attach to a versionCode; ship them with the binary lanes
+    metadata_path: METADATA_PATH,
+    track: "internal"
+  )
+end
+
+desc "Dry-run: build + validate the full upload without committing anything to Play"
+lane :validate do
+  build_aab
+  upload_to_play_store(
+    **play_store_auth,
+    track: "internal",
+    aab: AAB_PATH,
+    skip_upload_apk: true,
+    metadata_path: METADATA_PATH,
+    validate_only: true
+  )
+end
+
+desc "Capture fresh Android TV screenshots from an emulator. Option: sync:true to copy into metadata"
+lane :screenshots do |options|
+  flag = options[:sync] ? " --sync-metadata" : ""
+  sh("cd .. && ./tool/tv_screenshots.sh#{flag}")
 end
