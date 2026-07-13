@@ -23,14 +23,49 @@ class RowByRowTraversalPolicy extends FocusTraversalPolicy
     }
 
     NodeSearcher searcher = NodeSearcher(direction);
-    List<CandidateNode> candidates =
-        searcher.findCandidates(nodes, currentNode);
+    List<CandidateNode> candidates = searcher.findCandidates(nodes, currentNode);
+    candidates = _filterToSameVerticalScrollable(candidates, currentNode, direction);
     if (candidates.isEmpty) {
+      // Keep horizontal navigation bounded to the current row.
+      // Falling back to the default policy here can jump to unrelated widgets
+      // (for example WatchNext cards) when pressing right on the last grid item.
+      if (direction == TraversalDirection.left ||
+          direction == TraversalDirection.right ||
+          _isInsideVerticalScrollable(currentNode)) {
+        return false;
+      }
       return super.inDirection(currentNode, direction);
     }
     FocusNode nextNode = searcher.findBestFocusNode(candidates, currentNode);
     nextNode.requestFocus();
     return true;
+  }
+
+  List<CandidateNode> _filterToSameVerticalScrollable(
+    List<CandidateNode> candidates,
+    FocusNode currentNode,
+    TraversalDirection direction,
+  ) {
+    if (direction != TraversalDirection.up && direction != TraversalDirection.down) {
+      return candidates;
+    }
+
+    final currentScrollable = _verticalScrollableOf(currentNode);
+    if (currentScrollable == null) {
+      return candidates;
+    }
+
+    return candidates.where((candidate) => _verticalScrollableOf(candidate.node) == currentScrollable).toList();
+  }
+
+  bool _isInsideVerticalScrollable(FocusNode node) => _verticalScrollableOf(node) != null;
+
+  ScrollableState? _verticalScrollableOf(FocusNode node) {
+    final context = node.context;
+    if (context == null) {
+      return null;
+    }
+    return Scrollable.maybeOf(context, axis: Axis.vertical);
   }
 }
 

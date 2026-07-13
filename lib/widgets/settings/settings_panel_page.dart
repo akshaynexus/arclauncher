@@ -19,6 +19,7 @@
 import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/providers/purchases_service.dart';
 import 'package:flauncher/providers/update_service.dart';
+import 'package:flauncher/build_flags.dart';
 import 'package:flauncher/widgets/settings/applications_panel_page.dart';
 import 'package:flauncher/widgets/settings/flauncher_about_dialog.dart';
 import 'package:flauncher/widgets/settings/interface_settings_page.dart';
@@ -74,12 +75,13 @@ class SettingsPanelPage extends StatelessWidget {
               style: Theme.of(context).textTheme.bodyMedium),
           onPressed: () => context.read<AppsService>().openSettings(),
         ),
-        FocusableSettingsTile(
-          leading: const Icon(Icons.system_update_alt),
-          title: Text(LocaleKeys.updateCheck.tr(),
-              style: Theme.of(context).textTheme.bodyMedium),
-          onPressed: () => _checkForUpdates(context),
-        ),
+        if (kEnableSelfUpdater)
+          FocusableSettingsTile(
+            leading: const Icon(Icons.system_update_alt),
+            title: Text(LocaleKeys.updateCheck.tr(),
+                style: Theme.of(context).textTheme.bodyMedium),
+            onPressed: () => _checkForUpdates(context),
+          ),
         Consumer<PurchasesService>(
           builder: (context, purchasesService, _) {
             // Everything is free for now, so there's nothing to upsell — hide
@@ -117,6 +119,10 @@ class SettingsPanelPage extends StatelessWidget {
 }
 
 Future<void> _checkForUpdates(BuildContext context) async {
+  if (!kEnableSelfUpdater) {
+    return;
+  }
+
   final updateService = UpdateService();
   final navigator = Navigator.of(context, rootNavigator: true);
 

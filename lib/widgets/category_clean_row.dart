@@ -17,6 +17,7 @@
  */
 
 import 'package:flauncher/providers/apps_service.dart';
+import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/widgets/app_card.dart';
 import 'package:flauncher/widgets/category_container_common.dart';
 import 'package:flutter/material.dart';
@@ -31,6 +32,7 @@ class CategoryCleanRow extends StatelessWidget {
 
   final bool isFirstSection;
   final double scrollAlignment;
+  final VoidCallback? onAppFocused;
 
   CategoryCleanRow({
     Key? key,
@@ -38,36 +40,53 @@ class CategoryCleanRow extends StatelessWidget {
     required this.applications,
     this.isFirstSection = false,
     this.scrollAlignment = 0.5,
+    this.onAppFocused,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final showAppNames = context.select<SettingsService, bool>((s) => s.showAppNamesBelowIcons);
     Widget categoryContent;
     if (applications.isEmpty) {
       categoryContent = categoryContainerEmptyState(context);
-    } else {
-      categoryContent = Row(
-        children: List.generate(6, (index) {
-          if (index < applications.length) {
-            return Expanded(
-              child: Padding(
-                key: ValueKey(applications[index].packageName),
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                child: AppCard(
-                  category: category,
-                  application: applications[index],
-                  autofocus: index == 0,
-                  handleUpNavigationToSettings: isFirstSection,
-                  scrollAlignment: scrollAlignment,
-                  onMove: (direction) => _onMove(context, direction, index),
-                  onMoveEnd: () => _onMoveEnd(context),
-                ),
-              ),
-            );
-          } else {
-            return const Expanded(child: SizedBox.shrink());
-          }
-        }),
+    }
+    else {
+      categoryContent = LayoutBuilder(
+        builder: (context, constraints) {
+          final rowHeight = appCardRowExtentFromContentWidth(constraints.maxWidth)
+              + (showAppNames ? kAppNameLabelHeight : 0);
+          return SizedBox(
+            height: rowHeight,
+            child: Row(
+              children: List.generate(Category.ColumnsCount, (index) {
+                if (index < applications.length) {
+                  return Expanded(
+                    child: Padding(
+                      key: ValueKey(applications[index].packageName),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: kAppCardHorizontalPadding,
+                        vertical: kAppCardVerticalPadding,
+                      ),
+                      child: AppCard(
+                        category: category,
+                        application: applications[index],
+                        autofocus: index == 0,
+                        handleUpNavigationToSettings: isFirstSection,
+                        scrollAlignment: scrollAlignment,
+                        enforceAspectRatio: false,
+                        onFocused: onAppFocused,
+                        onMove: (direction) => _onMove(context, direction, index),
+                        onMoveEnd: () => _onMoveEnd(context),
+                      ),
+                    ),
+                  );
+                } else {
+                  return const Expanded(child: SizedBox.shrink());
+                }
+              }),
+            ),
+          );
+        },
       );
     }
 

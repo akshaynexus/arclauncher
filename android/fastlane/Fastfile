@@ -17,7 +17,9 @@
 default_platform(:android)
 
 # Paths are relative to the android/ working directory (where fastlane runs).
-AAB_PATH = "../build/app/outputs/bundle/release/app-release.aab"
+# The upstream merge introduced play/github product flavors; Play builds use
+# the "play" flavor, whose bundle lands under playRelease/.
+AAB_PATH = "../build/app/outputs/bundle/playRelease/app-play-release.aab"
 # Canonical store metadata lives at the repo-root fastlane/ folder.
 METADATA_PATH = "../fastlane/metadata"
 
@@ -42,7 +44,7 @@ end
 desc "Build the release Android App Bundle (.aab) with Flutter"
 lane :build_aab do
   # Run from the repo root so pubspec version (x.y.z+build) drives versionName/Code.
-  sh("cd .. && flutter build appbundle --release")
+  sh("cd .. && flutter build appbundle --release --flavor play")
   UI.success("Built #{AAB_PATH}")
 end
 

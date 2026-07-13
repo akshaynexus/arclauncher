@@ -29,6 +29,7 @@ import 'package:flauncher/providers/purchases_service.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/brightness_service.dart';
 import 'package:flauncher/providers/wallpaper_service.dart';
+import 'package:flauncher/providers/watch_next_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_displaymode/flutter_displaymode.dart';
 import 'package:provider/provider.dart';
@@ -87,6 +88,8 @@ Future<void> main() async {
         }),
         ChangeNotifierProvider(
             create: (_) => BrightnessService(sharedPreferences), lazy: false),
+        ChangeNotifierProvider(
+            create: (_) => WatchNextService(fLauncherChannel), lazy: false),
         ChangeNotifierProvider.value(value: purchasesService),
       ], child: FLauncherApp())));
 

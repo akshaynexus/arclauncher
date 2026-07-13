@@ -44,8 +44,10 @@ class WallpaperService extends ChangeNotifier {
 
   bool _initialized = false;
   Timer? _timer;
+  int _wallpaperRevision = 0;
 
   ImageProvider? _wallpaper;
+  int get wallpaperRevision => _wallpaperRevision;
 
   ImageProvider? get wallpaper => _wallpaper;
 
@@ -182,6 +184,7 @@ class WallpaperService extends ChangeNotifier {
 
     if (_wallpaper != newWallpaper || videoFile != null || force) {
       _wallpaper = newWallpaper;
+      _wallpaperRevision++;
       notifyListeners();
     }
   }

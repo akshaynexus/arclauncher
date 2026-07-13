@@ -28,16 +28,24 @@ import 'apps_service.dart';
 class LauncherState extends ChangeNotifier {
   bool _isDefaultLauncher;
   bool _launcherVisible;
+  bool _appGridFocused;
 
   bool get isDefaultLauncher => _isDefaultLauncher;
   bool get launcherVisible => _launcherVisible;
+  bool get appGridFocused => _appGridFocused;
 
-  LauncherState()
-      : _isDefaultLauncher = false,
-        _launcherVisible = true;
+  LauncherState() : _isDefaultLauncher = false, _launcherVisible = true, _appGridFocused = false;
 
   void toggleLauncherVisibility() {
     _launcherVisible = !_launcherVisible;
+    notifyListeners();
+  }
+
+  void setAppGridFocused(bool value) {
+    if (_appGridFocused == value) {
+      return;
+    }
+    _appGridFocused = value;
     notifyListeners();
   }
 

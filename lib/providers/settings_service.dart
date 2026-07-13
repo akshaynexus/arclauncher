@@ -57,6 +57,11 @@ const String _aerialCityFilters = "aerial_city_filters";
 const String _aerialPlaylistCacheKey = "aerial_playlist_cache_key";
 const String _aerialPlaylistCacheJson = "aerial_playlist_cache_json";
 const String _aerialPlaylistPlaybackIndex = "aerial_playlist_playback_index";
+const String _backgroundBlurDisabled = "background_blur_disabled";
+const String _showWatchNextSection = "show_watch_next_section";
+const String _dockDarkBackground = "dock_dark_background";
+const String _dockShadowEnabled = "dock_shadow_enabled";
+const String _showFocusBorders = "show_focus_borders";
 
 // WiFi usage period options
 const String WIFI_USAGE_DAILY = "daily";
@@ -86,7 +91,8 @@ class SettingsService extends ChangeNotifier {
   final SharedPreferences _sharedPreferences;
 
   bool get appHighlightAnimationEnabled =>
-      _sharedPreferences.getBool(_appHighlightAnimationEnabledKey) ?? false;
+      showFocusBorders &&
+      (_sharedPreferences.getBool(_appHighlightAnimationEnabledKey) ?? false);
 
   bool get appKeyClickEnabled =>
       _sharedPreferences.getBool(_appKeyClickEnabledKey) ?? true;
@@ -188,6 +194,16 @@ class SettingsService extends ChangeNotifier {
   int get aerialPlaylistPlaybackIndex =>
       _sharedPreferences.getInt(_aerialPlaylistPlaybackIndex) ?? 0;
 
+  bool get backgroundBlurDisabled => _sharedPreferences.getBool(_backgroundBlurDisabled) ?? false;
+
+  bool get showWatchNextSection => _sharedPreferences.getBool(_showWatchNextSection) ?? false;
+
+  bool get dockDarkBackground => _sharedPreferences.getBool(_dockDarkBackground) ?? false;
+
+  bool get dockShadowEnabled => _sharedPreferences.getBool(_dockShadowEnabled) ?? false;
+
+  bool get showFocusBorders => _sharedPreferences.getBool(_showFocusBorders) ?? true;
+
   Color get accentColor {
     final hex = accentColorHex;
     return Color(int.parse("0xFF$hex"));
@@ -201,6 +217,9 @@ class SettingsService extends ChangeNotifier {
   }
 
   Future<void> setAppHighlightAnimationEnabled(bool value) async {
+    if (value && !showFocusBorders) {
+      return;
+    }
     return set(_appHighlightAnimationEnabledKey, value);
   }
 
@@ -367,8 +386,30 @@ class SettingsService extends ChangeNotifier {
     ]);
   }
 
-  bool get timeBasedWallpaperEnabled =>
-      _sharedPreferences.getBool("time_based_wallpaper_enabled") ?? false;
+  Future<void> setBackgroundBlurDisabled(bool value) async {
+    return set(_backgroundBlurDisabled, value);
+  }
+
+  Future<void> setShowWatchNextSection(bool value) async {
+    return set(_showWatchNextSection, value);
+  }
+
+  Future<void> setDockDarkBackground(bool value) async {
+    return set(_dockDarkBackground, value);
+  }
+
+  Future<void> setDockShadowEnabled(bool value) async {
+    return set(_dockShadowEnabled, value);
+  }
+
+  Future<void> setShowFocusBorders(bool value) async {
+    await set(_showFocusBorders, value);
+    if (!value) {
+      await setAppHighlightAnimationEnabled(false);
+    }
+  }
+
+  bool get timeBasedWallpaperEnabled => _sharedPreferences.getBool("time_based_wallpaper_enabled") ?? false;
 
   Future<void> setTimeBasedWallpaperEnabled(bool enabled) async {
     await _sharedPreferences.setBool("time_based_wallpaper_enabled", enabled);

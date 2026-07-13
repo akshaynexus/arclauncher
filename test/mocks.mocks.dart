@@ -40,323 +40,180 @@ import 'package:mockito/src/dummies.dart' as _i18;
 
 class _FakeStreamSubscription_0<T> extends _i1.SmartFake
     implements _i2.StreamSubscription<T> {
-  _FakeStreamSubscription_0(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeStreamSubscription_0(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
 class _FakeFLauncherGradient_1 extends _i1.SmartFake
     implements _i3.FLauncherGradient {
-  _FakeFLauncherGradient_1(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeFLauncherGradient_1(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
 class _FakeCategory_2 extends _i1.SmartFake implements _i4.Category {
-  _FakeCategory_2(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeCategory_2(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
 class _FakeColor_3 extends _i1.SmartFake implements _i5.Color {
-  _FakeColor_3(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeColor_3(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
 class _FakeMigrationStrategy_4 extends _i1.SmartFake
     implements _i6.MigrationStrategy {
-  _FakeMigrationStrategy_4(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeMigrationStrategy_4(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
 class _Fake$FLauncherDatabaseManager_5 extends _i1.SmartFake
     implements _i7.$FLauncherDatabaseManager {
-  _Fake$FLauncherDatabaseManager_5(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _Fake$FLauncherDatabaseManager_5(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
 class _Fake$AppsTable_6 extends _i1.SmartFake implements _i7.$AppsTable {
-  _Fake$AppsTable_6(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _Fake$AppsTable_6(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
 class _Fake$CategoriesTable_7 extends _i1.SmartFake
     implements _i7.$CategoriesTable {
-  _Fake$CategoriesTable_7(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _Fake$CategoriesTable_7(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
 class _Fake$AppsCategoriesTable_8 extends _i1.SmartFake
     implements _i7.$AppsCategoriesTable {
-  _Fake$AppsCategoriesTable_8(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _Fake$AppsCategoriesTable_8(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
 class _Fake$LauncherSpacersTable_9 extends _i1.SmartFake
     implements _i7.$LauncherSpacersTable {
-  _Fake$LauncherSpacersTable_9(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _Fake$LauncherSpacersTable_9(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
 class _FakeStreamQueryUpdateRules_10 extends _i1.SmartFake
     implements _i6.StreamQueryUpdateRules {
-  _FakeStreamQueryUpdateRules_10(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeStreamQueryUpdateRules_10(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
 class _FakeGeneratedDatabase_11 extends _i1.SmartFake
     implements _i6.GeneratedDatabase {
-  _FakeGeneratedDatabase_11(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeGeneratedDatabase_11(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
 class _FakeDriftDatabaseOptions_12 extends _i1.SmartFake
     implements _i6.DriftDatabaseOptions {
-  _FakeDriftDatabaseOptions_12(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeDriftDatabaseOptions_12(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
 class _FakeDatabaseConnection_13 extends _i1.SmartFake
     implements _i6.DatabaseConnection {
-  _FakeDatabaseConnection_13(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeDatabaseConnection_13(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
 class _FakeQueryExecutor_14 extends _i1.SmartFake implements _i6.QueryExecutor {
-  _FakeQueryExecutor_14(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeQueryExecutor_14(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
 class _FakeStreamQueryStore_15 extends _i1.SmartFake
     implements _i8.StreamQueryStore {
-  _FakeStreamQueryStore_15(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeStreamQueryStore_15(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
 class _FakeDatabaseConnectionUser_16 extends _i1.SmartFake
     implements _i6.DatabaseConnectionUser {
-  _FakeDatabaseConnectionUser_16(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeDatabaseConnectionUser_16(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
 class _FakeMigrator_17 extends _i1.SmartFake implements _i6.Migrator {
-  _FakeMigrator_17(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeMigrator_17(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
 class _FakeFuture_18<T> extends _i1.SmartFake implements _i2.Future<T> {
-  _FakeFuture_18(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeFuture_18(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
 class _FakeInsertStatement_19<T1 extends _i6.Table, D1> extends _i1.SmartFake
     implements _i6.InsertStatement<T1, D1> {
-  _FakeInsertStatement_19(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeInsertStatement_19(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
 class _FakeUpdateStatement_20<T extends _i6.Table, D> extends _i1.SmartFake
     implements _i6.UpdateStatement<T, D> {
-  _FakeUpdateStatement_20(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeUpdateStatement_20(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
 class _FakeSimpleSelectStatement_21<T1 extends _i6.HasResultSet, D>
-    extends _i1.SmartFake implements _i6.SimpleSelectStatement<T1, D> {
-  _FakeSimpleSelectStatement_21(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+    extends _i1.SmartFake
+    implements _i6.SimpleSelectStatement<T1, D> {
+  _FakeSimpleSelectStatement_21(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
 class _FakeJoinedSelectStatement_22<FirstT extends _i6.HasResultSet, FirstD>
-    extends _i1.SmartFake implements _i6.JoinedSelectStatement<FirstT, FirstD> {
-  _FakeJoinedSelectStatement_22(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+    extends _i1.SmartFake
+    implements _i6.JoinedSelectStatement<FirstT, FirstD> {
+  _FakeJoinedSelectStatement_22(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
 class _FakeBaseSelectStatement_23<Row> extends _i1.SmartFake
     implements _i6.BaseSelectStatement<Row> {
-  _FakeBaseSelectStatement_23(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeBaseSelectStatement_23(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
 class _FakeDeleteStatement_24<T1 extends _i6.Table, D1> extends _i1.SmartFake
     implements _i6.DeleteStatement<T1, D1> {
-  _FakeDeleteStatement_24(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeDeleteStatement_24(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
 class _FakeSelectable_25<T> extends _i1.SmartFake implements _i6.Selectable<T> {
-  _FakeSelectable_25(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeSelectable_25(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
 class _FakeGenerationContext_26 extends _i1.SmartFake
     implements _i6.GenerationContext {
-  _FakeGenerationContext_26(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeGenerationContext_26(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
 class _FakeImageStream_27 extends _i1.SmartFake implements _i9.ImageStream {
-  _FakeImageStream_27(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeImageStream_27(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 
   @override
-  String toString(
-          {_i10.DiagnosticLevel? minLevel = _i10.DiagnosticLevel.info}) =>
-      super.toString();
+  String toString({
+    _i10.DiagnosticLevel? minLevel = _i10.DiagnosticLevel.info,
+  }) => super.toString();
 }
 
 class _FakeImageStreamCompleter_28 extends _i1.SmartFake
     implements _i9.ImageStreamCompleter {
-  _FakeImageStreamCompleter_28(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeImageStreamCompleter_28(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 
   @override
-  String toString(
-          {_i10.DiagnosticLevel? minLevel = _i10.DiagnosticLevel.info}) =>
-      super.toString();
+  String toString({
+    _i10.DiagnosticLevel? minLevel = _i10.DiagnosticLevel.info,
+  }) => super.toString();
 }
 
 /// A class which mocks [FLauncherChannel].
@@ -370,282 +227,296 @@ class MockFLauncherChannel extends _i1.Mock implements _i11.FLauncherChannel {
   @override
   _i2.Future<List<Map<dynamic, dynamic>>> getApplications() =>
       (super.noSuchMethod(
-        Invocation.method(
-          #getApplications,
-          [],
-        ),
-        returnValue: _i2.Future<List<Map<dynamic, dynamic>>>.value(
-            <Map<dynamic, dynamic>>[]),
-      ) as _i2.Future<List<Map<dynamic, dynamic>>>);
+            Invocation.method(#getApplications, []),
+            returnValue: _i2.Future<List<Map<dynamic, dynamic>>>.value(
+              <Map<dynamic, dynamic>>[],
+            ),
+          )
+          as _i2.Future<List<Map<dynamic, dynamic>>>);
 
   @override
   _i2.Future<_i12.Uint8List> getApplicationBanner(String? packageName) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #getApplicationBanner,
-          [packageName],
-        ),
-        returnValue: _i2.Future<_i12.Uint8List>.value(_i12.Uint8List(0)),
-      ) as _i2.Future<_i12.Uint8List>);
+            Invocation.method(#getApplicationBanner, [packageName]),
+            returnValue: _i2.Future<_i12.Uint8List>.value(_i12.Uint8List(0)),
+          )
+          as _i2.Future<_i12.Uint8List>);
 
   @override
   _i2.Future<_i12.Uint8List> getApplicationIcon(String? packageName) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #getApplicationIcon,
-          [packageName],
-        ),
-        returnValue: _i2.Future<_i12.Uint8List>.value(_i12.Uint8List(0)),
-      ) as _i2.Future<_i12.Uint8List>);
+            Invocation.method(#getApplicationIcon, [packageName]),
+            returnValue: _i2.Future<_i12.Uint8List>.value(_i12.Uint8List(0)),
+          )
+          as _i2.Future<_i12.Uint8List>);
 
   @override
   _i2.Future<bool> applicationExists(String? packageName) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #applicationExists,
-          [packageName],
-        ),
-        returnValue: _i2.Future<bool>.value(false),
-      ) as _i2.Future<bool>);
+            Invocation.method(#applicationExists, [packageName]),
+            returnValue: _i2.Future<bool>.value(false),
+          )
+          as _i2.Future<bool>);
 
   @override
   _i2.Future<void> launchActivityFromAction(String? action) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #launchActivityFromAction,
-          [action],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+            Invocation.method(#launchActivityFromAction, [action]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
-  _i2.Future<void> launchApp(String? packageName) => (super.noSuchMethod(
-        Invocation.method(
-          #launchApp,
-          [packageName],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+  _i2.Future<void> launchApp(String? packageName) =>
+      (super.noSuchMethod(
+            Invocation.method(#launchApp, [packageName]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
-  _i2.Future<void> openSettings() => (super.noSuchMethod(
-        Invocation.method(
-          #openSettings,
-          [],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+  _i2.Future<void> openSettings() =>
+      (super.noSuchMethod(
+            Invocation.method(#openSettings, []),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
-  _i2.Future<void> openAppInfo(String? packageName) => (super.noSuchMethod(
-        Invocation.method(
-          #openAppInfo,
-          [packageName],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+  _i2.Future<void> openAppInfo(String? packageName) =>
+      (super.noSuchMethod(
+            Invocation.method(#openAppInfo, [packageName]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
-  _i2.Future<void> uninstallApp(String? packageName) => (super.noSuchMethod(
-        Invocation.method(
-          #uninstallApp,
-          [packageName],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+  _i2.Future<void> uninstallApp(String? packageName) =>
+      (super.noSuchMethod(
+            Invocation.method(#uninstallApp, [packageName]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
-  _i2.Future<bool> isDefaultLauncher() => (super.noSuchMethod(
-        Invocation.method(
-          #isDefaultLauncher,
-          [],
-        ),
-        returnValue: _i2.Future<bool>.value(false),
-      ) as _i2.Future<bool>);
+  _i2.Future<bool> isDefaultLauncher() =>
+      (super.noSuchMethod(
+            Invocation.method(#isDefaultLauncher, []),
+            returnValue: _i2.Future<bool>.value(false),
+          )
+          as _i2.Future<bool>);
 
   @override
-  _i2.Future<bool> checkForGetContentAvailability() => (super.noSuchMethod(
-        Invocation.method(
-          #checkForGetContentAvailability,
-          [],
-        ),
-        returnValue: _i2.Future<bool>.value(false),
-      ) as _i2.Future<bool>);
+  _i2.Future<bool> checkForGetContentAvailability() =>
+      (super.noSuchMethod(
+            Invocation.method(#checkForGetContentAvailability, []),
+            returnValue: _i2.Future<bool>.value(false),
+          )
+          as _i2.Future<bool>);
 
   @override
   _i2.Future<Map<String, dynamic>> getActiveNetworkInformation() =>
       (super.noSuchMethod(
-        Invocation.method(
-          #getActiveNetworkInformation,
-          [],
-        ),
-        returnValue:
-            _i2.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
-      ) as _i2.Future<Map<String, dynamic>>);
+            Invocation.method(#getActiveNetworkInformation, []),
+            returnValue: _i2.Future<Map<String, dynamic>>.value(
+              <String, dynamic>{},
+            ),
+          )
+          as _i2.Future<Map<String, dynamic>>);
 
   @override
-  _i2.Future<int> getDailyWifiUsage() => (super.noSuchMethod(
-        Invocation.method(
-          #getDailyWifiUsage,
-          [],
-        ),
-        returnValue: _i2.Future<int>.value(0),
-      ) as _i2.Future<int>);
+  _i2.Future<int> getDailyWifiUsage() =>
+      (super.noSuchMethod(
+            Invocation.method(#getDailyWifiUsage, []),
+            returnValue: _i2.Future<int>.value(0),
+          )
+          as _i2.Future<int>);
 
   @override
-  _i2.Future<int> getWeeklyWifiUsage() => (super.noSuchMethod(
-        Invocation.method(
-          #getWeeklyWifiUsage,
-          [],
-        ),
-        returnValue: _i2.Future<int>.value(0),
-      ) as _i2.Future<int>);
+  _i2.Future<int> getWeeklyWifiUsage() =>
+      (super.noSuchMethod(
+            Invocation.method(#getWeeklyWifiUsage, []),
+            returnValue: _i2.Future<int>.value(0),
+          )
+          as _i2.Future<int>);
 
   @override
-  _i2.Future<int> getMonthlyWifiUsage() => (super.noSuchMethod(
-        Invocation.method(
-          #getMonthlyWifiUsage,
-          [],
-        ),
-        returnValue: _i2.Future<int>.value(0),
-      ) as _i2.Future<int>);
+  _i2.Future<int> getMonthlyWifiUsage() =>
+      (super.noSuchMethod(
+            Invocation.method(#getMonthlyWifiUsage, []),
+            returnValue: _i2.Future<int>.value(0),
+          )
+          as _i2.Future<int>);
 
   @override
-  _i2.Future<bool> checkUsageStatsPermission() => (super.noSuchMethod(
-        Invocation.method(
-          #checkUsageStatsPermission,
-          [],
-        ),
-        returnValue: _i2.Future<bool>.value(false),
-      ) as _i2.Future<bool>);
+  _i2.Future<bool> checkUsageStatsPermission() =>
+      (super.noSuchMethod(
+            Invocation.method(#checkUsageStatsPermission, []),
+            returnValue: _i2.Future<bool>.value(false),
+          )
+          as _i2.Future<bool>);
 
   @override
-  _i2.Future<void> requestUsageStatsPermission() => (super.noSuchMethod(
-        Invocation.method(
-          #requestUsageStatsPermission,
-          [],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+  _i2.Future<void> requestUsageStatsPermission() =>
+      (super.noSuchMethod(
+            Invocation.method(#requestUsageStatsPermission, []),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
-  _i2.Future<void> openWifiSettings() => (super.noSuchMethod(
-        Invocation.method(
-          #openWifiSettings,
-          [],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+  _i2.Future<void> openWifiSettings() =>
+      (super.noSuchMethod(
+            Invocation.method(#openWifiSettings, []),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
-  _i2.Future<bool> startAmbientMode() => (super.noSuchMethod(
-        Invocation.method(
-          #startAmbientMode,
-          [],
-        ),
-        returnValue: _i2.Future<bool>.value(false),
-      ) as _i2.Future<bool>);
+  _i2.Future<bool> startAmbientMode() =>
+      (super.noSuchMethod(
+            Invocation.method(#startAmbientMode, []),
+            returnValue: _i2.Future<bool>.value(false),
+          )
+          as _i2.Future<bool>);
 
   @override
-  _i2.Future<bool> checkMediaPermissions() => (super.noSuchMethod(
-        Invocation.method(
-          #checkMediaPermissions,
-          [],
-        ),
-        returnValue: _i2.Future<bool>.value(false),
-      ) as _i2.Future<bool>);
+  _i2.Future<bool> checkMediaPermissions() =>
+      (super.noSuchMethod(
+            Invocation.method(#checkMediaPermissions, []),
+            returnValue: _i2.Future<bool>.value(false),
+          )
+          as _i2.Future<bool>);
 
   @override
-  _i2.Future<void> requestMediaPermissions() => (super.noSuchMethod(
-        Invocation.method(
-          #requestMediaPermissions,
-          [],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+  _i2.Future<void> requestMediaPermissions() =>
+      (super.noSuchMethod(
+            Invocation.method(#requestMediaPermissions, []),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
   _i2.Future<List<Map<String, dynamic>>> getMediaStoreImages() =>
       (super.noSuchMethod(
-        Invocation.method(
-          #getMediaStoreImages,
-          [],
-        ),
-        returnValue: _i2.Future<List<Map<String, dynamic>>>.value(
-            <Map<String, dynamic>>[]),
-      ) as _i2.Future<List<Map<String, dynamic>>>);
+            Invocation.method(#getMediaStoreImages, []),
+            returnValue: _i2.Future<List<Map<String, dynamic>>>.value(
+              <Map<String, dynamic>>[],
+            ),
+          )
+          as _i2.Future<List<Map<String, dynamic>>>);
 
   @override
   _i2.Future<List<Map<String, dynamic>>> getMediaStoreVideos() =>
       (super.noSuchMethod(
-        Invocation.method(
-          #getMediaStoreVideos,
-          [],
-        ),
-        returnValue: _i2.Future<List<Map<String, dynamic>>>.value(
-            <Map<String, dynamic>>[]),
-      ) as _i2.Future<List<Map<String, dynamic>>>);
+            Invocation.method(#getMediaStoreVideos, []),
+            returnValue: _i2.Future<List<Map<String, dynamic>>>.value(
+              <Map<String, dynamic>>[],
+            ),
+          )
+          as _i2.Future<List<Map<String, dynamic>>>);
 
   @override
-  _i2.Future<bool> installApk(String? apkPath) => (super.noSuchMethod(
-        Invocation.method(
-          #installApk,
-          [apkPath],
-        ),
-        returnValue: _i2.Future<bool>.value(false),
-      ) as _i2.Future<bool>);
+  _i2.Future<bool> installApk(String? apkPath) =>
+      (super.noSuchMethod(
+            Invocation.method(#installApk, [apkPath]),
+            returnValue: _i2.Future<bool>.value(false),
+          )
+          as _i2.Future<bool>);
 
   @override
-  _i2.Future<void> requestInstallUnknownAppsPermission() => (super.noSuchMethod(
-        Invocation.method(
-          #requestInstallUnknownAppsPermission,
-          [],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+  _i2.Future<void> requestInstallUnknownAppsPermission() =>
+      (super.noSuchMethod(
+            Invocation.method(#requestInstallUnknownAppsPermission, []),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
   _i2.StreamSubscription<dynamic> addAppsChangedListener(
-          void Function(Map<String, dynamic>)? listener) =>
+    void Function(Map<String, dynamic>)? listener,
+  ) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #addAppsChangedListener,
-          [listener],
-        ),
-        returnValue: _FakeStreamSubscription_0<dynamic>(
-          this,
-          Invocation.method(
-            #addAppsChangedListener,
-            [listener],
-          ),
-        ),
-      ) as _i2.StreamSubscription<dynamic>);
+            Invocation.method(#addAppsChangedListener, [listener]),
+            returnValue: _FakeStreamSubscription_0<dynamic>(
+              this,
+              Invocation.method(#addAppsChangedListener, [listener]),
+            ),
+          )
+          as _i2.StreamSubscription<dynamic>);
 
   @override
   _i2.StreamSubscription<dynamic> addNetworkChangedListener(
-          void Function(Map<String, dynamic>)? listener) =>
+    void Function(Map<String, dynamic>)? listener,
+  ) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #addNetworkChangedListener,
-          [listener],
-        ),
-        returnValue: _FakeStreamSubscription_0<dynamic>(
-          this,
-          Invocation.method(
-            #addNetworkChangedListener,
-            [listener],
-          ),
-        ),
-      ) as _i2.StreamSubscription<dynamic>);
+            Invocation.method(#addNetworkChangedListener, [listener]),
+            returnValue: _FakeStreamSubscription_0<dynamic>(
+              this,
+              Invocation.method(#addNetworkChangedListener, [listener]),
+            ),
+          )
+          as _i2.StreamSubscription<dynamic>);
+
+  @override
+  _i2.Future<bool> checkWatchNextPermission() =>
+      (super.noSuchMethod(
+            Invocation.method(#checkWatchNextPermission, []),
+            returnValue: _i2.Future<bool>.value(false),
+          )
+          as _i2.Future<bool>);
+
+  @override
+  _i2.Future<void> requestWatchNextPermission() =>
+      (super.noSuchMethod(
+            Invocation.method(#requestWatchNextPermission, []),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
+
+  @override
+  _i2.Future<List<Map<dynamic, dynamic>>> getWatchNextItems() =>
+      (super.noSuchMethod(
+            Invocation.method(#getWatchNextItems, []),
+            returnValue: _i2.Future<List<Map<dynamic, dynamic>>>.value(
+              <Map<dynamic, dynamic>>[],
+            ),
+          )
+          as _i2.Future<List<Map<dynamic, dynamic>>>);
+
+  @override
+  _i2.Future<bool> launchWatchNextItem(
+    String? packageName,
+    String? contentId,
+    String? action,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#launchWatchNextItem, [
+              packageName,
+              contentId,
+              action,
+            ]),
+            returnValue: _i2.Future<bool>.value(false),
+          )
+          as _i2.Future<bool>);
+
+  @override
+  _i2.Future<_i12.Uint8List> loadContentUriImage(String? contentUri) =>
+      (super.noSuchMethod(
+            Invocation.method(#loadContentUriImage, [contentUri]),
+            returnValue: _i2.Future<_i12.Uint8List>.value(_i12.Uint8List(0)),
+          )
+          as _i2.Future<_i12.Uint8List>);
 }
 
 /// A class which mocks [WallpaperService].
@@ -657,167 +528,144 @@ class MockWallpaperService extends _i1.Mock implements _i13.WallpaperService {
   }
 
   @override
-  _i3.FLauncherGradient get gradient => (super.noSuchMethod(
-        Invocation.getter(#gradient),
-        returnValue: _FakeFLauncherGradient_1(
-          this,
-          Invocation.getter(#gradient),
-        ),
-      ) as _i3.FLauncherGradient);
+  int get wallpaperRevision =>
+      (super.noSuchMethod(Invocation.getter(#wallpaperRevision), returnValue: 0)
+          as int);
 
   @override
-  bool get isInitialized => (super.noSuchMethod(
-        Invocation.getter(#isInitialized),
-        returnValue: false,
-      ) as bool);
+  _i3.FLauncherGradient get gradient =>
+      (super.noSuchMethod(
+            Invocation.getter(#gradient),
+            returnValue: _FakeFLauncherGradient_1(
+              this,
+              Invocation.getter(#gradient),
+            ),
+          )
+          as _i3.FLauncherGradient);
 
   @override
-  bool get hasListeners => (super.noSuchMethod(
-        Invocation.getter(#hasListeners),
-        returnValue: false,
-      ) as bool);
+  bool get isInitialized =>
+      (super.noSuchMethod(Invocation.getter(#isInitialized), returnValue: false)
+          as bool);
+
+  @override
+  bool get hasListeners =>
+      (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false)
+          as bool);
 
   @override
   void dispose() => super.noSuchMethod(
-        Invocation.method(
-          #dispose,
-          [],
-        ),
-        returnValueForMissingStub: null,
-      );
+    Invocation.method(#dispose, []),
+    returnValueForMissingStub: null,
+  );
 
   @override
-  _i2.Future<void> setWallpaper(_i14.File? sourceFile) => (super.noSuchMethod(
-        Invocation.method(
-          #setWallpaper,
-          [sourceFile],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+  _i2.Future<void> setWallpaper(_i14.File? sourceFile) =>
+      (super.noSuchMethod(
+            Invocation.method(#setWallpaper, [sourceFile]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
   _i2.Future<void> setWallpaperDay(_i14.File? sourceFile) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #setWallpaperDay,
-          [sourceFile],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+            Invocation.method(#setWallpaperDay, [sourceFile]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
   _i2.Future<void> setWallpaperNight(_i14.File? sourceFile) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #setWallpaperNight,
-          [sourceFile],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+            Invocation.method(#setWallpaperNight, [sourceFile]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
   _i2.Future<void> setVideoWallpaper(_i14.File? sourceFile) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #setVideoWallpaper,
-          [sourceFile],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+            Invocation.method(#setVideoWallpaper, [sourceFile]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
   _i2.Future<void> setVideoWallpaperDay(_i14.File? sourceFile) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #setVideoWallpaperDay,
-          [sourceFile],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+            Invocation.method(#setVideoWallpaperDay, [sourceFile]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
   _i2.Future<void> setVideoWallpaperNight(_i14.File? sourceFile) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #setVideoWallpaperNight,
-          [sourceFile],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+            Invocation.method(#setVideoWallpaperNight, [sourceFile]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
   _i2.Future<void> setGradient(_i3.FLauncherGradient? fLauncherGradient) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #setGradient,
-          [fLauncherGradient],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+            Invocation.method(#setGradient, [fLauncherGradient]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
-  _i2.Future<void> cleanVideoWallpaperFiles() => (super.noSuchMethod(
-        Invocation.method(
-          #cleanVideoWallpaperFiles,
-          [],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+  _i2.Future<void> cleanVideoWallpaperFiles() =>
+      (super.noSuchMethod(
+            Invocation.method(#cleanVideoWallpaperFiles, []),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
-  _i2.Future<void> cleanImageWallpaperFiles() => (super.noSuchMethod(
-        Invocation.method(
-          #cleanImageWallpaperFiles,
-          [],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+  _i2.Future<void> cleanImageWallpaperFiles() =>
+      (super.noSuchMethod(
+            Invocation.method(#cleanImageWallpaperFiles, []),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
-  _i2.Future<void> pickWallpaper() => (super.noSuchMethod(
-        Invocation.method(
-          #pickWallpaper,
-          [],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+  _i2.Future<void> pickWallpaper() =>
+      (super.noSuchMethod(
+            Invocation.method(#pickWallpaper, []),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
   void addListener(_i5.VoidCallback? listener) => super.noSuchMethod(
-        Invocation.method(
-          #addListener,
-          [listener],
-        ),
-        returnValueForMissingStub: null,
-      );
+    Invocation.method(#addListener, [listener]),
+    returnValueForMissingStub: null,
+  );
 
   @override
   void removeListener(_i5.VoidCallback? listener) => super.noSuchMethod(
-        Invocation.method(
-          #removeListener,
-          [listener],
-        ),
-        returnValueForMissingStub: null,
-      );
+    Invocation.method(#removeListener, [listener]),
+    returnValueForMissingStub: null,
+  );
 
   @override
   void notifyListeners() => super.noSuchMethod(
-        Invocation.method(
-          #notifyListeners,
-          [],
-        ),
-        returnValueForMissingStub: null,
-      );
+    Invocation.method(#notifyListeners, []),
+    returnValueForMissingStub: null,
+  );
 }
 
 /// A class which mocks [AppsService].
@@ -829,218 +677,180 @@ class MockAppsService extends _i1.Mock implements _i15.AppsService {
   }
 
   @override
-  bool get initialized => (super.noSuchMethod(
-        Invocation.getter(#initialized),
-        returnValue: false,
-      ) as bool);
+  bool get initialized =>
+      (super.noSuchMethod(Invocation.getter(#initialized), returnValue: false)
+          as bool);
 
   @override
-  int get layoutVersion => (super.noSuchMethod(
-        Invocation.getter(#layoutVersion),
-        returnValue: 0,
-      ) as int);
+  int get layoutVersion =>
+      (super.noSuchMethod(Invocation.getter(#layoutVersion), returnValue: 0)
+          as int);
 
   @override
-  List<_i16.App> get applications => (super.noSuchMethod(
-        Invocation.getter(#applications),
-        returnValue: <_i16.App>[],
-      ) as List<_i16.App>);
+  List<_i16.App> get applications =>
+      (super.noSuchMethod(
+            Invocation.getter(#applications),
+            returnValue: <_i16.App>[],
+          )
+          as List<_i16.App>);
 
   @override
-  List<_i4.LauncherSection> get launcherSections => (super.noSuchMethod(
-        Invocation.getter(#launcherSections),
-        returnValue: <_i4.LauncherSection>[],
-      ) as List<_i4.LauncherSection>);
+  List<_i4.LauncherSection> get launcherSections =>
+      (super.noSuchMethod(
+            Invocation.getter(#launcherSections),
+            returnValue: <_i4.LauncherSection>[],
+          )
+          as List<_i4.LauncherSection>);
 
   @override
-  List<_i4.Category> get categories => (super.noSuchMethod(
-        Invocation.getter(#categories),
-        returnValue: <_i4.Category>[],
-      ) as List<_i4.Category>);
+  List<_i4.Category> get categories =>
+      (super.noSuchMethod(
+            Invocation.getter(#categories),
+            returnValue: <_i4.Category>[],
+          )
+          as List<_i4.Category>);
 
   @override
-  bool get hasListeners => (super.noSuchMethod(
-        Invocation.getter(#hasListeners),
-        returnValue: false,
-      ) as bool);
+  bool get hasListeners =>
+      (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false)
+          as bool);
 
   @override
   void notifyListeners() => super.noSuchMethod(
-        Invocation.method(
-          #notifyListeners,
-          [],
-        ),
-        returnValueForMissingStub: null,
-      );
+    Invocation.method(#notifyListeners, []),
+    returnValueForMissingStub: null,
+  );
 
   @override
   void clearPendingReorderFocusPackage() => super.noSuchMethod(
-        Invocation.method(
-          #clearPendingReorderFocusPackage,
-          [],
-        ),
-        returnValueForMissingStub: null,
-      );
+    Invocation.method(#clearPendingReorderFocusPackage, []),
+    returnValueForMissingStub: null,
+  );
 
   @override
-  void setPendingReorderFocus(
-    String? packageName,
-    int? categoryId,
-  ) =>
+  void setPendingReorderFocus(String? packageName, int? categoryId) =>
       super.noSuchMethod(
-        Invocation.method(
-          #setPendingReorderFocus,
-          [
-            packageName,
-            categoryId,
-          ],
-        ),
+        Invocation.method(#setPendingReorderFocus, [packageName, categoryId]),
         returnValueForMissingStub: null,
       );
 
   @override
-  bool consumeDirtyImage(String? packageName) => (super.noSuchMethod(
-        Invocation.method(
-          #consumeDirtyImage,
-          [packageName],
-        ),
-        returnValue: false,
-      ) as bool);
+  bool consumeDirtyImage(String? packageName) =>
+      (super.noSuchMethod(
+            Invocation.method(#consumeDirtyImage, [packageName]),
+            returnValue: false,
+          )
+          as bool);
 
   @override
-  _i2.Future<void> retrySync() => (super.noSuchMethod(
-        Invocation.method(
-          #retrySync,
-          [],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+  _i2.Future<void> retrySync() =>
+      (super.noSuchMethod(
+            Invocation.method(#retrySync, []),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
   void sortCategory(_i4.Category? category) => super.noSuchMethod(
-        Invocation.method(
-          #sortCategory,
-          [category],
-        ),
-        returnValueForMissingStub: null,
-      );
+    Invocation.method(#sortCategory, [category]),
+    returnValueForMissingStub: null,
+  );
 
   @override
   _i2.Future<_i12.Uint8List> getAppBanner(String? packageName) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #getAppBanner,
-          [packageName],
-        ),
-        returnValue: _i2.Future<_i12.Uint8List>.value(_i12.Uint8List(0)),
-      ) as _i2.Future<_i12.Uint8List>);
+            Invocation.method(#getAppBanner, [packageName]),
+            returnValue: _i2.Future<_i12.Uint8List>.value(_i12.Uint8List(0)),
+          )
+          as _i2.Future<_i12.Uint8List>);
 
   @override
-  _i2.Future<void> setCustomAppBanner(
-    String? packageName,
-    String? imagePath,
-  ) =>
+  _i2.Future<void> setCustomAppBanner(String? packageName, String? imagePath) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #setCustomAppBanner,
-          [
-            packageName,
-            imagePath,
-          ],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+            Invocation.method(#setCustomAppBanner, [packageName, imagePath]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
   _i2.Future<void> removeCustomAppBanner(String? packageName) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #removeCustomAppBanner,
-          [packageName],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+            Invocation.method(#removeCustomAppBanner, [packageName]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
-  _i2.Future<bool> hasCustomBanner(String? packageName) => (super.noSuchMethod(
-        Invocation.method(
-          #hasCustomBanner,
-          [packageName],
-        ),
-        returnValue: _i2.Future<bool>.value(false),
-      ) as _i2.Future<bool>);
+  _i2.Future<bool> hasCustomBanner(String? packageName) =>
+      (super.noSuchMethod(
+            Invocation.method(#hasCustomBanner, [packageName]),
+            returnValue: _i2.Future<bool>.value(false),
+          )
+          as _i2.Future<bool>);
 
   @override
   _i2.Future<_i12.Uint8List> getAppIcon(String? packageName) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #getAppIcon,
-          [packageName],
-        ),
-        returnValue: _i2.Future<_i12.Uint8List>.value(_i12.Uint8List(0)),
-      ) as _i2.Future<_i12.Uint8List>);
+            Invocation.method(#getAppIcon, [packageName]),
+            returnValue: _i2.Future<_i12.Uint8List>.value(_i12.Uint8List(0)),
+          )
+          as _i2.Future<_i12.Uint8List>);
 
   @override
-  _i2.Future<void> launchApp(_i16.App? app) => (super.noSuchMethod(
-        Invocation.method(
-          #launchApp,
-          [app],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+  _i2.Future<void> launchApp(_i16.App? app) =>
+      (super.noSuchMethod(
+            Invocation.method(#launchApp, [app]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
-  _i2.Future<void> openAppInfo(_i16.App? app) => (super.noSuchMethod(
-        Invocation.method(
-          #openAppInfo,
-          [app],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+  _i2.Future<void> openAppInfo(_i16.App? app) =>
+      (super.noSuchMethod(
+            Invocation.method(#openAppInfo, [app]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
-  _i2.Future<void> uninstallApp(_i16.App? app) => (super.noSuchMethod(
-        Invocation.method(
-          #uninstallApp,
-          [app],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+  _i2.Future<void> uninstallApp(_i16.App? app) =>
+      (super.noSuchMethod(
+            Invocation.method(#uninstallApp, [app]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
-  _i2.Future<void> openSettings() => (super.noSuchMethod(
-        Invocation.method(
-          #openSettings,
-          [],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+  _i2.Future<void> openSettings() =>
+      (super.noSuchMethod(
+            Invocation.method(#openSettings, []),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
-  _i2.Future<bool> isDefaultLauncher() => (super.noSuchMethod(
-        Invocation.method(
-          #isDefaultLauncher,
-          [],
-        ),
-        returnValue: _i2.Future<bool>.value(false),
-      ) as _i2.Future<bool>);
+  _i2.Future<bool> isDefaultLauncher() =>
+      (super.noSuchMethod(
+            Invocation.method(#isDefaultLauncher, []),
+            returnValue: _i2.Future<bool>.value(false),
+          )
+          as _i2.Future<bool>);
 
   @override
-  _i2.Future<void> startAmbientMode() => (super.noSuchMethod(
-        Invocation.method(
-          #startAmbientMode,
-          [],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+  _i2.Future<void> startAmbientMode() =>
+      (super.noSuchMethod(
+            Invocation.method(#startAmbientMode, []),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
   _i2.Future<void> addToCategory(
@@ -1049,17 +859,15 @@ class MockAppsService extends _i1.Mock implements _i15.AppsService {
     bool? shouldNotifyListeners = true,
   }) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #addToCategory,
-          [
-            app,
-            category,
-          ],
-          {#shouldNotifyListeners: shouldNotifyListeners},
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+            Invocation.method(
+              #addToCategory,
+              [app, category],
+              {#shouldNotifyListeners: shouldNotifyListeners},
+            ),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
   _i2.Future<void> removeFromCategory(
@@ -1067,93 +875,77 @@ class MockAppsService extends _i1.Mock implements _i15.AppsService {
     _i4.Category? category,
   ) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #removeFromCategory,
-          [
-            application,
-            category,
-          ],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+            Invocation.method(#removeFromCategory, [application, category]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
   _i2.Future<void> autoPopulateCategory(_i4.Category? category) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #autoPopulateCategory,
-          [category],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+            Invocation.method(#autoPopulateCategory, [category]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
   _i2.Future<_i4.Category> getOrCreateFavoritesCategory() =>
       (super.noSuchMethod(
-        Invocation.method(
-          #getOrCreateFavoritesCategory,
-          [],
-        ),
-        returnValue: _i2.Future<_i4.Category>.value(_FakeCategory_2(
-          this,
-          Invocation.method(
-            #getOrCreateFavoritesCategory,
-            [],
-          ),
-        )),
-      ) as _i2.Future<_i4.Category>);
+            Invocation.method(#getOrCreateFavoritesCategory, []),
+            returnValue: _i2.Future<_i4.Category>.value(
+              _FakeCategory_2(
+                this,
+                Invocation.method(#getOrCreateFavoritesCategory, []),
+              ),
+            ),
+          )
+          as _i2.Future<_i4.Category>);
 
   @override
-  bool isAppInFavorites(_i16.App? app) => (super.noSuchMethod(
-        Invocation.method(
-          #isAppInFavorites,
-          [app],
-        ),
-        returnValue: false,
-      ) as bool);
+  bool isAppInFavorites(_i16.App? app) =>
+      (super.noSuchMethod(
+            Invocation.method(#isAppInFavorites, [app]),
+            returnValue: false,
+          )
+          as bool);
 
   @override
-  _i2.Future<void> addToFavorites(_i16.App? app) => (super.noSuchMethod(
-        Invocation.method(
-          #addToFavorites,
-          [app],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+  _i2.Future<void> addToFavorites(_i16.App? app) =>
+      (super.noSuchMethod(
+            Invocation.method(#addToFavorites, [app]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
-  _i2.Future<void> removeFromFavorites(_i16.App? app) => (super.noSuchMethod(
-        Invocation.method(
-          #removeFromFavorites,
-          [app],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+  _i2.Future<void> removeFromFavorites(_i16.App? app) =>
+      (super.noSuchMethod(
+            Invocation.method(#removeFromFavorites, [app]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
-  _i2.Future<void> toggleFavorite(_i16.App? app) => (super.noSuchMethod(
-        Invocation.method(
-          #toggleFavorite,
-          [app],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+  _i2.Future<void> toggleFavorite(_i16.App? app) =>
+      (super.noSuchMethod(
+            Invocation.method(#toggleFavorite, [app]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
   _i2.Future<void> saveApplicationOrderInCategory(_i4.Category? category) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #saveApplicationOrderInCategory,
-          [category],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+            Invocation.method(#saveApplicationOrderInCategory, [category]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
   _i2.Future<void> moveAppToAdjacentCategory(
@@ -1162,35 +954,25 @@ class MockAppsService extends _i1.Mock implements _i15.AppsService {
     _i9.AxisDirection? direction,
   ) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #moveAppToAdjacentCategory,
-          [
-            app,
-            currentCategory,
-            direction,
-          ],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+            Invocation.method(#moveAppToAdjacentCategory, [
+              app,
+              currentCategory,
+              direction,
+            ]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
   void reorderApplication(
     _i4.Category? category,
     int? oldIndex,
     int? newIndex,
-  ) =>
-      super.noSuchMethod(
-        Invocation.method(
-          #reorderApplication,
-          [
-            category,
-            oldIndex,
-            newIndex,
-          ],
-        ),
-        returnValueForMissingStub: null,
-      );
+  ) => super.noSuchMethod(
+    Invocation.method(#reorderApplication, [category, oldIndex, newIndex]),
+    returnValueForMissingStub: null,
+  );
 
   @override
   _i2.Future<int> addCategory(
@@ -1202,19 +984,20 @@ class MockAppsService extends _i1.Mock implements _i15.AppsService {
     bool? shouldNotifyListeners = true,
   }) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #addCategory,
-          [categoryName],
-          {
-            #sort: sort,
-            #type: type,
-            #columnsCount: columnsCount,
-            #rowHeight: rowHeight,
-            #shouldNotifyListeners: shouldNotifyListeners,
-          },
-        ),
-        returnValue: _i2.Future<int>.value(0),
-      ) as _i2.Future<int>);
+            Invocation.method(
+              #addCategory,
+              [categoryName],
+              {
+                #sort: sort,
+                #type: type,
+                #columnsCount: columnsCount,
+                #rowHeight: rowHeight,
+                #shouldNotifyListeners: shouldNotifyListeners,
+              },
+            ),
+            returnValue: _i2.Future<int>.value(0),
+          )
+          as _i2.Future<int>);
 
   @override
   _i2.Future<void> updateCategory(
@@ -1227,31 +1010,24 @@ class MockAppsService extends _i1.Mock implements _i15.AppsService {
     bool? shouldNotifyListeners = true,
   }) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #updateCategory,
-          [
-            categoryId,
-            name,
-            sort,
-            type,
-            columnsCount,
-            rowHeight,
-          ],
-          {#shouldNotifyListeners: shouldNotifyListeners},
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+            Invocation.method(
+              #updateCategory,
+              [categoryId, name, sort, type, columnsCount, rowHeight],
+              {#shouldNotifyListeners: shouldNotifyListeners},
+            ),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
-  _i2.Future<void> addSpacer(int? height) => (super.noSuchMethod(
-        Invocation.method(
-          #addSpacer,
-          [height],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+  _i2.Future<void> addSpacer(int? height) =>
+      (super.noSuchMethod(
+            Invocation.method(#addSpacer, [height]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
   _i2.Future<void> updateSpacerHeight(
@@ -1259,16 +1035,11 @@ class MockAppsService extends _i1.Mock implements _i15.AppsService {
     int? height,
   ) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #updateSpacerHeight,
-          [
-            spacer,
-            height,
-          ],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+            Invocation.method(#updateSpacerHeight, [spacer, height]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
   _i2.Future<void> renameCategory(
@@ -1276,91 +1047,62 @@ class MockAppsService extends _i1.Mock implements _i15.AppsService {
     String? categoryName,
   ) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #renameCategory,
-          [
-            category,
-            categoryName,
-          ],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+            Invocation.method(#renameCategory, [category, categoryName]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
-  _i2.Future<void> deleteSection(int? index) => (super.noSuchMethod(
-        Invocation.method(
-          #deleteSection,
-          [index],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
-
-  @override
-  void moveSectionInMemory(
-    int? oldIndex,
-    int? newIndex,
-  ) =>
-      super.noSuchMethod(
-        Invocation.method(
-          #moveSectionInMemory,
-          [
-            oldIndex,
-            newIndex,
-          ],
-        ),
-        returnValueForMissingStub: null,
-      );
-
-  @override
-  _i2.Future<void> persistSectionsOrder() => (super.noSuchMethod(
-        Invocation.method(
-          #persistSectionsOrder,
-          [],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
-
-  @override
-  _i2.Future<void> moveSection(
-    int? oldIndex,
-    int? newIndex,
-  ) =>
+  _i2.Future<void> deleteSection(int? index) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #moveSection,
-          [
-            oldIndex,
-            newIndex,
-          ],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+            Invocation.method(#deleteSection, [index]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
+
+  @override
+  void moveSectionInMemory(int? oldIndex, int? newIndex) => super.noSuchMethod(
+    Invocation.method(#moveSectionInMemory, [oldIndex, newIndex]),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  _i2.Future<void> persistSectionsOrder() =>
+      (super.noSuchMethod(
+            Invocation.method(#persistSectionsOrder, []),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
+
+  @override
+  _i2.Future<void> moveSection(int? oldIndex, int? newIndex) =>
+      (super.noSuchMethod(
+            Invocation.method(#moveSection, [oldIndex, newIndex]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
   _i2.Future<void> hideApplication(_i16.App? application) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #hideApplication,
-          [application],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+            Invocation.method(#hideApplication, [application]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
   _i2.Future<void> showApplication(_i16.App? application) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #showApplication,
-          [application],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+            Invocation.method(#showApplication, [application]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
   _i2.Future<void> setCategoryType(
@@ -1369,17 +1111,15 @@ class MockAppsService extends _i1.Mock implements _i15.AppsService {
     bool? shouldNotifyListeners = true,
   }) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #setCategoryType,
-          [
-            category,
-            type,
-          ],
-          {#shouldNotifyListeners: shouldNotifyListeners},
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+            Invocation.method(
+              #setCategoryType,
+              [category, type],
+              {#shouldNotifyListeners: shouldNotifyListeners},
+            ),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
   _i2.Future<void> setCategorySort(
@@ -1387,16 +1127,11 @@ class MockAppsService extends _i1.Mock implements _i15.AppsService {
     _i4.CategorySort? sort,
   ) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #setCategorySort,
-          [
-            category,
-            sort,
-          ],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+            Invocation.method(#setCategorySort, [category, sort]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
   _i2.Future<void> setCategoryColumnsCount(
@@ -1404,16 +1139,14 @@ class MockAppsService extends _i1.Mock implements _i15.AppsService {
     int? columnsCount,
   ) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #setCategoryColumnsCount,
-          [
-            category,
-            columnsCount,
-          ],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+            Invocation.method(#setCategoryColumnsCount, [
+              category,
+              columnsCount,
+            ]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
   _i2.Future<void> setCategoryRowHeight(
@@ -1421,43 +1154,29 @@ class MockAppsService extends _i1.Mock implements _i15.AppsService {
     int? rowHeight,
   ) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #setCategoryRowHeight,
-          [
-            category,
-            rowHeight,
-          ],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+            Invocation.method(#setCategoryRowHeight, [category, rowHeight]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
   void dispose() => super.noSuchMethod(
-        Invocation.method(
-          #dispose,
-          [],
-        ),
-        returnValueForMissingStub: null,
-      );
+    Invocation.method(#dispose, []),
+    returnValueForMissingStub: null,
+  );
 
   @override
   void addListener(_i5.VoidCallback? listener) => super.noSuchMethod(
-        Invocation.method(
-          #addListener,
-          [listener],
-        ),
-        returnValueForMissingStub: null,
-      );
+    Invocation.method(#addListener, [listener]),
+    returnValueForMissingStub: null,
+  );
 
   @override
   void removeListener(_i5.VoidCallback? listener) => super.noSuchMethod(
-        Invocation.method(
-          #removeListener,
-          [listener],
-        ),
-        returnValueForMissingStub: null,
-      );
+    Invocation.method(#removeListener, [listener]),
+    returnValueForMissingStub: null,
+  );
 }
 
 /// A class which mocks [SettingsService].
@@ -1469,270 +1188,366 @@ class MockSettingsService extends _i1.Mock implements _i17.SettingsService {
   }
 
   @override
-  bool get appHighlightAnimationEnabled => (super.noSuchMethod(
-        Invocation.getter(#appHighlightAnimationEnabled),
-        returnValue: false,
-      ) as bool);
-
-  @override
-  bool get appKeyClickEnabled => (super.noSuchMethod(
-        Invocation.getter(#appKeyClickEnabled),
-        returnValue: false,
-      ) as bool);
-
-  @override
-  bool get autoHideAppBarEnabled => (super.noSuchMethod(
-        Invocation.getter(#autoHideAppBarEnabled),
-        returnValue: false,
-      ) as bool);
-
-  @override
-  bool get showCategoryTitles => (super.noSuchMethod(
-        Invocation.getter(#showCategoryTitles),
-        returnValue: false,
-      ) as bool);
-
-  @override
-  bool get showAppNamesBelowIcons => (super.noSuchMethod(
-        Invocation.getter(#showAppNamesBelowIcons),
-        returnValue: false,
-      ) as bool);
-
-  @override
-  bool get showDateInStatusBar => (super.noSuchMethod(
-        Invocation.getter(#showDateInStatusBar),
-        returnValue: false,
-      ) as bool);
-
-  @override
-  bool get showTimeInStatusBar => (super.noSuchMethod(
-        Invocation.getter(#showTimeInStatusBar),
-        returnValue: false,
-      ) as bool);
-
-  @override
-  String get backButtonAction => (super.noSuchMethod(
-        Invocation.getter(#backButtonAction),
-        returnValue: _i18.dummyValue<String>(
-          this,
-          Invocation.getter(#backButtonAction),
-        ),
-      ) as String);
-
-  @override
-  String get dateFormat => (super.noSuchMethod(
-        Invocation.getter(#dateFormat),
-        returnValue: _i18.dummyValue<String>(
-          this,
-          Invocation.getter(#dateFormat),
-        ),
-      ) as String);
-
-  @override
-  String get timeFormat => (super.noSuchMethod(
-        Invocation.getter(#timeFormat),
-        returnValue: _i18.dummyValue<String>(
-          this,
-          Invocation.getter(#timeFormat),
-        ),
-      ) as String);
-
-  @override
-  String get wifiUsagePeriod => (super.noSuchMethod(
-        Invocation.getter(#wifiUsagePeriod),
-        returnValue: _i18.dummyValue<String>(
-          this,
-          Invocation.getter(#wifiUsagePeriod),
-        ),
-      ) as String);
-
-  @override
-  bool get showWifiWidgetInStatusBar => (super.noSuchMethod(
-        Invocation.getter(#showWifiWidgetInStatusBar),
-        returnValue: false,
-      ) as bool);
-
-  @override
-  bool get showNetworkIndicatorInStatusBar => (super.noSuchMethod(
-        Invocation.getter(#showNetworkIndicatorInStatusBar),
-        returnValue: false,
-      ) as bool);
-
-  @override
-  String get accentColorHex => (super.noSuchMethod(
-        Invocation.getter(#accentColorHex),
-        returnValue: _i18.dummyValue<String>(
-          this,
-          Invocation.getter(#accentColorHex),
-        ),
-      ) as String);
-
-  @override
-  String get screensaverClockStyle => (super.noSuchMethod(
-        Invocation.getter(#screensaverClockStyle),
-        returnValue: _i18.dummyValue<String>(
-          this,
-          Invocation.getter(#screensaverClockStyle),
-        ),
-      ) as String);
-
-  @override
-  bool get dockBackdropFilterDisabled => (super.noSuchMethod(
-        Invocation.getter(#dockBackdropFilterDisabled),
-        returnValue: false,
-      ) as bool);
-
-  @override
-  String get aerialVideoSource => (super.noSuchMethod(
-        Invocation.getter(#aerialVideoSource),
-        returnValue: _i18.dummyValue<String>(
-          this,
-          Invocation.getter(#aerialVideoSource),
-        ),
-      ) as String);
-
-  @override
-  int get aerialVideoQuality => (super.noSuchMethod(
-        Invocation.getter(#aerialVideoQuality),
-        returnValue: 0,
-      ) as int);
-
-  @override
-  int get aerialVideoSourceIndex => (super.noSuchMethod(
-        Invocation.getter(#aerialVideoSourceIndex),
-        returnValue: 0,
-      ) as int);
-
-  @override
-  int get aerialVideoQualityIndex => (super.noSuchMethod(
-        Invocation.getter(#aerialVideoQualityIndex),
-        returnValue: 0,
-      ) as int);
-
-  @override
-  bool get aerialVideoShuffle => (super.noSuchMethod(
-        Invocation.getter(#aerialVideoShuffle),
-        returnValue: false,
-      ) as bool);
-
-  @override
-  bool get aerialEnabled => (super.noSuchMethod(
-        Invocation.getter(#aerialEnabled),
-        returnValue: false,
-      ) as bool);
-
-  @override
-  List<int> get aerialSelectedSources => (super.noSuchMethod(
-        Invocation.getter(#aerialSelectedSources),
-        returnValue: <int>[],
-      ) as List<int>);
-
-  @override
-  List<String> get aerialTimeOfDayFilters => (super.noSuchMethod(
-        Invocation.getter(#aerialTimeOfDayFilters),
-        returnValue: <String>[],
-      ) as List<String>);
-
-  @override
-  List<String> get aerialSceneFilters => (super.noSuchMethod(
-        Invocation.getter(#aerialSceneFilters),
-        returnValue: <String>[],
-      ) as List<String>);
-
-  @override
-  bool get aerialShowFps => (super.noSuchMethod(
-        Invocation.getter(#aerialShowFps),
-        returnValue: false,
-      ) as bool);
-
-  @override
-  _i5.Color get accentColor => (super.noSuchMethod(
-        Invocation.getter(#accentColor),
-        returnValue: _FakeColor_3(
-          this,
-          Invocation.getter(#accentColor),
-        ),
-      ) as _i5.Color);
-
-  @override
-  bool get timeBasedWallpaperEnabled => (super.noSuchMethod(
-        Invocation.getter(#timeBasedWallpaperEnabled),
-        returnValue: false,
-      ) as bool);
-
-  @override
-  bool get hasListeners => (super.noSuchMethod(
-        Invocation.getter(#hasListeners),
-        returnValue: false,
-      ) as bool);
-
-  @override
-  _i2.Future<void> set(
-    String? key,
-    bool? value,
-  ) =>
+  bool get appHighlightAnimationEnabled =>
       (super.noSuchMethod(
-        Invocation.method(
-          #set,
-          [
-            key,
-            value,
-          ],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+            Invocation.getter(#appHighlightAnimationEnabled),
+            returnValue: false,
+          )
+          as bool);
+
+  @override
+  bool get appKeyClickEnabled =>
+      (super.noSuchMethod(
+            Invocation.getter(#appKeyClickEnabled),
+            returnValue: false,
+          )
+          as bool);
+
+  @override
+  bool get autoHideAppBarEnabled =>
+      (super.noSuchMethod(
+            Invocation.getter(#autoHideAppBarEnabled),
+            returnValue: false,
+          )
+          as bool);
+
+  @override
+  bool get showCategoryTitles =>
+      (super.noSuchMethod(
+            Invocation.getter(#showCategoryTitles),
+            returnValue: false,
+          )
+          as bool);
+
+  @override
+  bool get showAppNamesBelowIcons =>
+      (super.noSuchMethod(
+            Invocation.getter(#showAppNamesBelowIcons),
+            returnValue: false,
+          )
+          as bool);
+
+  @override
+  bool get appCardTransparent =>
+      (super.noSuchMethod(
+            Invocation.getter(#appCardTransparent),
+            returnValue: false,
+          )
+          as bool);
+
+  @override
+  bool get showDateInStatusBar =>
+      (super.noSuchMethod(
+            Invocation.getter(#showDateInStatusBar),
+            returnValue: false,
+          )
+          as bool);
+
+  @override
+  bool get showTimeInStatusBar =>
+      (super.noSuchMethod(
+            Invocation.getter(#showTimeInStatusBar),
+            returnValue: false,
+          )
+          as bool);
+
+  @override
+  String get backButtonAction =>
+      (super.noSuchMethod(
+            Invocation.getter(#backButtonAction),
+            returnValue: _i18.dummyValue<String>(
+              this,
+              Invocation.getter(#backButtonAction),
+            ),
+          )
+          as String);
+
+  @override
+  String get dateFormat =>
+      (super.noSuchMethod(
+            Invocation.getter(#dateFormat),
+            returnValue: _i18.dummyValue<String>(
+              this,
+              Invocation.getter(#dateFormat),
+            ),
+          )
+          as String);
+
+  @override
+  String get timeFormat =>
+      (super.noSuchMethod(
+            Invocation.getter(#timeFormat),
+            returnValue: _i18.dummyValue<String>(
+              this,
+              Invocation.getter(#timeFormat),
+            ),
+          )
+          as String);
+
+  @override
+  String get wifiUsagePeriod =>
+      (super.noSuchMethod(
+            Invocation.getter(#wifiUsagePeriod),
+            returnValue: _i18.dummyValue<String>(
+              this,
+              Invocation.getter(#wifiUsagePeriod),
+            ),
+          )
+          as String);
+
+  @override
+  bool get showWifiWidgetInStatusBar =>
+      (super.noSuchMethod(
+            Invocation.getter(#showWifiWidgetInStatusBar),
+            returnValue: false,
+          )
+          as bool);
+
+  @override
+  bool get showNetworkIndicatorInStatusBar =>
+      (super.noSuchMethod(
+            Invocation.getter(#showNetworkIndicatorInStatusBar),
+            returnValue: false,
+          )
+          as bool);
+
+  @override
+  String get accentColorHex =>
+      (super.noSuchMethod(
+            Invocation.getter(#accentColorHex),
+            returnValue: _i18.dummyValue<String>(
+              this,
+              Invocation.getter(#accentColorHex),
+            ),
+          )
+          as String);
+
+  @override
+  String get screensaverClockStyle =>
+      (super.noSuchMethod(
+            Invocation.getter(#screensaverClockStyle),
+            returnValue: _i18.dummyValue<String>(
+              this,
+              Invocation.getter(#screensaverClockStyle),
+            ),
+          )
+          as String);
+
+  @override
+  bool get dockBackdropFilterDisabled =>
+      (super.noSuchMethod(
+            Invocation.getter(#dockBackdropFilterDisabled),
+            returnValue: false,
+          )
+          as bool);
+
+  @override
+  String get aerialVideoSource =>
+      (super.noSuchMethod(
+            Invocation.getter(#aerialVideoSource),
+            returnValue: _i18.dummyValue<String>(
+              this,
+              Invocation.getter(#aerialVideoSource),
+            ),
+          )
+          as String);
+
+  @override
+  int get aerialVideoQuality =>
+      (super.noSuchMethod(
+            Invocation.getter(#aerialVideoQuality),
+            returnValue: 0,
+          )
+          as int);
+
+  @override
+  int get aerialVideoSourceIndex =>
+      (super.noSuchMethod(
+            Invocation.getter(#aerialVideoSourceIndex),
+            returnValue: 0,
+          )
+          as int);
+
+  @override
+  int get aerialVideoQualityIndex =>
+      (super.noSuchMethod(
+            Invocation.getter(#aerialVideoQualityIndex),
+            returnValue: 0,
+          )
+          as int);
+
+  @override
+  bool get aerialVideoShuffle =>
+      (super.noSuchMethod(
+            Invocation.getter(#aerialVideoShuffle),
+            returnValue: false,
+          )
+          as bool);
+
+  @override
+  bool get aerialEnabled =>
+      (super.noSuchMethod(Invocation.getter(#aerialEnabled), returnValue: false)
+          as bool);
+
+  @override
+  List<int> get aerialSelectedSources =>
+      (super.noSuchMethod(
+            Invocation.getter(#aerialSelectedSources),
+            returnValue: <int>[],
+          )
+          as List<int>);
+
+  @override
+  List<String> get aerialTimeOfDayFilters =>
+      (super.noSuchMethod(
+            Invocation.getter(#aerialTimeOfDayFilters),
+            returnValue: <String>[],
+          )
+          as List<String>);
+
+  @override
+  List<String> get aerialSceneFilters =>
+      (super.noSuchMethod(
+            Invocation.getter(#aerialSceneFilters),
+            returnValue: <String>[],
+          )
+          as List<String>);
+
+  @override
+  bool get aerialShowFps =>
+      (super.noSuchMethod(Invocation.getter(#aerialShowFps), returnValue: false)
+          as bool);
+
+  @override
+  List<String> get aerialCityFilters =>
+      (super.noSuchMethod(
+            Invocation.getter(#aerialCityFilters),
+            returnValue: <String>[],
+          )
+          as List<String>);
+
+  @override
+  int get aerialPlaylistPlaybackIndex =>
+      (super.noSuchMethod(
+            Invocation.getter(#aerialPlaylistPlaybackIndex),
+            returnValue: 0,
+          )
+          as int);
+
+  @override
+  bool get backgroundBlurDisabled =>
+      (super.noSuchMethod(
+            Invocation.getter(#backgroundBlurDisabled),
+            returnValue: false,
+          )
+          as bool);
+
+  @override
+  bool get showWatchNextSection =>
+      (super.noSuchMethod(
+            Invocation.getter(#showWatchNextSection),
+            returnValue: false,
+          )
+          as bool);
+
+  @override
+  bool get dockDarkBackground =>
+      (super.noSuchMethod(
+            Invocation.getter(#dockDarkBackground),
+            returnValue: false,
+          )
+          as bool);
+
+  @override
+  bool get dockShadowEnabled =>
+      (super.noSuchMethod(
+            Invocation.getter(#dockShadowEnabled),
+            returnValue: false,
+          )
+          as bool);
+
+  @override
+  bool get showFocusBorders =>
+      (super.noSuchMethod(
+            Invocation.getter(#showFocusBorders),
+            returnValue: false,
+          )
+          as bool);
+
+  @override
+  _i5.Color get accentColor =>
+      (super.noSuchMethod(
+            Invocation.getter(#accentColor),
+            returnValue: _FakeColor_3(this, Invocation.getter(#accentColor)),
+          )
+          as _i5.Color);
+
+  @override
+  bool get timeBasedWallpaperEnabled =>
+      (super.noSuchMethod(
+            Invocation.getter(#timeBasedWallpaperEnabled),
+            returnValue: false,
+          )
+          as bool);
+
+  @override
+  bool get hasListeners =>
+      (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false)
+          as bool);
+
+  @override
+  _i2.Future<void> set(String? key, bool? value) =>
+      (super.noSuchMethod(
+            Invocation.method(#set, [key, value]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
   _i2.Future<void> setAppHighlightAnimationEnabled(bool? value) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #setAppHighlightAnimationEnabled,
-          [value],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+            Invocation.method(#setAppHighlightAnimationEnabled, [value]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
-  _i2.Future<void> setAppKeyClickEnabled(bool? value) => (super.noSuchMethod(
-        Invocation.method(
-          #setAppKeyClickEnabled,
-          [value],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+  _i2.Future<void> setAppKeyClickEnabled(bool? value) =>
+      (super.noSuchMethod(
+            Invocation.method(#setAppKeyClickEnabled, [value]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
-  _i2.Future<void> setAutoHideAppBarEnabled(bool? value) => (super.noSuchMethod(
-        Invocation.method(
-          #setAutoHideAppBarEnabled,
-          [value],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+  _i2.Future<void> setAutoHideAppBarEnabled(bool? value) =>
+      (super.noSuchMethod(
+            Invocation.method(#setAutoHideAppBarEnabled, [value]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
-  _i2.Future<void> setGradientUuid(String? value) => (super.noSuchMethod(
-        Invocation.method(
-          #setGradientUuid,
-          [value],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+  _i2.Future<void> setGradientUuid(String? value) =>
+      (super.noSuchMethod(
+            Invocation.method(#setGradientUuid, [value]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
-  _i2.Future<void> setBackButtonAction(String? value) => (super.noSuchMethod(
-        Invocation.method(
-          #setBackButtonAction,
-          [value],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+  _i2.Future<void> setBackButtonAction(String? value) =>
+      (super.noSuchMethod(
+            Invocation.method(#setBackButtonAction, [value]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
   _i2.Future<void> setDateTimeFormat(
@@ -1740,281 +1555,334 @@ class MockSettingsService extends _i1.Mock implements _i17.SettingsService {
     String? timeFormatString,
   ) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #setDateTimeFormat,
-          [
-            dateFormatString,
-            timeFormatString,
-          ],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+            Invocation.method(#setDateTimeFormat, [
+              dateFormatString,
+              timeFormatString,
+            ]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
-  _i2.Future<void> setShowCategoryTitles(bool? show) => (super.noSuchMethod(
-        Invocation.method(
-          #setShowCategoryTitles,
-          [show],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+  _i2.Future<void> setShowCategoryTitles(bool? show) =>
+      (super.noSuchMethod(
+            Invocation.method(#setShowCategoryTitles, [show]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
-  _i2.Future<void> setShowAppNamesBelowIcons(bool? show) => (super.noSuchMethod(
-        Invocation.method(
-          #setShowAppNamesBelowIcons,
-          [show],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+  _i2.Future<void> setShowAppNamesBelowIcons(bool? show) =>
+      (super.noSuchMethod(
+            Invocation.method(#setShowAppNamesBelowIcons, [show]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
-  _i2.Future<void> setShowDateInStatusBar(bool? show) => (super.noSuchMethod(
-        Invocation.method(
-          #setShowDateInStatusBar,
-          [show],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+  _i2.Future<void> setAppCardTransparent(bool? value) =>
+      (super.noSuchMethod(
+            Invocation.method(#setAppCardTransparent, [value]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
-  _i2.Future<void> setShowTimeInStatusBar(bool? show) => (super.noSuchMethod(
-        Invocation.method(
-          #setShowTimeInStatusBar,
-          [show],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+  _i2.Future<void> setShowDateInStatusBar(bool? show) =>
+      (super.noSuchMethod(
+            Invocation.method(#setShowDateInStatusBar, [show]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
-  _i2.Future<void> setWifiUsagePeriod(String? period) => (super.noSuchMethod(
-        Invocation.method(
-          #setWifiUsagePeriod,
-          [period],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+  _i2.Future<void> setShowTimeInStatusBar(bool? show) =>
+      (super.noSuchMethod(
+            Invocation.method(#setShowTimeInStatusBar, [show]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
+
+  @override
+  _i2.Future<void> setWifiUsagePeriod(String? period) =>
+      (super.noSuchMethod(
+            Invocation.method(#setWifiUsagePeriod, [period]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
   _i2.Future<void> setShowWifiWidgetInStatusBar(bool? show) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #setShowWifiWidgetInStatusBar,
-          [show],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+            Invocation.method(#setShowWifiWidgetInStatusBar, [show]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
   _i2.Future<void> setShowNetworkIndicatorInStatusBar(bool? show) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #setShowNetworkIndicatorInStatusBar,
-          [show],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+            Invocation.method(#setShowNetworkIndicatorInStatusBar, [show]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
-  _i2.Future<void> setAccentColor(String? colorHex) => (super.noSuchMethod(
-        Invocation.method(
-          #setAccentColor,
-          [colorHex],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+  _i2.Future<void> setAccentColor(String? colorHex) =>
+      (super.noSuchMethod(
+            Invocation.method(#setAccentColor, [colorHex]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
   _i2.Future<void> setScreensaverClockStyle(String? style) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #setScreensaverClockStyle,
-          [style],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+            Invocation.method(#setScreensaverClockStyle, [style]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
   _i2.Future<void> setDockBackdropFilterDisabled(bool? value) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #setDockBackdropFilterDisabled,
-          [value],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+            Invocation.method(#setDockBackdropFilterDisabled, [value]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
-  _i2.Future<void> setAerialVideoUrl(String? url) => (super.noSuchMethod(
-        Invocation.method(
-          #setAerialVideoUrl,
-          [url],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+  _i2.Future<void> setAerialVideoUrl(String? url) =>
+      (super.noSuchMethod(
+            Invocation.method(#setAerialVideoUrl, [url]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
-  _i2.Future<void> setAerialVideoSource(String? source) => (super.noSuchMethod(
-        Invocation.method(
-          #setAerialVideoSource,
-          [source],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+  _i2.Future<void> setAerialVideoSource(String? source) =>
+      (super.noSuchMethod(
+            Invocation.method(#setAerialVideoSource, [source]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
-  _i2.Future<void> setAerialVideoQuality(int? quality) => (super.noSuchMethod(
-        Invocation.method(
-          #setAerialVideoQuality,
-          [quality],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+  _i2.Future<void> setAerialVideoQuality(int? quality) =>
+      (super.noSuchMethod(
+            Invocation.method(#setAerialVideoQuality, [quality]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
-  _i2.Future<void> setAerialVideoSourceIndex(int? index) => (super.noSuchMethod(
-        Invocation.method(
-          #setAerialVideoSourceIndex,
-          [index],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+  _i2.Future<void> setAerialVideoSourceIndex(int? index) =>
+      (super.noSuchMethod(
+            Invocation.method(#setAerialVideoSourceIndex, [index]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
   _i2.Future<void> setAerialVideoQualityIndex(int? index) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #setAerialVideoQualityIndex,
-          [index],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+            Invocation.method(#setAerialVideoQualityIndex, [index]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
-  _i2.Future<void> setAerialVideoShuffle(bool? shuffle) => (super.noSuchMethod(
-        Invocation.method(
-          #setAerialVideoShuffle,
-          [shuffle],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+  _i2.Future<void> setAerialVideoShuffle(bool? shuffle) =>
+      (super.noSuchMethod(
+            Invocation.method(#setAerialVideoShuffle, [shuffle]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
-  _i2.Future<void> setAerialEnabled(bool? enabled) => (super.noSuchMethod(
-        Invocation.method(
-          #setAerialEnabled,
-          [enabled],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+  _i2.Future<void> setAerialEnabled(bool? enabled) =>
+      (super.noSuchMethod(
+            Invocation.method(#setAerialEnabled, [enabled]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
   _i2.Future<void> setAerialSelectedSources(List<int>? sources) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #setAerialSelectedSources,
-          [sources],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+            Invocation.method(#setAerialSelectedSources, [sources]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
   _i2.Future<void> setAerialTimeOfDayFilters(List<String>? filters) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #setAerialTimeOfDayFilters,
-          [filters],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+            Invocation.method(#setAerialTimeOfDayFilters, [filters]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
   _i2.Future<void> setAerialSceneFilters(List<String>? filters) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #setAerialSceneFilters,
-          [filters],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+            Invocation.method(#setAerialSceneFilters, [filters]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
-  _i2.Future<void> setAerialShowFps(bool? show) => (super.noSuchMethod(
-        Invocation.method(
-          #setAerialShowFps,
-          [show],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+  _i2.Future<void> setAerialShowFps(bool? show) =>
+      (super.noSuchMethod(
+            Invocation.method(#setAerialShowFps, [show]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
+
+  @override
+  _i2.Future<void> setAerialCityFilters(List<String>? filters) =>
+      (super.noSuchMethod(
+            Invocation.method(#setAerialCityFilters, [filters]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
+
+  @override
+  _i2.Future<void> setAerialPlaylistCache({
+    required String? cacheKey,
+    required String? json,
+    int? playbackIndex = 0,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#setAerialPlaylistCache, [], {
+              #cacheKey: cacheKey,
+              #json: json,
+              #playbackIndex: playbackIndex,
+            }),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
+
+  @override
+  _i2.Future<void> setAerialPlaylistPlaybackIndex(int? index) =>
+      (super.noSuchMethod(
+            Invocation.method(#setAerialPlaylistPlaybackIndex, [index]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
+
+  @override
+  _i2.Future<void> clearAerialPlaylistCache() =>
+      (super.noSuchMethod(
+            Invocation.method(#clearAerialPlaylistCache, []),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
+
+  @override
+  _i2.Future<void> setBackgroundBlurDisabled(bool? value) =>
+      (super.noSuchMethod(
+            Invocation.method(#setBackgroundBlurDisabled, [value]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
+
+  @override
+  _i2.Future<void> setShowWatchNextSection(bool? value) =>
+      (super.noSuchMethod(
+            Invocation.method(#setShowWatchNextSection, [value]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
+
+  @override
+  _i2.Future<void> setDockDarkBackground(bool? value) =>
+      (super.noSuchMethod(
+            Invocation.method(#setDockDarkBackground, [value]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
+
+  @override
+  _i2.Future<void> setDockShadowEnabled(bool? value) =>
+      (super.noSuchMethod(
+            Invocation.method(#setDockShadowEnabled, [value]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
+
+  @override
+  _i2.Future<void> setShowFocusBorders(bool? value) =>
+      (super.noSuchMethod(
+            Invocation.method(#setShowFocusBorders, [value]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
   _i2.Future<void> setTimeBasedWallpaperEnabled(bool? enabled) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #setTimeBasedWallpaperEnabled,
-          [enabled],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+            Invocation.method(#setTimeBasedWallpaperEnabled, [enabled]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
   void addListener(_i5.VoidCallback? listener) => super.noSuchMethod(
-        Invocation.method(
-          #addListener,
-          [listener],
-        ),
-        returnValueForMissingStub: null,
-      );
+    Invocation.method(#addListener, [listener]),
+    returnValueForMissingStub: null,
+  );
 
   @override
   void removeListener(_i5.VoidCallback? listener) => super.noSuchMethod(
-        Invocation.method(
-          #removeListener,
-          [listener],
-        ),
-        returnValueForMissingStub: null,
-      );
+    Invocation.method(#removeListener, [listener]),
+    returnValueForMissingStub: null,
+  );
 
   @override
   void dispose() => super.noSuchMethod(
-        Invocation.method(
-          #dispose,
-          [],
-        ),
-        returnValueForMissingStub: null,
-      );
+    Invocation.method(#dispose, []),
+    returnValueForMissingStub: null,
+  );
 
   @override
   void notifyListeners() => super.noSuchMethod(
-        Invocation.method(
-          #notifyListeners,
-          [],
-        ),
-        returnValueForMissingStub: null,
-      );
+    Invocation.method(#notifyListeners, []),
+    returnValueForMissingStub: null,
+  );
 }
 
 /// A class which mocks [FLauncherDatabase].
@@ -2026,311 +1894,296 @@ class MockFLauncherDatabase extends _i1.Mock implements _i7.FLauncherDatabase {
   }
 
   @override
-  bool get wasCreated => (super.noSuchMethod(
-        Invocation.getter(#wasCreated),
-        returnValue: false,
-      ) as bool);
+  bool get wasCreated =>
+      (super.noSuchMethod(Invocation.getter(#wasCreated), returnValue: false)
+          as bool);
 
   @override
-  int get schemaVersion => (super.noSuchMethod(
-        Invocation.getter(#schemaVersion),
-        returnValue: 0,
-      ) as int);
+  int get schemaVersion =>
+      (super.noSuchMethod(Invocation.getter(#schemaVersion), returnValue: 0)
+          as int);
 
   @override
-  _i6.MigrationStrategy get migration => (super.noSuchMethod(
-        Invocation.getter(#migration),
-        returnValue: _FakeMigrationStrategy_4(
-          this,
-          Invocation.getter(#migration),
-        ),
-      ) as _i6.MigrationStrategy);
+  _i6.MigrationStrategy get migration =>
+      (super.noSuchMethod(
+            Invocation.getter(#migration),
+            returnValue: _FakeMigrationStrategy_4(
+              this,
+              Invocation.getter(#migration),
+            ),
+          )
+          as _i6.MigrationStrategy);
 
   @override
   set wasCreated(bool? value) => super.noSuchMethod(
-        Invocation.setter(
-          #wasCreated,
-          value,
-        ),
-        returnValueForMissingStub: null,
-      );
+    Invocation.setter(#wasCreated, value),
+    returnValueForMissingStub: null,
+  );
 
   @override
-  _i7.$FLauncherDatabaseManager get managers => (super.noSuchMethod(
-        Invocation.getter(#managers),
-        returnValue: _Fake$FLauncherDatabaseManager_5(
-          this,
-          Invocation.getter(#managers),
-        ),
-      ) as _i7.$FLauncherDatabaseManager);
+  _i7.$FLauncherDatabaseManager get managers =>
+      (super.noSuchMethod(
+            Invocation.getter(#managers),
+            returnValue: _Fake$FLauncherDatabaseManager_5(
+              this,
+              Invocation.getter(#managers),
+            ),
+          )
+          as _i7.$FLauncherDatabaseManager);
 
   @override
-  _i7.$AppsTable get apps => (super.noSuchMethod(
-        Invocation.getter(#apps),
-        returnValue: _Fake$AppsTable_6(
-          this,
-          Invocation.getter(#apps),
-        ),
-      ) as _i7.$AppsTable);
+  _i7.$AppsTable get apps =>
+      (super.noSuchMethod(
+            Invocation.getter(#apps),
+            returnValue: _Fake$AppsTable_6(this, Invocation.getter(#apps)),
+          )
+          as _i7.$AppsTable);
 
   @override
-  _i7.$CategoriesTable get categories => (super.noSuchMethod(
-        Invocation.getter(#categories),
-        returnValue: _Fake$CategoriesTable_7(
-          this,
-          Invocation.getter(#categories),
-        ),
-      ) as _i7.$CategoriesTable);
+  _i7.$CategoriesTable get categories =>
+      (super.noSuchMethod(
+            Invocation.getter(#categories),
+            returnValue: _Fake$CategoriesTable_7(
+              this,
+              Invocation.getter(#categories),
+            ),
+          )
+          as _i7.$CategoriesTable);
 
   @override
-  _i7.$AppsCategoriesTable get appsCategories => (super.noSuchMethod(
-        Invocation.getter(#appsCategories),
-        returnValue: _Fake$AppsCategoriesTable_8(
-          this,
-          Invocation.getter(#appsCategories),
-        ),
-      ) as _i7.$AppsCategoriesTable);
+  _i7.$AppsCategoriesTable get appsCategories =>
+      (super.noSuchMethod(
+            Invocation.getter(#appsCategories),
+            returnValue: _Fake$AppsCategoriesTable_8(
+              this,
+              Invocation.getter(#appsCategories),
+            ),
+          )
+          as _i7.$AppsCategoriesTable);
 
   @override
-  _i7.$LauncherSpacersTable get launcherSpacers => (super.noSuchMethod(
-        Invocation.getter(#launcherSpacers),
-        returnValue: _Fake$LauncherSpacersTable_9(
-          this,
-          Invocation.getter(#launcherSpacers),
-        ),
-      ) as _i7.$LauncherSpacersTable);
+  _i7.$LauncherSpacersTable get launcherSpacers =>
+      (super.noSuchMethod(
+            Invocation.getter(#launcherSpacers),
+            returnValue: _Fake$LauncherSpacersTable_9(
+              this,
+              Invocation.getter(#launcherSpacers),
+            ),
+          )
+          as _i7.$LauncherSpacersTable);
 
   @override
   Iterable<_i6.TableInfo<_i6.Table, Object?>> get allTables =>
       (super.noSuchMethod(
-        Invocation.getter(#allTables),
-        returnValue: <_i6.TableInfo<_i6.Table, Object?>>[],
-      ) as Iterable<_i6.TableInfo<_i6.Table, Object?>>);
+            Invocation.getter(#allTables),
+            returnValue: <_i6.TableInfo<_i6.Table, Object?>>[],
+          )
+          as Iterable<_i6.TableInfo<_i6.Table, Object?>>);
 
   @override
-  List<_i6.DatabaseSchemaEntity> get allSchemaEntities => (super.noSuchMethod(
-        Invocation.getter(#allSchemaEntities),
-        returnValue: <_i6.DatabaseSchemaEntity>[],
-      ) as List<_i6.DatabaseSchemaEntity>);
+  List<_i6.DatabaseSchemaEntity> get allSchemaEntities =>
+      (super.noSuchMethod(
+            Invocation.getter(#allSchemaEntities),
+            returnValue: <_i6.DatabaseSchemaEntity>[],
+          )
+          as List<_i6.DatabaseSchemaEntity>);
 
   @override
-  _i6.StreamQueryUpdateRules get streamUpdateRules => (super.noSuchMethod(
-        Invocation.getter(#streamUpdateRules),
-        returnValue: _FakeStreamQueryUpdateRules_10(
-          this,
-          Invocation.getter(#streamUpdateRules),
-        ),
-      ) as _i6.StreamQueryUpdateRules);
+  _i6.StreamQueryUpdateRules get streamUpdateRules =>
+      (super.noSuchMethod(
+            Invocation.getter(#streamUpdateRules),
+            returnValue: _FakeStreamQueryUpdateRules_10(
+              this,
+              Invocation.getter(#streamUpdateRules),
+            ),
+          )
+          as _i6.StreamQueryUpdateRules);
 
   @override
-  _i6.GeneratedDatabase get attachedDatabase => (super.noSuchMethod(
-        Invocation.getter(#attachedDatabase),
-        returnValue: _FakeGeneratedDatabase_11(
-          this,
-          Invocation.getter(#attachedDatabase),
-        ),
-      ) as _i6.GeneratedDatabase);
+  _i6.GeneratedDatabase get attachedDatabase =>
+      (super.noSuchMethod(
+            Invocation.getter(#attachedDatabase),
+            returnValue: _FakeGeneratedDatabase_11(
+              this,
+              Invocation.getter(#attachedDatabase),
+            ),
+          )
+          as _i6.GeneratedDatabase);
 
   @override
-  _i6.DriftDatabaseOptions get options => (super.noSuchMethod(
-        Invocation.getter(#options),
-        returnValue: _FakeDriftDatabaseOptions_12(
-          this,
-          Invocation.getter(#options),
-        ),
-      ) as _i6.DriftDatabaseOptions);
+  _i6.DriftDatabaseOptions get options =>
+      (super.noSuchMethod(
+            Invocation.getter(#options),
+            returnValue: _FakeDriftDatabaseOptions_12(
+              this,
+              Invocation.getter(#options),
+            ),
+          )
+          as _i6.DriftDatabaseOptions);
 
   @override
-  _i6.DatabaseConnection get connection => (super.noSuchMethod(
-        Invocation.getter(#connection),
-        returnValue: _FakeDatabaseConnection_13(
-          this,
-          Invocation.getter(#connection),
-        ),
-      ) as _i6.DatabaseConnection);
+  _i6.DatabaseConnection get connection =>
+      (super.noSuchMethod(
+            Invocation.getter(#connection),
+            returnValue: _FakeDatabaseConnection_13(
+              this,
+              Invocation.getter(#connection),
+            ),
+          )
+          as _i6.DatabaseConnection);
 
   @override
-  _i6.SqlTypes get typeMapping => (super.noSuchMethod(
-        Invocation.getter(#typeMapping),
-        returnValue: _i18.dummyValue<_i6.SqlTypes>(
-          this,
-          Invocation.getter(#typeMapping),
-        ),
-      ) as _i6.SqlTypes);
+  _i6.SqlTypes get typeMapping =>
+      (super.noSuchMethod(
+            Invocation.getter(#typeMapping),
+            returnValue: _i18.dummyValue<_i6.SqlTypes>(
+              this,
+              Invocation.getter(#typeMapping),
+            ),
+          )
+          as _i6.SqlTypes);
 
   @override
-  _i6.QueryExecutor get executor => (super.noSuchMethod(
-        Invocation.getter(#executor),
-        returnValue: _FakeQueryExecutor_14(
-          this,
-          Invocation.getter(#executor),
-        ),
-      ) as _i6.QueryExecutor);
+  _i6.QueryExecutor get executor =>
+      (super.noSuchMethod(
+            Invocation.getter(#executor),
+            returnValue: _FakeQueryExecutor_14(
+              this,
+              Invocation.getter(#executor),
+            ),
+          )
+          as _i6.QueryExecutor);
 
   @override
-  _i8.StreamQueryStore get streamQueries => (super.noSuchMethod(
-        Invocation.getter(#streamQueries),
-        returnValue: _FakeStreamQueryStore_15(
-          this,
-          Invocation.getter(#streamQueries),
-        ),
-      ) as _i8.StreamQueryStore);
+  _i8.StreamQueryStore get streamQueries =>
+      (super.noSuchMethod(
+            Invocation.getter(#streamQueries),
+            returnValue: _FakeStreamQueryStore_15(
+              this,
+              Invocation.getter(#streamQueries),
+            ),
+          )
+          as _i8.StreamQueryStore);
 
   @override
-  _i6.DatabaseConnectionUser get resolvedEngine => (super.noSuchMethod(
-        Invocation.getter(#resolvedEngine),
-        returnValue: _FakeDatabaseConnectionUser_16(
-          this,
-          Invocation.getter(#resolvedEngine),
-        ),
-      ) as _i6.DatabaseConnectionUser);
+  _i6.DatabaseConnectionUser get resolvedEngine =>
+      (super.noSuchMethod(
+            Invocation.getter(#resolvedEngine),
+            returnValue: _FakeDatabaseConnectionUser_16(
+              this,
+              Invocation.getter(#resolvedEngine),
+            ),
+          )
+          as _i6.DatabaseConnectionUser);
 
   @override
   _i2.Future<void> persistApps(Iterable<_i7.AppsCompanion>? applications) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #persistApps,
-          [applications],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+            Invocation.method(#persistApps, [applications]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
-  _i2.Future<void> updateApp(
-    String? packageName,
-    _i7.AppsCompanion? value,
-  ) =>
+  _i2.Future<void> updateApp(String? packageName, _i7.AppsCompanion? value) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #updateApp,
-          [
-            packageName,
-            value,
-          ],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+            Invocation.method(#updateApp, [packageName, value]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
   _i2.Future<void> deleteApps(List<String>? packageNames) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #deleteApps,
-          [packageNames],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+            Invocation.method(#deleteApps, [packageNames]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
   _i2.Future<int> insertCategory(_i6.Insertable<_i4.Category>? category) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #insertCategory,
-          [category],
-        ),
-        returnValue: _i2.Future<int>.value(0),
-      ) as _i2.Future<int>);
+            Invocation.method(#insertCategory, [category]),
+            returnValue: _i2.Future<int>.value(0),
+          )
+          as _i2.Future<int>);
 
   @override
-  _i2.Future<void> deleteCategory(int? id) => (super.noSuchMethod(
-        Invocation.method(
-          #deleteCategory,
-          [id],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+  _i2.Future<void> deleteCategory(int? id) =>
+      (super.noSuchMethod(
+            Invocation.method(#deleteCategory, [id]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
   _i2.Future<void> updateCategories(List<_i7.CategoriesCompanion>? values) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #updateCategories,
-          [values],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+            Invocation.method(#updateCategories, [values]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
-  _i2.Future<void> updateCategory(
-    int? id,
-    _i7.CategoriesCompanion? value,
-  ) =>
+  _i2.Future<void> updateCategory(int? id, _i7.CategoriesCompanion? value) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #updateCategory,
-          [
-            id,
-            value,
-          ],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+            Invocation.method(#updateCategory, [id, value]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
-  _i2.Future<void> deleteAppCategory(
-    int? categoryId,
-    String? packageName,
-  ) =>
+  _i2.Future<void> deleteAppCategory(int? categoryId, String? packageName) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #deleteAppCategory,
-          [
-            categoryId,
-            packageName,
-          ],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+            Invocation.method(#deleteAppCategory, [categoryId, packageName]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
   _i2.Future<void> insertAppsCategories(
-          List<_i7.AppsCategoriesCompanion>? value) =>
+    List<_i7.AppsCategoriesCompanion>? value,
+  ) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #insertAppsCategories,
-          [value],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+            Invocation.method(#insertAppsCategories, [value]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
   _i2.Future<void> replaceAppsCategories(
-          List<_i7.AppsCategoriesCompanion>? value) =>
+    List<_i7.AppsCategoriesCompanion>? value,
+  ) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #replaceAppsCategories,
-          [value],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+            Invocation.method(#replaceAppsCategories, [value]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
   _i2.Future<int> insertSpacer(_i6.Insertable<_i4.LauncherSpacer>? spacer) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #insertSpacer,
-          [spacer],
-        ),
-        returnValue: _i2.Future<int>.value(0),
-      ) as _i2.Future<int>);
+            Invocation.method(#insertSpacer, [spacer]),
+            returnValue: _i2.Future<int>.value(0),
+          )
+          as _i2.Future<int>);
 
   @override
-  _i2.Future<int> deleteSpacer(int? spacerId) => (super.noSuchMethod(
-        Invocation.method(
-          #deleteSpacer,
-          [spacerId],
-        ),
-        returnValue: _i2.Future<int>.value(0),
-      ) as _i2.Future<int>);
+  _i2.Future<int> deleteSpacer(int? spacerId) =>
+      (super.noSuchMethod(
+            Invocation.method(#deleteSpacer, [spacerId]),
+            returnValue: _i2.Future<int>.value(0),
+          )
+          as _i2.Future<int>);
 
   @override
   _i2.Future<int> updateSpacer(
@@ -2338,90 +2191,76 @@ class MockFLauncherDatabase extends _i1.Mock implements _i7.FLauncherDatabase {
     _i6.Insertable<_i4.LauncherSpacer>? insertable,
   ) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #updateSpacer,
-          [
-            spacerId,
-            insertable,
-          ],
-        ),
-        returnValue: _i2.Future<int>.value(0),
-      ) as _i2.Future<int>);
+            Invocation.method(#updateSpacer, [spacerId, insertable]),
+            returnValue: _i2.Future<int>.value(0),
+          )
+          as _i2.Future<int>);
 
   @override
   _i2.Future<void> updateSpacers(
-          Iterable<_i7.LauncherSpacersCompanion>? values) =>
+    Iterable<_i7.LauncherSpacersCompanion>? values,
+  ) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #updateSpacers,
-          [values],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+            Invocation.method(#updateSpacers, [values]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
-  _i2.Future<List<_i4.Category>> getCategories() => (super.noSuchMethod(
-        Invocation.method(
-          #getCategories,
-          [],
-        ),
-        returnValue: _i2.Future<List<_i4.Category>>.value(<_i4.Category>[]),
-      ) as _i2.Future<List<_i4.Category>>);
+  _i2.Future<List<_i4.Category>> getCategories() =>
+      (super.noSuchMethod(
+            Invocation.method(#getCategories, []),
+            returnValue: _i2.Future<List<_i4.Category>>.value(<_i4.Category>[]),
+          )
+          as _i2.Future<List<_i4.Category>>);
 
   @override
   _i2.Future<List<_i4.LauncherSpacer>> getLauncherSpacers() =>
       (super.noSuchMethod(
-        Invocation.method(
-          #getLauncherSpacers,
-          [],
-        ),
-        returnValue:
-            _i2.Future<List<_i4.LauncherSpacer>>.value(<_i4.LauncherSpacer>[]),
-      ) as _i2.Future<List<_i4.LauncherSpacer>>);
+            Invocation.method(#getLauncherSpacers, []),
+            returnValue: _i2.Future<List<_i4.LauncherSpacer>>.value(
+              <_i4.LauncherSpacer>[],
+            ),
+          )
+          as _i2.Future<List<_i4.LauncherSpacer>>);
 
   @override
-  _i2.Future<List<_i7.AppCategory>> getAppsCategories() => (super.noSuchMethod(
-        Invocation.method(
-          #getAppsCategories,
-          [],
-        ),
-        returnValue:
-            _i2.Future<List<_i7.AppCategory>>.value(<_i7.AppCategory>[]),
-      ) as _i2.Future<List<_i7.AppCategory>>);
+  _i2.Future<List<_i7.AppCategory>> getAppsCategories() =>
+      (super.noSuchMethod(
+            Invocation.method(#getAppsCategories, []),
+            returnValue: _i2.Future<List<_i7.AppCategory>>.value(
+              <_i7.AppCategory>[],
+            ),
+          )
+          as _i2.Future<List<_i7.AppCategory>>);
 
   @override
-  _i2.Future<List<_i16.App>> getApplications() => (super.noSuchMethod(
-        Invocation.method(
-          #getApplications,
-          [],
-        ),
-        returnValue: _i2.Future<List<_i16.App>>.value(<_i16.App>[]),
-      ) as _i2.Future<List<_i16.App>>);
+  _i2.Future<List<_i16.App>> getApplications() =>
+      (super.noSuchMethod(
+            Invocation.method(#getApplications, []),
+            returnValue: _i2.Future<List<_i16.App>>.value(<_i16.App>[]),
+          )
+          as _i2.Future<List<_i16.App>>);
 
   @override
-  _i2.Future<int?> nextAppCategoryOrder(int? categoryId) => (super.noSuchMethod(
-        Invocation.method(
-          #nextAppCategoryOrder,
-          [categoryId],
-        ),
-        returnValue: _i2.Future<int?>.value(),
-      ) as _i2.Future<int?>);
+  _i2.Future<int?> nextAppCategoryOrder(int? categoryId) =>
+      (super.noSuchMethod(
+            Invocation.method(#nextAppCategoryOrder, [categoryId]),
+            returnValue: _i2.Future<int?>.value(),
+          )
+          as _i2.Future<int?>);
 
   @override
-  _i6.Migrator createMigrator() => (super.noSuchMethod(
-        Invocation.method(
-          #createMigrator,
-          [],
-        ),
-        returnValue: _FakeMigrator_17(
-          this,
-          Invocation.method(
-            #createMigrator,
-            [],
-          ),
-        ),
-      ) as _i6.Migrator);
+  _i6.Migrator createMigrator() =>
+      (super.noSuchMethod(
+            Invocation.method(#createMigrator, []),
+            returnValue: _FakeMigrator_17(
+              this,
+              Invocation.method(#createMigrator, []),
+            ),
+          )
+          as _i6.Migrator);
 
   @override
   _i2.Future<void> beforeOpen(
@@ -2429,26 +2268,20 @@ class MockFLauncherDatabase extends _i1.Mock implements _i7.FLauncherDatabase {
     _i6.OpeningDetails? details,
   ) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #beforeOpen,
-          [
-            executor,
-            details,
-          ],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+            Invocation.method(#beforeOpen, [executor, details]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
-  _i2.Future<void> close() => (super.noSuchMethod(
-        Invocation.method(
-          #close,
-          [],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+  _i2.Future<void> close() =>
+      (super.noSuchMethod(
+            Invocation.method(#close, []),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
   _i2.Future<Ret> computeWithDatabase<Ret, DB extends _i6.GeneratedDatabase>({
@@ -2456,167 +2289,118 @@ class MockFLauncherDatabase extends _i1.Mock implements _i7.FLauncherDatabase {
     required DB Function(_i6.DatabaseConnection)? connect,
   }) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #computeWithDatabase,
-          [],
-          {
-            #computation: computation,
-            #connect: connect,
-          },
-        ),
-        returnValue: _i18.ifNotNull(
-              _i18.dummyValueOrNull<Ret>(
-                this,
-                Invocation.method(
-                  #computeWithDatabase,
-                  [],
-                  {
+            Invocation.method(#computeWithDatabase, [], {
+              #computation: computation,
+              #connect: connect,
+            }),
+            returnValue:
+                _i18.ifNotNull(
+                  _i18.dummyValueOrNull<Ret>(
+                    this,
+                    Invocation.method(#computeWithDatabase, [], {
+                      #computation: computation,
+                      #connect: connect,
+                    }),
+                  ),
+                  (Ret v) => _i2.Future<Ret>.value(v),
+                ) ??
+                _FakeFuture_18<Ret>(
+                  this,
+                  Invocation.method(#computeWithDatabase, [], {
                     #computation: computation,
                     #connect: connect,
-                  },
+                  }),
                 ),
-              ),
-              (Ret v) => _i2.Future<Ret>.value(v),
-            ) ??
-            _FakeFuture_18<Ret>(
-              this,
-              Invocation.method(
-                #computeWithDatabase,
-                [],
-                {
-                  #computation: computation,
-                  #connect: connect,
-                },
-              ),
-            ),
-      ) as _i2.Future<Ret>);
+          )
+          as _i2.Future<Ret>);
 
   @override
   _i2.Stream<T> createStream<T extends Object>(
-          _i8.QueryStreamFetcher<T>? stmt) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #createStream,
-          [stmt],
-        ),
-        returnValue: _i2.Stream<T>.empty(),
-      ) as _i2.Stream<T>);
-
-  @override
-  T alias<T, D>(
-    _i6.ResultSetImplementation<T, D>? table,
-    String? alias,
+    _i8.QueryStreamFetcher<T>? stmt,
   ) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #alias,
-          [
-            table,
-            alias,
-          ],
-        ),
-        returnValue: _i18.dummyValue<T>(
-          this,
-          Invocation.method(
-            #alias,
-            [
-              table,
-              alias,
-            ],
-          ),
-        ),
-      ) as T);
+            Invocation.method(#createStream, [stmt]),
+            returnValue: _i2.Stream<T>.empty(),
+          )
+          as _i2.Stream<T>);
+
+  @override
+  T alias<T, D>(_i6.ResultSetImplementation<T, D>? table, String? alias) =>
+      (super.noSuchMethod(
+            Invocation.method(#alias, [table, alias]),
+            returnValue: _i18.dummyValue<T>(
+              this,
+              Invocation.method(#alias, [table, alias]),
+            ),
+          )
+          as T);
 
   @override
   void markTablesUpdated(Iterable<_i6.TableInfo<_i6.Table, dynamic>>? tables) =>
       super.noSuchMethod(
-        Invocation.method(
-          #markTablesUpdated,
-          [tables],
-        ),
+        Invocation.method(#markTablesUpdated, [tables]),
         returnValueForMissingStub: null,
       );
 
   @override
   void notifyUpdates(Set<_i6.TableUpdate>? updates) => super.noSuchMethod(
-        Invocation.method(
-          #notifyUpdates,
-          [updates],
-        ),
-        returnValueForMissingStub: null,
-      );
+    Invocation.method(#notifyUpdates, [updates]),
+    returnValueForMissingStub: null,
+  );
 
   @override
-  _i2.Stream<Set<_i6.TableUpdate>> tableUpdates(
-          [_i6.TableUpdateQuery? query = const _i6.TableUpdateQuery.any()]) =>
+  _i2.Stream<Set<_i6.TableUpdate>> tableUpdates([
+    _i6.TableUpdateQuery? query = const _i6.TableUpdateQuery.any(),
+  ]) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #tableUpdates,
-          [query],
-        ),
-        returnValue: _i2.Stream<Set<_i6.TableUpdate>>.empty(),
-      ) as _i2.Stream<Set<_i6.TableUpdate>>);
+            Invocation.method(#tableUpdates, [query]),
+            returnValue: _i2.Stream<Set<_i6.TableUpdate>>.empty(),
+          )
+          as _i2.Stream<Set<_i6.TableUpdate>>);
 
   @override
   _i2.Future<T> doWhenOpened<T>(
-          _i2.FutureOr<T> Function(_i6.QueryExecutor)? fn) =>
+    _i2.FutureOr<T> Function(_i6.QueryExecutor)? fn,
+  ) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #doWhenOpened,
-          [fn],
-        ),
-        returnValue: _i18.ifNotNull(
-              _i18.dummyValueOrNull<T>(
-                this,
-                Invocation.method(
-                  #doWhenOpened,
-                  [fn],
-                ),
-              ),
-              (T v) => _i2.Future<T>.value(v),
-            ) ??
-            _FakeFuture_18<T>(
-              this,
-              Invocation.method(
-                #doWhenOpened,
-                [fn],
-              ),
-            ),
-      ) as _i2.Future<T>);
+            Invocation.method(#doWhenOpened, [fn]),
+            returnValue:
+                _i18.ifNotNull(
+                  _i18.dummyValueOrNull<T>(
+                    this,
+                    Invocation.method(#doWhenOpened, [fn]),
+                  ),
+                  (T v) => _i2.Future<T>.value(v),
+                ) ??
+                _FakeFuture_18<T>(this, Invocation.method(#doWhenOpened, [fn])),
+          )
+          as _i2.Future<T>);
 
   @override
   _i6.InsertStatement<T, D> into<T extends _i6.Table, D>(
-          _i6.TableInfo<T, D>? table) =>
+    _i6.TableInfo<T, D>? table,
+  ) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #into,
-          [table],
-        ),
-        returnValue: _FakeInsertStatement_19<T, D>(
-          this,
-          Invocation.method(
-            #into,
-            [table],
-          ),
-        ),
-      ) as _i6.InsertStatement<T, D>);
+            Invocation.method(#into, [table]),
+            returnValue: _FakeInsertStatement_19<T, D>(
+              this,
+              Invocation.method(#into, [table]),
+            ),
+          )
+          as _i6.InsertStatement<T, D>);
 
   @override
   _i6.UpdateStatement<Tbl, R> update<Tbl extends _i6.Table, R>(
-          _i6.TableInfo<Tbl, R>? table) =>
+    _i6.TableInfo<Tbl, R>? table,
+  ) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #update,
-          [table],
-        ),
-        returnValue: _FakeUpdateStatement_20<Tbl, R>(
-          this,
-          Invocation.method(
-            #update,
-            [table],
-          ),
-        ),
-      ) as _i6.UpdateStatement<Tbl, R>);
+            Invocation.method(#update, [table]),
+            returnValue: _FakeUpdateStatement_20<Tbl, R>(
+              this,
+              Invocation.method(#update, [table]),
+            ),
+          )
+          as _i6.UpdateStatement<Tbl, R>);
 
   @override
   _i6.SimpleSelectStatement<T, R> select<T extends _i6.HasResultSet, R>(
@@ -2624,20 +2408,13 @@ class MockFLauncherDatabase extends _i1.Mock implements _i7.FLauncherDatabase {
     bool? distinct = false,
   }) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #select,
-          [table],
-          {#distinct: distinct},
-        ),
-        returnValue: _FakeSimpleSelectStatement_21<T, R>(
-          this,
-          Invocation.method(
-            #select,
-            [table],
-            {#distinct: distinct},
-          ),
-        ),
-      ) as _i6.SimpleSelectStatement<T, R>);
+            Invocation.method(#select, [table], {#distinct: distinct}),
+            returnValue: _FakeSimpleSelectStatement_21<T, R>(
+              this,
+              Invocation.method(#select, [table], {#distinct: distinct}),
+            ),
+          )
+          as _i6.SimpleSelectStatement<T, R>);
 
   @override
   _i6.JoinedSelectStatement<T, R> selectOnly<T extends _i6.HasResultSet, R>(
@@ -2645,54 +2422,39 @@ class MockFLauncherDatabase extends _i1.Mock implements _i7.FLauncherDatabase {
     bool? distinct = false,
   }) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #selectOnly,
-          [table],
-          {#distinct: distinct},
-        ),
-        returnValue: _FakeJoinedSelectStatement_22<T, R>(
-          this,
-          Invocation.method(
-            #selectOnly,
-            [table],
-            {#distinct: distinct},
-          ),
-        ),
-      ) as _i6.JoinedSelectStatement<T, R>);
+            Invocation.method(#selectOnly, [table], {#distinct: distinct}),
+            returnValue: _FakeJoinedSelectStatement_22<T, R>(
+              this,
+              Invocation.method(#selectOnly, [table], {#distinct: distinct}),
+            ),
+          )
+          as _i6.JoinedSelectStatement<T, R>);
 
   @override
   _i6.BaseSelectStatement<_i6.TypedResult> selectExpressions(
-          Iterable<_i6.Expression<Object>>? columns) =>
+    Iterable<_i6.Expression<Object>>? columns,
+  ) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #selectExpressions,
-          [columns],
-        ),
-        returnValue: _FakeBaseSelectStatement_23<_i6.TypedResult>(
-          this,
-          Invocation.method(
-            #selectExpressions,
-            [columns],
-          ),
-        ),
-      ) as _i6.BaseSelectStatement<_i6.TypedResult>);
+            Invocation.method(#selectExpressions, [columns]),
+            returnValue: _FakeBaseSelectStatement_23<_i6.TypedResult>(
+              this,
+              Invocation.method(#selectExpressions, [columns]),
+            ),
+          )
+          as _i6.BaseSelectStatement<_i6.TypedResult>);
 
   @override
   _i6.DeleteStatement<T, D> delete<T extends _i6.Table, D>(
-          _i6.TableInfo<T, D>? table) =>
+    _i6.TableInfo<T, D>? table,
+  ) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #delete,
-          [table],
-        ),
-        returnValue: _FakeDeleteStatement_24<T, D>(
-          this,
-          Invocation.method(
-            #delete,
-            [table],
-          ),
-        ),
-      ) as _i6.DeleteStatement<T, D>);
+            Invocation.method(#delete, [table]),
+            returnValue: _FakeDeleteStatement_24<T, D>(
+              this,
+              Invocation.method(#delete, [table]),
+            ),
+          )
+          as _i6.DeleteStatement<T, D>);
 
   @override
   _i2.Future<int> customUpdate(
@@ -2702,17 +2464,18 @@ class MockFLauncherDatabase extends _i1.Mock implements _i7.FLauncherDatabase {
     _i6.UpdateKind? updateKind,
   }) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #customUpdate,
-          [query],
-          {
-            #variables: variables,
-            #updates: updates,
-            #updateKind: updateKind,
-          },
-        ),
-        returnValue: _i2.Future<int>.value(0),
-      ) as _i2.Future<int>);
+            Invocation.method(
+              #customUpdate,
+              [query],
+              {
+                #variables: variables,
+                #updates: updates,
+                #updateKind: updateKind,
+              },
+            ),
+            returnValue: _i2.Future<int>.value(0),
+          )
+          as _i2.Future<int>);
 
   @override
   _i2.Future<int> customInsert(
@@ -2721,16 +2484,14 @@ class MockFLauncherDatabase extends _i1.Mock implements _i7.FLauncherDatabase {
     Set<_i6.ResultSetImplementation<dynamic, dynamic>>? updates,
   }) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #customInsert,
-          [query],
-          {
-            #variables: variables,
-            #updates: updates,
-          },
-        ),
-        returnValue: _i2.Future<int>.value(0),
-      ) as _i2.Future<int>);
+            Invocation.method(
+              #customInsert,
+              [query],
+              {#variables: variables, #updates: updates},
+            ),
+            returnValue: _i2.Future<int>.value(0),
+          )
+          as _i2.Future<int>);
 
   @override
   _i2.Future<List<_i6.QueryRow>> customWriteReturning(
@@ -2740,17 +2501,18 @@ class MockFLauncherDatabase extends _i1.Mock implements _i7.FLauncherDatabase {
     _i6.UpdateKind? updateKind,
   }) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #customWriteReturning,
-          [query],
-          {
-            #variables: variables,
-            #updates: updates,
-            #updateKind: updateKind,
-          },
-        ),
-        returnValue: _i2.Future<List<_i6.QueryRow>>.value(<_i6.QueryRow>[]),
-      ) as _i2.Future<List<_i6.QueryRow>>);
+            Invocation.method(
+              #customWriteReturning,
+              [query],
+              {
+                #variables: variables,
+                #updates: updates,
+                #updateKind: updateKind,
+              },
+            ),
+            returnValue: _i2.Future<List<_i6.QueryRow>>.value(<_i6.QueryRow>[]),
+          )
+          as _i2.Future<List<_i6.QueryRow>>);
 
   @override
   _i6.Selectable<_i6.QueryRow> customSelect(
@@ -2759,26 +2521,21 @@ class MockFLauncherDatabase extends _i1.Mock implements _i7.FLauncherDatabase {
     Set<_i6.ResultSetImplementation<dynamic, dynamic>>? readsFrom = const {},
   }) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #customSelect,
-          [query],
-          {
-            #variables: variables,
-            #readsFrom: readsFrom,
-          },
-        ),
-        returnValue: _FakeSelectable_25<_i6.QueryRow>(
-          this,
-          Invocation.method(
-            #customSelect,
-            [query],
-            {
-              #variables: variables,
-              #readsFrom: readsFrom,
-            },
-          ),
-        ),
-      ) as _i6.Selectable<_i6.QueryRow>);
+            Invocation.method(
+              #customSelect,
+              [query],
+              {#variables: variables, #readsFrom: readsFrom},
+            ),
+            returnValue: _FakeSelectable_25<_i6.QueryRow>(
+              this,
+              Invocation.method(
+                #customSelect,
+                [query],
+                {#variables: variables, #readsFrom: readsFrom},
+              ),
+            ),
+          )
+          as _i6.Selectable<_i6.QueryRow>);
 
   @override
   _i6.Selectable<_i6.QueryRow> customSelectQuery(
@@ -2787,43 +2544,30 @@ class MockFLauncherDatabase extends _i1.Mock implements _i7.FLauncherDatabase {
     Set<_i6.ResultSetImplementation<dynamic, dynamic>>? readsFrom = const {},
   }) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #customSelectQuery,
-          [query],
-          {
-            #variables: variables,
-            #readsFrom: readsFrom,
-          },
-        ),
-        returnValue: _FakeSelectable_25<_i6.QueryRow>(
-          this,
-          Invocation.method(
-            #customSelectQuery,
-            [query],
-            {
-              #variables: variables,
-              #readsFrom: readsFrom,
-            },
-          ),
-        ),
-      ) as _i6.Selectable<_i6.QueryRow>);
+            Invocation.method(
+              #customSelectQuery,
+              [query],
+              {#variables: variables, #readsFrom: readsFrom},
+            ),
+            returnValue: _FakeSelectable_25<_i6.QueryRow>(
+              this,
+              Invocation.method(
+                #customSelectQuery,
+                [query],
+                {#variables: variables, #readsFrom: readsFrom},
+              ),
+            ),
+          )
+          as _i6.Selectable<_i6.QueryRow>);
 
   @override
-  _i2.Future<void> customStatement(
-    String? statement, [
-    List<dynamic>? args,
-  ]) =>
+  _i2.Future<void> customStatement(String? statement, [List<dynamic>? args]) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #customStatement,
-          [
-            statement,
-            args,
-          ],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+            Invocation.method(#customStatement, [statement, args]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
   _i2.Future<T> transaction<T>(
@@ -2831,68 +2575,61 @@ class MockFLauncherDatabase extends _i1.Mock implements _i7.FLauncherDatabase {
     bool? requireNew = false,
   }) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #transaction,
-          [action],
-          {#requireNew: requireNew},
-        ),
-        returnValue: _i18.ifNotNull(
-              _i18.dummyValueOrNull<T>(
-                this,
-                Invocation.method(
-                  #transaction,
-                  [action],
-                  {#requireNew: requireNew},
-                ),
-              ),
-              (T v) => _i2.Future<T>.value(v),
-            ) ??
-            _FakeFuture_18<T>(
-              this,
-              Invocation.method(
-                #transaction,
-                [action],
-                {#requireNew: requireNew},
-              ),
+            Invocation.method(
+              #transaction,
+              [action],
+              {#requireNew: requireNew},
             ),
-      ) as _i2.Future<T>);
+            returnValue:
+                _i18.ifNotNull(
+                  _i18.dummyValueOrNull<T>(
+                    this,
+                    Invocation.method(
+                      #transaction,
+                      [action],
+                      {#requireNew: requireNew},
+                    ),
+                  ),
+                  (T v) => _i2.Future<T>.value(v),
+                ) ??
+                _FakeFuture_18<T>(
+                  this,
+                  Invocation.method(
+                    #transaction,
+                    [action],
+                    {#requireNew: requireNew},
+                  ),
+                ),
+          )
+          as _i2.Future<T>);
 
   @override
   _i2.Future<T> exclusively<T>(_i2.Future<T> Function()? action) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #exclusively,
-          [action],
-        ),
-        returnValue: _i18.ifNotNull(
-              _i18.dummyValueOrNull<T>(
-                this,
-                Invocation.method(
-                  #exclusively,
-                  [action],
+            Invocation.method(#exclusively, [action]),
+            returnValue:
+                _i18.ifNotNull(
+                  _i18.dummyValueOrNull<T>(
+                    this,
+                    Invocation.method(#exclusively, [action]),
+                  ),
+                  (T v) => _i2.Future<T>.value(v),
+                ) ??
+                _FakeFuture_18<T>(
+                  this,
+                  Invocation.method(#exclusively, [action]),
                 ),
-              ),
-              (T v) => _i2.Future<T>.value(v),
-            ) ??
-            _FakeFuture_18<T>(
-              this,
-              Invocation.method(
-                #exclusively,
-                [action],
-              ),
-            ),
-      ) as _i2.Future<T>);
+          )
+          as _i2.Future<T>);
 
   @override
   _i2.Future<void> batch(_i2.FutureOr<void> Function(_i6.Batch)? runInBatch) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #batch,
-          [runInBatch],
-        ),
-        returnValue: _i2.Future<void>.value(),
-        returnValueForMissingStub: _i2.Future<void>.value(),
-      ) as _i2.Future<void>);
+            Invocation.method(#batch, [runInBatch]),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
+          )
+          as _i2.Future<void>);
 
   @override
   _i2.Future<T> runWithInterceptor<T>(
@@ -2900,31 +2637,33 @@ class MockFLauncherDatabase extends _i1.Mock implements _i7.FLauncherDatabase {
     required _i6.QueryInterceptor? interceptor,
   }) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #runWithInterceptor,
-          [action],
-          {#interceptor: interceptor},
-        ),
-        returnValue: _i18.ifNotNull(
-              _i18.dummyValueOrNull<T>(
-                this,
-                Invocation.method(
-                  #runWithInterceptor,
-                  [action],
-                  {#interceptor: interceptor},
-                ),
-              ),
-              (T v) => _i2.Future<T>.value(v),
-            ) ??
-            _FakeFuture_18<T>(
-              this,
-              Invocation.method(
-                #runWithInterceptor,
-                [action],
-                {#interceptor: interceptor},
-              ),
+            Invocation.method(
+              #runWithInterceptor,
+              [action],
+              {#interceptor: interceptor},
             ),
-      ) as _i2.Future<T>);
+            returnValue:
+                _i18.ifNotNull(
+                  _i18.dummyValueOrNull<T>(
+                    this,
+                    Invocation.method(
+                      #runWithInterceptor,
+                      [action],
+                      {#interceptor: interceptor},
+                    ),
+                  ),
+                  (T v) => _i2.Future<T>.value(v),
+                ) ??
+                _FakeFuture_18<T>(
+                  this,
+                  Invocation.method(
+                    #runWithInterceptor,
+                    [action],
+                    {#interceptor: interceptor},
+                  ),
+                ),
+          )
+          as _i2.Future<T>);
 
   @override
   _i6.GenerationContext $write(
@@ -2933,26 +2672,24 @@ class MockFLauncherDatabase extends _i1.Mock implements _i7.FLauncherDatabase {
     int? startIndex,
   }) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #$write,
-          [component],
-          {
-            #hasMultipleTables: hasMultipleTables,
-            #startIndex: startIndex,
-          },
-        ),
-        returnValue: _FakeGenerationContext_26(
-          this,
-          Invocation.method(
-            #$write,
-            [component],
-            {
-              #hasMultipleTables: hasMultipleTables,
-              #startIndex: startIndex,
-            },
-          ),
-        ),
-      ) as _i6.GenerationContext);
+            Invocation.method(
+              #$write,
+              [component],
+              {#hasMultipleTables: hasMultipleTables, #startIndex: startIndex},
+            ),
+            returnValue: _FakeGenerationContext_26(
+              this,
+              Invocation.method(
+                #$write,
+                [component],
+                {
+                  #hasMultipleTables: hasMultipleTables,
+                  #startIndex: startIndex,
+                },
+              ),
+            ),
+          )
+          as _i6.GenerationContext);
 
   @override
   _i6.GenerationContext $writeInsertable(
@@ -2961,51 +2698,32 @@ class MockFLauncherDatabase extends _i1.Mock implements _i7.FLauncherDatabase {
     int? startIndex,
   }) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #$writeInsertable,
-          [
-            table,
-            insertable,
-          ],
-          {#startIndex: startIndex},
-        ),
-        returnValue: _FakeGenerationContext_26(
-          this,
-          Invocation.method(
-            #$writeInsertable,
-            [
-              table,
-              insertable,
-            ],
-            {#startIndex: startIndex},
-          ),
-        ),
-      ) as _i6.GenerationContext);
+            Invocation.method(
+              #$writeInsertable,
+              [table, insertable],
+              {#startIndex: startIndex},
+            ),
+            returnValue: _FakeGenerationContext_26(
+              this,
+              Invocation.method(
+                #$writeInsertable,
+                [table, insertable],
+                {#startIndex: startIndex},
+              ),
+            ),
+          )
+          as _i6.GenerationContext);
 
   @override
-  String $expandVar(
-    int? start,
-    int? amount,
-  ) =>
+  String $expandVar(int? start, int? amount) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #$expandVar,
-          [
-            start,
-            amount,
-          ],
-        ),
-        returnValue: _i18.dummyValue<String>(
-          this,
-          Invocation.method(
-            #$expandVar,
-            [
-              start,
-              amount,
-            ],
-          ),
-        ),
-      ) as String);
+            Invocation.method(#$expandVar, [start, amount]),
+            returnValue: _i18.dummyValue<String>(
+              this,
+              Invocation.method(#$expandVar, [start, amount]),
+            ),
+          )
+          as String);
 }
 
 /// A class which mocks [ImageProvider].
@@ -3020,34 +2738,24 @@ class MockImageProvider<T extends Object> extends _i1.Mock
   @override
   _i9.ImageStream resolve(_i9.ImageConfiguration? configuration) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #resolve,
-          [configuration],
-        ),
-        returnValue: _FakeImageStream_27(
-          this,
-          Invocation.method(
-            #resolve,
-            [configuration],
-          ),
-        ),
-      ) as _i9.ImageStream);
+            Invocation.method(#resolve, [configuration]),
+            returnValue: _FakeImageStream_27(
+              this,
+              Invocation.method(#resolve, [configuration]),
+            ),
+          )
+          as _i9.ImageStream);
 
   @override
   _i9.ImageStream createStream(_i9.ImageConfiguration? configuration) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #createStream,
-          [configuration],
-        ),
-        returnValue: _FakeImageStream_27(
-          this,
-          Invocation.method(
-            #createStream,
-            [configuration],
-          ),
-        ),
-      ) as _i9.ImageStream);
+            Invocation.method(#createStream, [configuration]),
+            returnValue: _FakeImageStream_27(
+              this,
+              Invocation.method(#createStream, [configuration]),
+            ),
+          )
+          as _i9.ImageStream);
 
   @override
   _i2.Future<_i9.ImageCacheStatus?> obtainCacheStatus({
@@ -3055,16 +2763,13 @@ class MockImageProvider<T extends Object> extends _i1.Mock
     _i9.ImageErrorListener? handleError,
   }) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #obtainCacheStatus,
-          [],
-          {
-            #configuration: configuration,
-            #handleError: handleError,
-          },
-        ),
-        returnValue: _i2.Future<_i9.ImageCacheStatus?>.value(),
-      ) as _i2.Future<_i9.ImageCacheStatus?>);
+            Invocation.method(#obtainCacheStatus, [], {
+              #configuration: configuration,
+              #handleError: handleError,
+            }),
+            returnValue: _i2.Future<_i9.ImageCacheStatus?>.value(),
+          )
+          as _i2.Future<_i9.ImageCacheStatus?>);
 
   @override
   void resolveStreamForKey(
@@ -3072,19 +2777,15 @@ class MockImageProvider<T extends Object> extends _i1.Mock
     _i9.ImageStream? stream,
     T? key,
     _i9.ImageErrorListener? handleError,
-  ) =>
-      super.noSuchMethod(
-        Invocation.method(
-          #resolveStreamForKey,
-          [
-            configuration,
-            stream,
-            key,
-            handleError,
-          ],
-        ),
-        returnValueForMissingStub: null,
-      );
+  ) => super.noSuchMethod(
+    Invocation.method(#resolveStreamForKey, [
+      configuration,
+      stream,
+      key,
+      handleError,
+    ]),
+    returnValueForMissingStub: null,
+  );
 
   @override
   _i2.Future<bool> evict({
@@ -3092,42 +2793,32 @@ class MockImageProvider<T extends Object> extends _i1.Mock
     _i9.ImageConfiguration? configuration = _i9.ImageConfiguration.empty,
   }) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #evict,
-          [],
-          {
-            #cache: cache,
-            #configuration: configuration,
-          },
-        ),
-        returnValue: _i2.Future<bool>.value(false),
-      ) as _i2.Future<bool>);
+            Invocation.method(#evict, [], {
+              #cache: cache,
+              #configuration: configuration,
+            }),
+            returnValue: _i2.Future<bool>.value(false),
+          )
+          as _i2.Future<bool>);
 
   @override
   _i2.Future<T> obtainKey(_i9.ImageConfiguration? configuration) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #obtainKey,
-          [configuration],
-        ),
-        returnValue: _i18.ifNotNull(
-              _i18.dummyValueOrNull<T>(
-                this,
-                Invocation.method(
-                  #obtainKey,
-                  [configuration],
+            Invocation.method(#obtainKey, [configuration]),
+            returnValue:
+                _i18.ifNotNull(
+                  _i18.dummyValueOrNull<T>(
+                    this,
+                    Invocation.method(#obtainKey, [configuration]),
+                  ),
+                  (T v) => _i2.Future<T>.value(v),
+                ) ??
+                _FakeFuture_18<T>(
+                  this,
+                  Invocation.method(#obtainKey, [configuration]),
                 ),
-              ),
-              (T v) => _i2.Future<T>.value(v),
-            ) ??
-            _FakeFuture_18<T>(
-              this,
-              Invocation.method(
-                #obtainKey,
-                [configuration],
-              ),
-            ),
-      ) as _i2.Future<T>);
+          )
+          as _i2.Future<T>);
 
   @override
   _i9.ImageStreamCompleter loadBuffer(
@@ -3135,24 +2826,13 @@ class MockImageProvider<T extends Object> extends _i1.Mock
     _i9.DecoderBufferCallback? decode,
   ) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #loadBuffer,
-          [
-            key,
-            decode,
-          ],
-        ),
-        returnValue: _FakeImageStreamCompleter_28(
-          this,
-          Invocation.method(
-            #loadBuffer,
-            [
-              key,
-              decode,
-            ],
-          ),
-        ),
-      ) as _i9.ImageStreamCompleter);
+            Invocation.method(#loadBuffer, [key, decode]),
+            returnValue: _FakeImageStreamCompleter_28(
+              this,
+              Invocation.method(#loadBuffer, [key, decode]),
+            ),
+          )
+          as _i9.ImageStreamCompleter);
 
   @override
   _i9.ImageStreamCompleter loadImage(
@@ -3160,22 +2840,11 @@ class MockImageProvider<T extends Object> extends _i1.Mock
     _i9.ImageDecoderCallback? decode,
   ) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #loadImage,
-          [
-            key,
-            decode,
-          ],
-        ),
-        returnValue: _FakeImageStreamCompleter_28(
-          this,
-          Invocation.method(
-            #loadImage,
-            [
-              key,
-              decode,
-            ],
-          ),
-        ),
-      ) as _i9.ImageStreamCompleter);
+            Invocation.method(#loadImage, [key, decode]),
+            returnValue: _FakeImageStreamCompleter_28(
+              this,
+              Invocation.method(#loadImage, [key, decode]),
+            ),
+          )
+          as _i9.ImageStreamCompleter);
 }

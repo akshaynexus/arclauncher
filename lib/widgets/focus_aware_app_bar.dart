@@ -2,6 +2,7 @@ import 'package:flauncher/widgets/settings/settings_panel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../providers/launcher_state.dart';
 import '../providers/settings_service.dart';
 import 'daily_wifi_usage_widget.dart';
 import 'date_time_widget.dart';
@@ -46,17 +47,22 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
       builder: (context, autoHide, widget) {
         if (autoHide) {
           return Focus(
-              canRequestFocus: false,
-              child: AnimatedContainer(
-                  curve: Curves.decelerate,
-                  duration: Duration(milliseconds: 150),
-                  height: focused ? kToolbarHeight : 0,
-                  child: widget!),
-              onFocusChange: (hasFocus) {
-                this.setState(() {
-                  focused = hasFocus;
-                });
+            canRequestFocus: false,
+            child: AnimatedContainer(
+              curve: Curves.decelerate,
+              duration: Duration(milliseconds: 150),
+              height: focused ? kToolbarHeight : 0,
+              child: widget!
+            ),
+            onFocusChange: (hasFocus) {
+              if (hasFocus) {
+                context.read<LauncherState>().setAppGridFocused(false);
+              }
+              this.setState(() {
+                focused = hasFocus;
               });
+            },
+          );
         }
 
         return widget!;
@@ -192,7 +198,12 @@ class _FocusableIconButtonState extends State<_FocusableIconButton> {
       },
       child: Focus(
         focusNode: widget.focusNode,
-        onFocusChange: (hasFocus) => setState(() => _focused = hasFocus),
+        onFocusChange: (hasFocus) {
+          if (hasFocus) {
+            context.read<LauncherState>().setAppGridFocused(false);
+          }
+          setState(() => _focused = hasFocus);
+        },
         child: InkWell(
           onTap: widget.onPressed,
           borderRadius: BorderRadius.circular(8),
@@ -222,5 +233,39 @@ class _FocusableIconButtonState extends State<_FocusableIconButton> {
         ),
       ),
     ));
+  }
+}
+
+/// Network widget with consistent focus indicator
+class _FocusableNetworkWidget extends StatefulWidget {
+  @override
+  State<_FocusableNetworkWidget> createState() => _FocusableNetworkWidgetState();
+}
+
+class _FocusableNetworkWidgetState extends State<_FocusableNetworkWidget> {
+  bool _focused = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Focus(
+      onFocusChange: (hasFocus) {
+        if (hasFocus) {
+          context.read<LauncherState>().setAppGridFocused(false);
+        }
+        setState(() => _focused = hasFocus);
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          border: _focused
+            ? Border.all(color: Theme.of(context).colorScheme.primary, width: 2)
+            : null,
+          boxShadow: _focused
+            ? const [BoxShadow(color: Colors.black54, blurRadius: 8, spreadRadius: 1)]
+            : null,
+        ),
+        child: const NetworkWidget(),
+      ),
+    );
   }
 }

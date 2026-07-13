@@ -23,6 +23,7 @@ import 'package:flauncher/providers/launcher_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
 import 'flauncher.dart';
@@ -88,7 +89,10 @@ class _FLauncherAppState extends State<FLauncherApp>
               DirectionalFocusIntent:
                   SoundFeedbackDirectionalFocusAction(context)
             },
-            localizationsDelegates: context.localizationDelegates,
+            localizationsDelegates: [
+              ...context.localizationDelegates,
+              AppLocalizations.delegate,
+            ],
             supportedLocales: context.supportedLocales,
             locale: context.locale,
             title: 'FLauncher',

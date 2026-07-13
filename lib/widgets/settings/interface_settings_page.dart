@@ -16,6 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flauncher/generated/locale_keys.g.dart';
@@ -24,6 +25,7 @@ import 'launcher_sections_panel_page.dart';
 import 'wallpaper_panel_page.dart';
 import 'status_bar_panel_page.dart';
 import 'accent_color_page.dart';
+import 'appearance_panel_page.dart';
 import 'misc_panel_page.dart';
 
 class InterfaceSettingsPage extends StatelessWidget {
@@ -69,6 +71,11 @@ class InterfaceSettingsPage extends StatelessWidget {
                       style: Theme.of(context).textTheme.bodyMedium),
                   onPressed: () => Navigator.of(context)
                       .pushNamed(AccentColorPage.routeName),
+                ),
+                FocusableSettingsTile(
+                  leading: const Icon(Icons.brush_outlined),
+                  title: Text(AppLocalizations.of(context)!.appearanceSettings, style: Theme.of(context).textTheme.bodyMedium),
+                  onPressed: () => Navigator.of(context).pushNamed(AppearancePanelPage.routeName),
                 ),
                 FocusableSettingsTile(
                   leading: const Icon(Icons.miscellaneous_services),
